@@ -1,0 +1,12 @@
+package de.ljz.questify.feature.quests.domain.use_cases
+
+import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
+import de.ljz.questify.feature.quests.domain.repositories.QuestCategoryRepository
+
+class AddQuestCategoryUseCase(
+    private val questCategoryRepository: QuestCategoryRepository
+) {
+    suspend operator fun invoke(questCategoryEntity: QuestCategoryEntity) {
+        questCategoryRepository.addQuestCategory(questCategoryEntity)
+    }
+}
