@@ -5,6 +5,8 @@ import de.ljz.questify.core.data.datastore.dataStorePreferencesPath
 import de.ljz.questify.core.data.datastore.serializer.AppSettingsSerializer
 import de.ljz.questify.core.data.datastore.serializer.SortingPreferencesSerializer
 import de.ljz.questify.core.data.models.SortingPreferences
+import de.ljz.questify.feature.profile.data.models.AppUser
+import de.ljz.questify.feature.profile.data.serializer.AppUserSerializer
 import de.ljz.questify.feature.settings.data.models.AppSettings
 import de.ljz.questify.feature.settings.data.models.FeatureSettings
 import de.ljz.questify.feature.settings.data.serializer.FeatureSettingsSerializer
@@ -32,6 +34,14 @@ val dataStoreModule = module {
             producePath = { dataStorePreferencesPath("feature_settings.json") },
             serializer = FeatureSettingsSerializer,
             defaultValue = FeatureSettings()
+        )
+    }
+
+    single {
+        createDataStore(
+            producePath = { dataStorePreferencesPath("app_user.json") },
+            serializer = AppUserSerializer,
+            defaultValue = AppUser()
         )
     }
 }

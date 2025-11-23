@@ -17,10 +17,10 @@ import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
+import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
+import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingScreen
-import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewScreen
-import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
 
 class ActivityMain : AppCompatActivity() {
 
@@ -47,7 +47,7 @@ class ActivityMain : AppCompatActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
 //                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
-                        val startKey: AppNavKey = OnboardingRoute
+                        val startKey: AppNavKey = MainRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -57,21 +57,42 @@ class ActivityMain : AppCompatActivity() {
                             ),
                             backStack = backStack,
                             entryProvider = entryProvider {
-                                entry<QuestsRoute> {
-                                    QuestOverviewScreen(
-                                        onNavigateToQuestDetailScreen = { id ->
-//                                            onNavigateToQuestDetailScreen(id)
+                                entry<MainRoute> {
+                                    MainScreen(
+                                        onNavigateToSettingsPermissionScreen = { backNavigationEnabled ->
+                                            backStack.clear()
+                                            /*backStack.add(
+                                                SettingsPermissionRoute(
+                                                    backNavigationEnabled = backNavigationEnabled
+                                                )
+                                            )*/
                                         },
-                                        onNavigateToCreateQuestScreen = {},
+                                        onNavigateToSettingsScreen = {
+//                                            backStack.add(SettingsMainRoute)
+                                        },
+                                        onNavigateToCreateQuestScreen = { selectedList ->
+                                            /*backStack.add(
+                                                CreateQuestRoute(
+                                                    selectedCategoryIndex = selectedList
+                                                )
+                                            )*/
+                                        },
                                         onNavigateToEditQuestScreen = { id ->
-//                                            onNavigateToEditQuestScreen(id)
+                                            /*backStack.add(
+                                                EditQuestRoute(
+                                                    id = id
+                                                )
+                                            )*/
                                         },
-                                        onToggleDrawer = {
-                                            /*scope.launch {
-                                                drawerState.apply {
-                                                    if (drawerState.currentValue == DrawerValue.Closed) open() else close()
-                                                }
-                                            }*/
+                                        onNavigateToQuestDetailScreen = { id ->
+                                            /*backStack.add(
+                                                QuestDetailRoute(
+                                                    id = id
+                                                )
+                                            )*/
+                                        },
+                                        onNavigateToCreateHabitScreen = {
+//                                            backStack.add(CreateHabitRoute)
                                         }
                                     )
                                 }
