@@ -52,6 +52,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.androidx.lifecycle.viewmodel)
             isStatic = true
         }
     }
@@ -70,12 +71,15 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.koin.core)
+            implementation(libs.koin.view.model)
 
             implementation(libs.kotlinx.datetime)
 
-            implementation("androidx.datastore:datastore:1.2.0")
-            implementation("androidx.datastore:datastore-preferences:1.2.0")
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.kotlinx.serialization.json)
+
+            api(libs.androidx.lifecycle.viewmodel)
         }
     }
 }
