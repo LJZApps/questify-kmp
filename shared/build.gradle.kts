@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 room {
@@ -74,6 +75,7 @@ kotlin {
 
             implementation("androidx.datastore:datastore:1.2.0")
             implementation("androidx.datastore:datastore-preferences:1.2.0")
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }

@@ -2,7 +2,6 @@ package de.ljz.questify.core.data.datastore.serializer
 
 import androidx.datastore.core.okio.OkioSerializer
 import de.ljz.questify.core.data.models.SortingPreferences
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import okio.BufferedSink
 import okio.BufferedSource
