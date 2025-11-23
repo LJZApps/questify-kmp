@@ -17,6 +17,8 @@ import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
+import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
+import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
 
@@ -45,7 +47,7 @@ class ActivityMain : AppCompatActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
 //                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
-                        val startKey: AppNavKey = QuestsRoute
+                        val startKey: AppNavKey = OnboardingRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -73,6 +75,19 @@ class ActivityMain : AppCompatActivity() {
                                         }
                                     )
                                 }
+
+                                entry<OnboardingRoute> {
+                                    OnboardingScreen(
+                                        onNavigateUp = {
+                                            backStack.removeLastOrNull()
+                                        },
+                                        onNavigateToMainScreen = {
+                                            backStack.clear()
+//                                            backStack.add(MainRoute)
+                                        }
+                                    )
+                                }
+
                                 /*entry<MainRoute> {
                                     MainScreen(
                                         onNavigateToSettingsPermissionScreen = { backNavigationEnabled ->

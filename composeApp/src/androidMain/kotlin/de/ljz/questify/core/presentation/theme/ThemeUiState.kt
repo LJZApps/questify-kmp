@@ -1,6 +1,6 @@
 package de.ljz.questify.core.presentation.theme
 
-import de.ljz.questify.core.data.models.descriptors.ThemeBehavior
+import de.ljz.questify.feature.settings.data.models.descriptors.ThemeBehavior
 
 data class ThemeUiState(
     val themeBehavior: ThemeBehavior = ThemeBehavior.SYSTEM_STANDARD

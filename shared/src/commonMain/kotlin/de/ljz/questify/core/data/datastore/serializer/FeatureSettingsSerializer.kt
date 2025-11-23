@@ -7,7 +7,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.use
 
-object AppSettingsSerializer : OkioSerializer<AppSettings> {
+object FeatureSettingsSerializer : OkioSerializer<AppSettings> {
     override val defaultValue: AppSettings = AppSettings()
 
     override suspend fun readFrom(source: BufferedSource): AppSettings {

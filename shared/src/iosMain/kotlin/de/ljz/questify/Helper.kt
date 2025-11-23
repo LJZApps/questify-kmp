@@ -2,6 +2,7 @@ package de.ljz.questify
 
 import de.ljz.questify.core.notifications.IosNotificationScheduler
 import de.ljz.questify.core.notifications.NotificationScheduler
+import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
 import org.koin.core.component.KoinComponent
@@ -25,4 +26,5 @@ object ProvideViewModel : KoinComponent {
     fun getCategoryQuestViewModel(categoryId: Int): CategoryQuestViewModel {
         return get { parametersOf(categoryId) }
     }
+    fun getOnboardingViewModel(): OnboardingViewModel = get()
 }

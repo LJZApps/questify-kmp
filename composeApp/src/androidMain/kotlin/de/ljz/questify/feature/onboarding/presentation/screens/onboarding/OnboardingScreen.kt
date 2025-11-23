@@ -29,17 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.StartQuestifyPage
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.TutorialQuestsPage
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.TutorialRewardsPage
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.WelcomePage
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun OnboardingScreen(
-    viewModel: OnboardingViewModel = hiltViewModel(),
+    viewModel: OnboardingViewModel = koinViewModel(),
     onNavigateUp: () -> Unit,
     onNavigateToMainScreen: () -> Unit
 ) {

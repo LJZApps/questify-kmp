@@ -1,6 +1,6 @@
-package de.ljz.questify.core.data.models
+package de.ljz.questify.feature.settings.data.models
 
-import de.ljz.questify.core.data.models.descriptors.ThemeBehavior
+import de.ljz.questify.feature.settings.data.models.descriptors.ThemeBehavior
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 data class AppSettings(
     @SerialName("onboarding_state")
     val onboardingState: Boolean = false,
+
+    @SerialName("last_opened_version")
+    val lastOpenedVersion: Int = 0,
 
     @SerialName("theme_behavior")
     val themeBehavior: ThemeBehavior = ThemeBehavior.SYSTEM_STANDARD
