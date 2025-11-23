@@ -2,6 +2,9 @@ package de.ljz.questify.feature.quests.di
 
 import de.ljz.questify.core.data.database.AppDatabase
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
+import de.ljz.questify.feature.quests.data.daos.QuestDao
+import de.ljz.questify.feature.quests.data.daos.QuestNotificationDao
+import de.ljz.questify.feature.quests.data.daos.SubQuestDao
 import de.ljz.questify.feature.quests.domain.repositories.QuestCategoryRepository
 import de.ljz.questify.feature.quests.domain.repositories.QuestCategoryRepositoryImpl
 import de.ljz.questify.feature.quests.domain.repositories.QuestNotificationRepository
@@ -36,6 +39,18 @@ import org.koin.dsl.module
 val questModule = module {
     single<QuestCategoryDao> {
         get<AppDatabase>().questCategoryDao
+    }
+
+    single<QuestDao> {
+        get<AppDatabase>().questDao
+    }
+
+    single<QuestNotificationDao> {
+        get<AppDatabase>().questNotificationDao
+    }
+
+    single<SubQuestDao> {
+        get<AppDatabase>().subQuestDao
     }
 
     singleOf(::QuestCategoryRepositoryImpl) { bind<QuestCategoryRepository>() }
