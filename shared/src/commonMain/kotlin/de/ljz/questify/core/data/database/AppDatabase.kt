@@ -7,6 +7,10 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import de.ljz.questify.core.data.database.adapters.InstantAdapter
+import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
+import de.ljz.questify.feature.quests.data.daos.QuestDao
+import de.ljz.questify.feature.quests.data.daos.QuestNotificationDao
+import de.ljz.questify.feature.quests.data.daos.SubQuestDao
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
@@ -33,6 +37,10 @@ import kotlinx.coroutines.IO
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
+    abstract val questDao: QuestDao
+    abstract val questNotificationDao: QuestNotificationDao
+    abstract val questCategoryDao: QuestCategoryDao
+    abstract val subQuestDao: SubQuestDao
 }
 
 @Suppress("KotlinNoActualForExpect")

@@ -9,7 +9,7 @@ import platform.Foundation.NSUserDomainMask
 
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFilePath = documentDirectory() + "/my_room.db"
+    val dbFilePath = documentDirectory() + "/app_database.db"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFilePath,
     )
