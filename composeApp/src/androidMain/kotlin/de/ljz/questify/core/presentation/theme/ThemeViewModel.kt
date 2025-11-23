@@ -1,16 +1,6 @@
 package de.ljz.questify.core.presentation.theme
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
-
-@HiltViewModel
+/*@HiltViewModel
 class ThemeViewModel @Inject constructor(
     appSettingsRepository: AppSettingsRepository
 ) : ViewModel() {
@@ -28,4 +18,4 @@ class ThemeViewModel @Inject constructor(
             // Startwert, bevor der erste Wert vom Flow ankommt
             initialValue = ThemeUiState()
         )
-}
+}*/

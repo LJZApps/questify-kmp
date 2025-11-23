@@ -3,12 +3,9 @@ package de.ljz.questify.core.presentation.screens
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -16,16 +13,13 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import dagger.hilt.android.AndroidEntryPoint
 import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
-import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
-import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
+import de.ljz.questify.features.quests.presentation.screens.quest_overview.QuestOverviewScreen
 import de.ljz.questify.features.quests.presentation.screens.quest_overview.QuestsRoute
 
-@AndroidEntryPoint
 class ActivityMain : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,20 +31,21 @@ class ActivityMain : AppCompatActivity() {
 
         setContent {
             splashScreen.setKeepOnScreenCondition { true }
-            val vm: AppViewModel by viewModels()
+            /*val vm: AppViewModel by viewModels()
 
             val appUiState by vm.uiState.collectAsState()
             val isSetupDone = appUiState.isSetupDone
-            val isAppReadyState by vm.isAppReady.collectAsState()
+            val isAppReadyState by vm.isAppReady.collectAsState()*/
 
-            if (isAppReadyState) {
+            if (true) {
                 splashScreen.setKeepOnScreenCondition { false }
 
                 QuestifyTheme {
                     Surface(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
+//                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
+                        val startKey: AppNavKey = QuestsRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -61,7 +56,22 @@ class ActivityMain : AppCompatActivity() {
                             backStack = backStack,
                             entryProvider = entryProvider {
                                 entry<QuestsRoute> {
-                                    QuestsOverviewScreen()
+                                    QuestOverviewScreen(
+                                        onNavigateToQuestDetailScreen = { id ->
+//                                            onNavigateToQuestDetailScreen(id)
+                                        },
+                                        onNavigateToCreateQuestScreen = {},
+                                        onNavigateToEditQuestScreen = { id ->
+//                                            onNavigateToEditQuestScreen(id)
+                                        },
+                                        onToggleDrawer = {
+                                            /*scope.launch {
+                                                drawerState.apply {
+                                                    if (drawerState.currentValue == DrawerValue.Closed) open() else close()
+                                                }
+                                            }*/
+                                        }
+                                    )
                                 }
                                 /*entry<MainRoute> {
                                     MainScreen(

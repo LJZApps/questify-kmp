@@ -62,13 +62,13 @@ import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestO
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewUiEffect
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewUiEvent
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
-import de.ljz.questify.feature.quests.presentation.sheets.QuestSortingBottomSheet
 import de.ljz.questify.features.quests.presentation.dialogs.CreateCategoryDialog
 import de.ljz.questify.features.quests.presentation.dialogs.DeleteQuestCategoryDialog
 import de.ljz.questify.features.quests.presentation.dialogs.QuestDoneDialog
 import de.ljz.questify.features.quests.presentation.dialogs.RenameCategoryDialog
 import de.ljz.questify.features.quests.presentation.screens.quest_overview.sub_pages.all_quests_page.AllQuestsPage
 import de.ljz.questify.features.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.QuestsForCategoryPage
+import de.ljz.questify.features.quests.presentation.sheets.QuestSortingBottomSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -128,6 +128,7 @@ private fun QuestOverviewScreen(
     onUiEvent: (QuestOverviewUiEvent) -> Unit
 ) {
     val allQuestPageState = uiState.allQuestPageState
+    val dialogState = uiState.dialogState
 
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
@@ -448,8 +449,8 @@ private fun QuestOverviewScreen(
                 }
             }
 
-            if (uiState.dialogState is DialogState.QuestDone) {
-                val questDoneDialogState = uiState.dialogState.questDoneDialogState
+            if (dialogState is DialogState.QuestDone) {
+                val questDoneDialogState = dialogState.questDoneDialogState
                 QuestDoneDialog(
                     state = questDoneDialogState,
                     onDismiss = {
@@ -474,7 +475,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.CreateCategory) {
+            if (dialogState is DialogState.CreateCategory) {
                 CreateCategoryDialog(
                     onConfirm = { value ->
                         onUiEvent(QuestOverviewUiEvent.AddQuestCategory(value = value))
@@ -487,7 +488,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.UpdateCategory) {
+            if (dialogState is DialogState.UpdateCategory) {
                 RenameCategoryDialog(
                     onDismiss = {
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
@@ -495,23 +496,23 @@ private fun QuestOverviewScreen(
                     onConfirm = { value ->
                         onUiEvent(
                             QuestOverviewUiEvent.UpdateQuestCategory(
-                                questCategoryEntity = uiState.dialogState.questCategoryEntity,
+                                questCategoryEntity = dialogState.questCategoryEntity,
                                 value = value
                             )
                         )
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
                     },
                     initialInputFocussed = true,
-                    initialValue = uiState.dialogState.questCategoryEntity.text
+                    initialValue = dialogState.questCategoryEntity.text
                 )
             }
 
-            if (uiState.dialogState is DialogState.DeleteCategory) {
+            if (dialogState is DialogState.DeleteCategory) {
                 DeleteQuestCategoryDialog(
                     onConfirm = {
                         onUiEvent(
                             QuestOverviewUiEvent.DeleteQuestCategory(
-                                questCategoryEntity = uiState.dialogState.questCategoryEntity
+                                questCategoryEntity = dialogState.questCategoryEntity
                             )
                         )
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
@@ -519,7 +520,7 @@ private fun QuestOverviewScreen(
                     onDismiss = {
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
                     },
-                    questCategoryEntity = uiState.dialogState.questCategoryEntity
+                    questCategoryEntity = dialogState.questCategoryEntity
                 )
             }
         },

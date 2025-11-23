@@ -9,13 +9,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import de.ljz.questify.feature.settings.data.models.ThemeBehavior
 
 @Immutable
 data class ExtendedColorScheme(
@@ -357,18 +353,18 @@ val unspecified_scheme = ColorFamily(
 @Composable
 fun QuestifyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    vm: ThemeViewModel = hiltViewModel(),
+//    vm: ThemeViewModel = hiltViewModel(),
     content: @Composable () -> Unit
 ) {
-    val uiState by vm.uiState.collectAsState()
+    /*val uiState by vm.uiState.collectAsState()
 
     val useDarkTheme = when (uiState.themeBehavior) {
         ThemeBehavior.DARK -> true
         ThemeBehavior.LIGHT -> false
         ThemeBehavior.SYSTEM_STANDARD -> darkTheme
-    }
+    }*/
 
-    val colorScheme = if (useDarkTheme) {
+    val colorScheme = if (true) {
         darkScheme
     } else {
         lightScheme
@@ -381,8 +377,8 @@ fun QuestifyTheme(
             val windowInsetsController = WindowCompat.getInsetsController(window, view)
 
             windowInsetsController.apply {
-                isAppearanceLightStatusBars = !useDarkTheme
-                isAppearanceLightNavigationBars = !useDarkTheme
+                isAppearanceLightStatusBars = !true
+                isAppearanceLightNavigationBars = !true
             }
         }
     }

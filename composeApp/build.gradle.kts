@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -55,14 +56,10 @@ kotlin {
             // Gampose https://github.com/ezlifeSol/gampose
             //implementation(libs.gampose)
 
-            // Yaml
-            implementation(libs.jackson.dataformat.yaml)
-            implementation(libs.jackson.module.kotlin)
-
             implementation(project.dependencies.platform("androidx.compose:compose-bom:2025.11.00"))
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.1.0"))
 
-            implementation(project.dependencies.platform(libs.sentry.bom))
+//            implementation(project.dependencies.platform(libs.sentry.bom))
 
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
@@ -95,8 +92,8 @@ kotlin {
 
             implementation(libs.retrofit)
 
-            implementation(libs.sentry.android)
-            implementation(libs.sentry.compose.android)
+            /*implementation(libs.sentry.android)
+            implementation(libs.sentry.compose.android)*/
 
             implementation(libs.androidx.core.splashscreen)
 
