@@ -10,10 +10,11 @@ import de.ljz.questify.feature.profile.data.serializer.AppUserSerializer
 import de.ljz.questify.feature.settings.data.models.AppSettings
 import de.ljz.questify.feature.settings.data.models.FeatureSettings
 import de.ljz.questify.feature.settings.data.serializer.FeatureSettingsSerializer
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val dataStoreModule = module {
-    single {
+    single(named("sorting_preferences")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("sorting_preferences.json") },
             serializer = SortingPreferencesSerializer,
@@ -21,7 +22,7 @@ val dataStoreModule = module {
         )
     }
 
-    single {
+    single(named("app_settings")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("app_settings.json") },
             serializer = AppSettingsSerializer,
@@ -29,7 +30,7 @@ val dataStoreModule = module {
         )
     }
 
-    single {
+    single(named("feature_settings")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("feature_settings.json") },
             serializer = FeatureSettingsSerializer,
@@ -37,7 +38,7 @@ val dataStoreModule = module {
         )
     }
 
-    single {
+    single(named("app_user")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("app_user.json") },
             serializer = AppUserSerializer,

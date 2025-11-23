@@ -9,10 +9,17 @@ import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepositor
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val settingsModule = module {
     singleOf(::AppSettingsRepositoryImpl) { bind<AppSettingsRepository>() }
+
+    single<AppSettingsRepository> {
+        AppSettingsRepositoryImpl(
+            appSettingsDataStore = get(named("app_settings"))
+        )
+    }
 
     factoryOf(::GetSortingPreferencesUseCase)
     factoryOf(::SaveQuestSortingDirectionUseCase)

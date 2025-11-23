@@ -8,13 +8,12 @@ import de.ljz.questify.feature.player_stats.domain.repositories.PlayerStatsRepos
 import de.ljz.questify.feature.player_stats.domain.repositories.PlayerStatsRepositoryImpl
 import de.ljz.questify.feature.player_stats.domain.use_cases.GetPlayerStatsUseCase
 import de.ljz.questify.feature.player_stats.domain.use_cases.UpdatePlayerStatsUseCase
-import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val playerStatsModule = module {
-    single {
+    single(named("player_stats")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("player_stats.json") },
             serializer = PlayerStatsSerializer,
@@ -22,7 +21,11 @@ val playerStatsModule = module {
         )
     }
 
-    singleOf(::PlayerStatsRepositoryImpl) { bind<PlayerStatsRepository>() }
+    single<PlayerStatsRepository> {
+        PlayerStatsRepositoryImpl(
+            playerStatsStore = get(named("player_stats"))
+        )
+    }
 
     factoryOf(::UpdatePlayerStatsUseCase)
     factoryOf(::GetPlayerStatsUseCase)
