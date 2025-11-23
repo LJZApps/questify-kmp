@@ -32,9 +32,11 @@ import de.ljz.questify.feature.quests.domain.use_cases.RemoveNotificationsUseCas
 import de.ljz.questify.feature.quests.domain.use_cases.UpdateQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.UpsertQuestUseCase
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
+import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -80,4 +82,10 @@ val questModule = module {
     factoryOf(::UpsertQuestUseCase)
 
     viewModelOf(::QuestOverviewViewModel)
+    viewModel { (categoryId: Int) ->
+        CategoryQuestViewModel(
+            categoryId = categoryId,
+            getAllQuestsForCategoryUseCase = get()
+        )
+    }
 }
