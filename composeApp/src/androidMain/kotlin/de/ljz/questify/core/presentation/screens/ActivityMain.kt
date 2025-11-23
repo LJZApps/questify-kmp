@@ -17,8 +17,8 @@ import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
-import de.ljz.questify.features.quests.presentation.screens.quest_overview.QuestOverviewScreen
-import de.ljz.questify.features.quests.presentation.screens.quest_overview.QuestsRoute
+import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewScreen
+import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
 
 class ActivityMain : AppCompatActivity() {
 
