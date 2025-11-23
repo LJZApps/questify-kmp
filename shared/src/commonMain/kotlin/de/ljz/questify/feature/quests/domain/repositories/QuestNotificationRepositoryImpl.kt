@@ -11,7 +11,7 @@ class QuestNotificationRepositoryImpl(
         return questNotificationDao.getPendingNotifications()
     }
 
-    override fun getNotificationById(id: Int): QuestNotificationEntity {
+    override suspend fun getNotificationById(id: Int): QuestNotificationEntity {
         return questNotificationDao.getNotificationById(id)
     }
 

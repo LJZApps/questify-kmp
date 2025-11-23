@@ -27,7 +27,7 @@ interface QuestCategoryDao {
     suspend fun updateCategories(categories: List<QuestCategoryEntity>)
 
     @Query("SELECT COUNT(*) FROM quest_category_entity")
-    fun getCategoryCount(): Long
+    suspend fun getCategoryCount(): Long
 
     @Query("UPDATE quest_category_entity SET text = :text WHERE id = :questCategoryId")
     suspend fun updateQuestCategory(questCategoryId: Int, text: String)

@@ -57,7 +57,7 @@ interface QuestDao {
     suspend fun setQuestDone(id: Int, done: Boolean)
 
     @Query("SELECT COUNT(*) FROM quest_entity WHERE done = 1")
-    fun getCompletedQuestsCount(): Int
+    suspend fun getCompletedQuestsCount(): Int
 
     @Upsert
     suspend fun upsertMainQuest(value: QuestEntity): Long

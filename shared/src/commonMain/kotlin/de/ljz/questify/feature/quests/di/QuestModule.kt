@@ -33,7 +33,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val questCategoryModule = module {
+val questModule = module {
     single<QuestCategoryDao> {
         get<AppDatabase>().questCategoryDao
     }

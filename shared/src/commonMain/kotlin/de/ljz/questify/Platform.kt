@@ -1,14 +1,9 @@
 package de.ljz.questify
 
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
+import de.ljz.questify.core.di.commonModule
+import de.ljz.questify.feature.quests.di.questModule
 
-expect class Platform() {
-    val name: String
-}
-
-val platformModule = module {
-    singleOf(::Platform)
-}
-
-fun appModule() = listOf(platformModule)
+fun appModule() = listOf(
+    commonModule,
+    questModule
+)

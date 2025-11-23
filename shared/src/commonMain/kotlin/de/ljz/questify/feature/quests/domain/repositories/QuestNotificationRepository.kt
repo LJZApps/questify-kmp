@@ -7,7 +7,7 @@ interface QuestNotificationRepository {
 
     fun getPendingNotifications(): Flow<List<QuestNotificationEntity>>
 
-    fun getNotificationById(id: Int): QuestNotificationEntity
+    suspend fun getNotificationById(id: Int): QuestNotificationEntity
 
     suspend fun removeNotifications(questId: Int)
 

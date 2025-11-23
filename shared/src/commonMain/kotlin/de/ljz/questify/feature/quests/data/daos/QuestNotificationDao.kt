@@ -30,7 +30,7 @@ interface QuestNotificationDao {
     fun getPendingNotifications(currentTime: Instant = Clock.System.now()): Flow<List<QuestNotificationEntity>>
 
     @Query("SELECT * FROM quest_notifications WHERE id = :id")
-    fun getNotificationById(id: Int): QuestNotificationEntity
+    suspend fun getNotificationById(id: Int): QuestNotificationEntity
 
     @Query("SELECT * FROM quest_notifications WHERE quest_id = :questId")
     suspend fun getNotificationsByQuestId(questId: Int): List<QuestNotificationEntity>

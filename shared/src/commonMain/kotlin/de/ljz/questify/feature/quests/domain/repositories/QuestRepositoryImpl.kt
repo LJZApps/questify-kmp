@@ -57,11 +57,11 @@ class QuestRepositoryImpl(
         return questDao.getQuestById(id)
     }
 
-    override fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>> {
+    override suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>> {
         return questDao.getQuestsForCategoryStream(categoryId)
     }
 
-    override fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?> {
+    override suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?> {
         return questDao.getQuestByIdFlow(id)
     }
 

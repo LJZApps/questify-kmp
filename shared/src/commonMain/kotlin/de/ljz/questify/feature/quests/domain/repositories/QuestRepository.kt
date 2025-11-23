@@ -33,9 +33,9 @@ interface QuestRepository {
 
     suspend fun getQuestById(id: Int): QuestWithSubQuests
 
-    fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>>
+    suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>>
 
-    fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?>
+    suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?>
 
     suspend fun deleteQuest(id: Int)
 }
