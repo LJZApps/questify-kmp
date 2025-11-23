@@ -71,6 +71,9 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.datetime)
+
+            implementation("androidx.datastore:datastore:1.2.0")
+            implementation("androidx.datastore:datastore-preferences:1.2.0")
         }
     }
 }
