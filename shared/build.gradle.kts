@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import co.touchlab.skie.configuration.SealedInterop
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
@@ -11,10 +12,19 @@ plugins {
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.skie)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+skie {
+    features {
+        group {
+            SealedInterop.Enabled(true)
+        }
+    }
 }
 
 kotlin {
