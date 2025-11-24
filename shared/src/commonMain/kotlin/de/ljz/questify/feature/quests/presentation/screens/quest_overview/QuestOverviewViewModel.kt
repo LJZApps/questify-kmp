@@ -3,9 +3,13 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
+import de.ljz.questify.core.domain.use_cases.GetSortingPreferencesUseCase
+import de.ljz.questify.core.domain.use_cases.SaveQuestSortingDirectionUseCase
+import de.ljz.questify.core.domain.use_cases.UpdateShowCompletedQuestsUseCase
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.domain.use_cases.AddQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.CancelQuestNotificationsUseCase
+import de.ljz.questify.feature.quests.domain.use_cases.CompleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.GetAllQuestCategoriesUseCase
@@ -22,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class QuestOverviewViewModel(
     private val getAllQuestsUseCase: GetAllQuestsUseCase,
-//    private val completeQuestUseCase: CompleteQuestUseCase,
+    private val completeQuestUseCase: CompleteQuestUseCase,
     private val deleteQuestUseCase: DeleteQuestUseCase,
 
     private val getAllQuestCategoriesUseCase: GetAllQuestCategoriesUseCase,
@@ -32,9 +36,9 @@ class QuestOverviewViewModel(
 
     private val cancelQuestNotificationsUseCase: CancelQuestNotificationsUseCase,
 
-    /*private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
+    private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
     private val saveQuestSortingDirectionUseCase: SaveQuestSortingDirectionUseCase,
-    private val updateShowCompletedQuestsUseCase: UpdateShowCompletedQuestsUseCase,*/
+    private val updateShowCompletedQuestsUseCase: UpdateShowCompletedQuestsUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = QuestOverviewUIState(
@@ -62,7 +66,7 @@ class QuestOverviewViewModel(
                 }
             }
 
-            /*launch {
+            launch {
                 getQuestSortingPreferencesUseCase()
                     .collectLatest { sortingPreferences ->
                         _uiState.update {
@@ -74,7 +78,7 @@ class QuestOverviewViewModel(
                             )
                         }
                     }
-            }*/
+            }
 
             launch {
                 getAllQuestCategoriesUseCase().collectLatest { questCategoryEntities ->
@@ -93,7 +97,7 @@ class QuestOverviewViewModel(
             }
 
             is QuestOverviewUiEvent.OnQuestChecked -> {
-                /*viewModelScope.launch {
+                viewModelScope.launch {
                     launch {
                         val result = completeQuestUseCase.invoke(event.questEntity)
 
@@ -114,7 +118,7 @@ class QuestOverviewViewModel(
                     launch {
                         cancelQuestNotificationsUseCase.invoke(event.questEntity.id)
                     }
-                }*/
+                }
             }
 
             is QuestOverviewUiEvent.ShowDialog -> {
@@ -177,15 +181,15 @@ class QuestOverviewViewModel(
             }
 
             is QuestOverviewUiEvent.UpdateQuestSortingDirection -> {
-                /*viewModelScope.launch {
+                viewModelScope.launch {
                     saveQuestSortingDirectionUseCase.invoke(event.sortingDirections)
-                }*/
+                }
             }
 
             is QuestOverviewUiEvent.UpdateShowCompletedQuests -> {
-                /*viewModelScope.launch {
+                viewModelScope.launch {
                     updateShowCompletedQuestsUseCase.invoke(value = event.value)
-                }*/
+                }
             }
 
             else -> Unit
