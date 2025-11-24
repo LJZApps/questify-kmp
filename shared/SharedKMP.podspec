@@ -1,20 +1,20 @@
 Pod::Spec.new do |spec|
-    spec.name                     = 'MyCocoaPod'
+    spec.name                     = 'SharedKMP'
     spec.version                  = '1.0'
     spec.homepage                 = 'Link to a Kotlin/Native module homepage'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'Some description for a Kotlin/Native module'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/Shared.framework'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/SharedKMP.framework'
     spec.libraries                = 'c++'
                 
                 
                 
-    if !Dir.exist?('build/cocoapods/framework/Shared.framework') || Dir.empty?('build/cocoapods/framework/Shared.framework')
+    if !Dir.exist?('build/cocoapods/framework/SharedKMP.framework') || Dir.empty?('build/cocoapods/framework/SharedKMP.framework')
         raise "
 
-        Kotlin framework 'Shared' doesn't exist yet, so a proper Xcode project can't be generated.
+        Kotlin framework 'SharedKMP' doesn't exist yet, so a proper Xcode project can't be generated.
         'pod install' should be executed after running ':generateDummyFramework' Gradle task:
 
             ./gradlew :shared:generateDummyFramework
@@ -28,12 +28,12 @@ Pod::Spec.new do |spec|
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':shared',
-        'PRODUCT_MODULE_NAME' => 'Shared',
+        'PRODUCT_MODULE_NAME' => 'SharedKMP',
     }
                 
     spec.script_phases = [
         {
-            :name => 'Build MyCocoaPod',
+            :name => 'Build SharedKMP',
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT

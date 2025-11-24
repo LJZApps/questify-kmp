@@ -1,5 +1,5 @@
 import SwiftUI
-import shared
+import SharedKMP
 
 @main
 struct iOSApp: App {

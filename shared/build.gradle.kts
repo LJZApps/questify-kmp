@@ -23,20 +23,25 @@ skie {
     features {
         group {
             SealedInterop.Enabled(true)
+            coroutinesInterop.set(true)
         }
     }
 }
 
 kotlin {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     cocoapods {
         version = "1.0"
         summary = "Some description for a Kotlin/Native module"
         homepage = "Link to a Kotlin/Native module homepage"
 
-        name = "MyCocoaPod"
+        name = "SharedKMP"
 
         framework {
-            baseName = "shared"
+            baseName = "SharedKMP"
 
             isStatic = false
 
@@ -57,9 +62,6 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-
-    iosArm64()
-    iosSimulatorArm64()
     
     sourceSets {
         all {
