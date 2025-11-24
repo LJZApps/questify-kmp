@@ -36,10 +36,11 @@ kotlin {
         name = "MyCocoaPod"
 
         framework {
-            baseName = "MyFramework"
+            baseName = "shared"
 
-            isStatic = true
-            transitiveExport = false // This is default.
+            isStatic = false
+
+            export(libs.androidx.lifecycle.viewmodel)
         }
 
         xcodeConfigurationToNativeBuildType["CUSTOM_DEBUG"] = NativeBuildType.DEBUG
@@ -56,16 +57,9 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            export(libs.androidx.lifecycle.viewmodel)
-            isStatic = true
-        }
-    }
+
+    iosArm64()
+    iosSimulatorArm64()
     
     sourceSets {
         all {
