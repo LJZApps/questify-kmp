@@ -76,34 +76,46 @@ struct QuestOverviewScreen: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {}) {
-                    Image(systemName: "plus")
-                }
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button(action: {
-                        viewModel.onUiEvent(event: QuestOverviewUiEventShowDialog(dialogState: DialogState___.SortingBottomSheet()))
-                    }) {
-                        Label("Sort", systemImage: "line.3.horizontal.decrease.circle")
+                    Section("Sortierung") {
+                        Button {
+                            viewModel.onUiEvent(event: QuestOverviewUiEventUpdateQuestSortingDirection(sortingDirections: .ascending))
+                        } label: {
+                            Label("Aufsteigend", systemImage: "arrow.up")
+                        }
+                        .disabled(state.allQuestPageState.sortingDirections == .ascending)
+
+                        Button {
+                            viewModel.onUiEvent(event: QuestOverviewUiEventUpdateQuestSortingDirection(sortingDirections: .descending))
+                        } label: {
+                            Label("Absteigend", systemImage: "arrow.down")
+                        }
+                        .disabled(state.allQuestPageState.sortingDirections == .descending)
                     }
+
+                    Section("Filter") {
+                        Toggle(isOn: Binding(
+                            get: { state.allQuestPageState.showCompleted },
+                            set: { newValue in
+                                viewModel.onUiEvent(event: QuestOverviewUiEventUpdateShowCompletedQuests(value: newValue))
+                            }
+                        )) {
+                            Label("Erledigte anzeigen", systemImage: "checkmark.circle")
+                        }
+                    }
+                    
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    Image(systemName: "line.3.horizontal.decrease.circle")
                 }
             }
         }
         .sheet(isPresented: Binding(
             get: {
-                // LESEN: Ist der aktuelle State genau dieser Dialog?
                 state.dialogState is DialogState___.SortingBottomSheet
             },
             set: { isPresented in
-                // SCHREIBEN: Wenn SwiftUI das Sheet schließen will (isPresented == false)
                 if !isPresented {
-                    // Sende das Event an Kotlin, um den State zu resetten
-                    // WICHTIG: Prüfe in 'QuestOverviewUiEvent.kt' wie dein Dismiss-Event heißt!
                     viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
                 }
             }
