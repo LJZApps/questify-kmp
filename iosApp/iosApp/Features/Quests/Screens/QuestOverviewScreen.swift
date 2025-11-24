@@ -75,5 +75,46 @@ struct QuestOverviewScreen: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {}) {
+                    Image(systemName: "plus")
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(action: {
+                        viewModel.onUiEvent(event: QuestOverviewUiEventShowDialog(dialogState: DialogState___.SortingBottomSheet()))
+                    }) {
+                        Label("Sort", systemImage: "line.3.horizontal.decrease.circle")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: {
+                // LESEN: Ist der aktuelle State genau dieser Dialog?
+                state.dialogState is DialogState___.SortingBottomSheet
+            },
+            set: { isPresented in
+                // SCHREIBEN: Wenn SwiftUI das Sheet schließen will (isPresented == false)
+                if !isPresented {
+                    // Sende das Event an Kotlin, um den State zu resetten
+                    // WICHTIG: Prüfe in 'QuestOverviewUiEvent.kt' wie dein Dismiss-Event heißt!
+                    viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
+                }
+            }
+        )) {
+            SortingBottomSheet()
+        }
+    }
+}
+
+struct SortingBottomSheet: View {
+    var body: some View {
+        Text("Hallo")
     }
 }
