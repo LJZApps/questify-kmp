@@ -31,6 +31,7 @@ import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
 import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import kotlin.time.ExperimentalTime
 
@@ -97,7 +98,7 @@ fun QuestItem(
                             text = SimpleDateFormat(
                                 "dd. MMM 'um' HH:mm",
                                 Locale.getDefault()
-                            ).format(it)
+                            ).format(Date(it.toEpochMilliseconds()))
                         )
                     }
                 }
