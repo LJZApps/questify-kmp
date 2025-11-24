@@ -18,6 +18,7 @@ import de.ljz.questify.feature.quests.domain.use_cases.AddQuestNotificationUseCa
 import de.ljz.questify.feature.quests.domain.use_cases.AddSubQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.AddSubQuestsUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.CheckSubQuestUseCase
+import de.ljz.questify.feature.quests.domain.use_cases.CompleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteSubQuestUseCase
@@ -31,6 +32,9 @@ import de.ljz.questify.feature.quests.domain.use_cases.GetQuestCategoryByIdUseCa
 import de.ljz.questify.feature.quests.domain.use_cases.RemoveNotificationsUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.UpdateQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.UpsertQuestUseCase
+import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
+import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestViewModel
+import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
 import org.koin.core.module.dsl.bind
@@ -80,12 +84,55 @@ val questModule = module {
     factoryOf(::RemoveNotificationsUseCase)
     factoryOf(::UpdateQuestCategoryUseCase)
     factoryOf(::UpsertQuestUseCase)
+    factoryOf(::CompleteQuestUseCase)
 
     viewModelOf(::QuestOverviewViewModel)
+
     viewModel { (categoryId: Int) ->
         CategoryQuestViewModel(
             categoryId = categoryId,
-            getAllQuestsForCategoryUseCase = get()
+            getAllQuestsForCategoryUseCase = get(),
+            getQuestSortingPreferencesUseCase = get()
+        )
+    }
+
+    viewModel { (selectedCategoryIndex: Int?) ->
+        CreateQuestViewModel(
+            selectedCategoryIndex = selectedCategoryIndex,
+            addSubQuestsUseCase = get(),
+            addQuestCategoryUseCase = get(),
+            getAllQuestCategoriesUseCase = get(),
+            upsertQuestUseCase = get(),
+            addQuestNotificationUseCase = get()
+        )
+    }
+
+    viewModel { (questId: Int) ->
+        EditQuestViewModel(
+            id = questId,
+            upsertQuestUseCase = get(),
+            getQuestByIdUseCase = get(),
+            getQuestByIdAsFlowUseCase = get(),
+            deleteQuestUseCase = get(),
+            addQuestCategoryUseCase = get(),
+            getAllQuestCategoriesUseCase = get(),
+            addSubQuestsUseCase = get(),
+            deleteSubQuestUseCase = get(),
+            addQuestNotificationUseCase = get(),
+            cancelQuestNotificationsUseCase = get(),
+        )
+    }
+
+    viewModel { (questId: Int) ->
+        QuestDetailViewModel(
+            id = questId,
+            getQuestByIdAsFlowUseCase = get(),
+            completeQuestUseCase = get(),
+            deleteQuestUseCase = get(),
+            getAllQuestCategoriesUseCase = get(),
+            getQuestCategoryByIdUseCase = get(),
+            checkSubQuestUseCase = get(),
+            cancelQuestNotificationsUseCase = get(),
         )
     }
 }

@@ -21,6 +21,12 @@ import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingScreen
+import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestRoute
+import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestScreen
+import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestRoute
+import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
+import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
+import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
 
 class ActivityMain : AppCompatActivity() {
 
@@ -71,25 +77,25 @@ class ActivityMain : AppCompatActivity() {
 //                                            backStack.add(SettingsMainRoute)
                                         },
                                         onNavigateToCreateQuestScreen = { selectedList ->
-                                            /*backStack.add(
+                                            backStack.add(
                                                 CreateQuestRoute(
                                                     selectedCategoryIndex = selectedList
                                                 )
-                                            )*/
+                                            )
                                         },
                                         onNavigateToEditQuestScreen = { id ->
-                                            /*backStack.add(
+                                            backStack.add(
                                                 EditQuestRoute(
                                                     id = id
                                                 )
-                                            )*/
+                                            )
                                         },
                                         onNavigateToQuestDetailScreen = { id ->
-                                            /*backStack.add(
+                                            backStack.add(
                                                 QuestDetailRoute(
                                                     id = id
                                                 )
-                                            )*/
+                                            )
                                         },
                                         onNavigateToCreateHabitScreen = {
 //                                            backStack.add(CreateHabitRoute)
@@ -105,6 +111,33 @@ class ActivityMain : AppCompatActivity() {
                                         onNavigateToMainScreen = {
                                             backStack.clear()
 //                                            backStack.add(MainRoute)
+                                        }
+                                    )
+                                }
+
+                                entry<CreateQuestRoute> { key ->
+                                    CreateQuestScreen(
+                                        selectedCategoryIndex = key.selectedCategoryIndex,
+                                        onNavigateBack = {
+                                            backStack.removeLastOrNull()
+                                        }
+                                    )
+                                }
+
+                                entry<EditQuestRoute> { key ->
+                                    EditQuestScreen(
+                                        id = key.id,
+                                        onNavigateUp = {
+                                            backStack.removeLastOrNull()
+                                        }
+                                    )
+                                }
+
+                                entry<QuestDetailRoute> { key ->
+                                    QuestDetailScreen(
+                                        questId = key.id,
+                                        onNavigateUp = {
+                                            backStack.removeLastOrNull()
                                         }
                                     )
                                 }
@@ -161,32 +194,7 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                entry<CreateQuestRoute> { key ->
-                                    CreateQuestScreen(
-                                        selectedCategoryIndex = key.selectedCategoryIndex,
-                                        onNavigateBack = {
-                                            backStack.removeLastOrNull()
-                                        }
-                                    )
-                                }
 
-                                entry<QuestDetailRoute> { key ->
-                                    QuestDetailScreen(
-                                        questId = key.id,
-                                        onNavigateUp = {
-                                            backStack.removeLastOrNull()
-                                        }
-                                    )
-                                }
-
-                                entry<EditQuestRoute> { key ->
-                                    EditQuestScreen(
-                                        id = key.id,
-                                        onNavigateUp = {
-                                            backStack.removeLastOrNull()
-                                        }
-                                    )
-                                }
 
                                 entry<SettingsMainRoute> {
                                     SettingsMainScreen(

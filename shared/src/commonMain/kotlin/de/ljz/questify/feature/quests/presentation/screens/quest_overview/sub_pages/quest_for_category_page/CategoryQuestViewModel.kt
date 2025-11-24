@@ -3,10 +3,12 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_p
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
+import de.ljz.questify.core.domain.use_cases.GetSortingPreferencesUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.GetAllQuestsForCategoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -15,7 +17,7 @@ class CategoryQuestViewModel(
 
     private val getAllQuestsForCategoryUseCase: GetAllQuestsForCategoryUseCase,
 
-//    private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
+    private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -37,7 +39,7 @@ class CategoryQuestViewModel(
                 }
             }
 
-            /*launch {
+            launch {
                 getQuestSortingPreferencesUseCase()
                     .collectLatest { sortingData ->
                         _uiState.update { state ->
@@ -47,7 +49,7 @@ class CategoryQuestViewModel(
                             )
                         }
                     }
-            }*/
+            }
         }
     }
 }

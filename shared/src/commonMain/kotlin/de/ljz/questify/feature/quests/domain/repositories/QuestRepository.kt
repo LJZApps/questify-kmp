@@ -9,7 +9,7 @@ import kotlin.time.Instant
 interface QuestRepository {
     suspend fun addMainQuest(quest: QuestEntity): Long
 
-    suspend fun upsertQuest(quest: QuestEntity)
+    suspend fun upsertQuest(quest: QuestEntity): Long
 
     suspend fun setQuestDone(id: Int, done: Boolean)
 

@@ -6,7 +6,7 @@ import de.ljz.questify.feature.quests.domain.repositories.QuestRepository
 class UpsertQuestUseCase(
     private val questRepository: QuestRepository
 ) {
-    suspend operator fun invoke(quest: QuestEntity) {
-        questRepository.upsertQuest(quest)
+    suspend operator fun invoke(quest: QuestEntity): Long {
+        return questRepository.upsertQuest(quest)
     }
 }
