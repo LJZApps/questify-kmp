@@ -76,7 +76,13 @@ struct QuestOverviewScreen: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {}) {
+                    Image(systemName: "plus")
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Section("Sortierung") {
                         Button {
