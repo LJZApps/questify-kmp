@@ -45,6 +45,7 @@ fun QuestsForCategoryPage(
     onEditQuestClicked: (Int) -> Unit
 ) {
     val viewModel: CategoryQuestViewModel = koinViewModel(
+        key = "CategoryQuestViewModel_$categoryId",
         parameters = { parametersOf(categoryId) }
     )
 
