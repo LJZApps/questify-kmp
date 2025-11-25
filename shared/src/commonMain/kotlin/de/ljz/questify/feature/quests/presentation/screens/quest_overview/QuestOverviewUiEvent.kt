@@ -11,7 +11,7 @@ sealed interface QuestOverviewUiEvent {
     object ToggleDrawer : QuestOverviewUiEvent
     object PerformHapticFeedback : QuestOverviewUiEvent
 
-    data class ShowDialog(val dialogState: DialogState) : QuestOverviewUiEvent
+    data class ShowDialog(val questOverviewDialogState: QuestOverviewDialogState) : QuestOverviewUiEvent
     object CloseDialog : QuestOverviewUiEvent
     object CloseQuestDoneDialog : QuestOverviewUiEvent
 

@@ -42,7 +42,7 @@ class QuestOverviewViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = QuestOverviewUIState(
-            dialogState = DialogState.None,
+            dialogState = QuestOverviewDialogState.None,
             allQuestPageState = AllQuestPageState(
                 quests = emptyList(),
                 sortingDirections = SortingDirections.ASCENDING,
@@ -103,7 +103,7 @@ class QuestOverviewViewModel(
 
                         _uiState.update {
                             it.copy(
-                                dialogState = DialogState.QuestDone(
+                                dialogState = QuestOverviewDialogState.QuestDone(
                                     questDoneDialogState = QuestDoneDialogState(
                                         xp = result.earnedXp,
                                         points = result.earnedPoints,
@@ -123,20 +123,20 @@ class QuestOverviewViewModel(
 
             is QuestOverviewUiEvent.ShowDialog -> {
                 _uiState.update {
-                    it.copy(dialogState = event.dialogState)
+                    it.copy(dialogState = event.questOverviewDialogState)
                 }
             }
 
             is QuestOverviewUiEvent.CloseDialog -> {
                 _uiState.update {
-                    it.copy(dialogState = DialogState.None)
+                    it.copy(dialogState = QuestOverviewDialogState.None)
                 }
             }
 
             is QuestOverviewUiEvent.CloseQuestDoneDialog -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        dialogState = DialogState.None
+                        dialogState = QuestOverviewDialogState.None
                     )
                 }
             }
@@ -144,7 +144,7 @@ class QuestOverviewViewModel(
             is QuestOverviewUiEvent.ShowUpdateCategoryDialog -> {
                 _uiState.update {
                     it.copy(
-                        dialogState = DialogState.UpdateCategory(
+                        dialogState = QuestOverviewDialogState.UpdateCategory(
                             questCategoryEntity = event.questCategoryEntity
                         )
                     )

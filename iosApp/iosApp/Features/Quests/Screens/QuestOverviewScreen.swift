@@ -64,7 +64,7 @@ struct QuestOverviewScreen: View {
                                 "Löschen",
                                 role: .destructive,
                                 action: {
-                                    viewModel.onUiEvent(event: QuestOverviewUiEventOnQuestDelete(id: questWithSub.quest.id))
+                                    viewModel.onUiEvent(event: QuestOverviewUiEventShowDialog(questOverviewDialogState: .DeleteQuestConfirmation(id: questWithSub.quest.id)))
                                 }
                             )
                         }
@@ -126,5 +126,36 @@ struct QuestOverviewScreen: View {
         .sheet(isPresented: $showingCreateQuestSheet) {
             CreateQuestSheet()
         }
+        .confirmationDialog(
+            "Quest löschen",
+            isPresented: .create(
+                get: { state.dialogState is QuestOverviewDialogState.DeleteQuestConfirmation },
+                onDismiss: { viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog)) }
+            ),
+            titleVisibility: .visible
+        ) {
+            
+        }
+    }
+}
+
+extension Binding {
+    static func mock(_ value: Bool) -> Binding<Bool> {
+        return Binding(get: { value }, set: { _ in })
+    }
+    
+    // Die Magie für dein Projekt
+    static func create(
+        get: @escaping () -> Bool,
+        onDismiss: @escaping () -> Void
+    ) -> Binding<Bool> {
+        return Binding(
+            get: get,
+            set: { isPresented in
+                if !isPresented {
+                    onDismiss()
+                }
+            }
+        )
     }
 }

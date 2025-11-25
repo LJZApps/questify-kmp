@@ -232,7 +232,7 @@ private fun QuestOverviewScreen(
                             },
                             onClick = {
                                 dropdownExpanded = false
-                                onUiEvent(QuestOverviewUiEvent.ShowDialog(DialogState.SortingBottomSheet))
+                                onUiEvent(QuestOverviewUiEvent.ShowDialog(QuestOverviewDialogState.SortingBottomSheet))
                             }
                         )
                     }
@@ -356,7 +356,7 @@ private fun QuestOverviewScreen(
 
                                         onUiEvent(
                                             QuestOverviewUiEvent.ShowDialog(
-                                                DialogState.DeleteCategory(tab)
+                                                QuestOverviewDialogState.DeleteCategory(tab)
                                             )
                                         )
                                     }
@@ -373,7 +373,7 @@ private fun QuestOverviewScreen(
                             selected = false,
                             onClick = {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                onUiEvent(QuestOverviewUiEvent.ShowDialog(DialogState.CreateCategory))
+                                onUiEvent(QuestOverviewUiEvent.ShowDialog(QuestOverviewDialogState.CreateCategory))
                             },
                             label = {},
                             leadingIcon = {
@@ -444,7 +444,7 @@ private fun QuestOverviewScreen(
                 }
             }
 
-            if (dialogState is DialogState.QuestDone) {
+            if (dialogState is QuestOverviewDialogState.QuestDone) {
                 val questDoneDialogState = dialogState.questDoneDialogState
                 QuestDoneDialog(
                     state = questDoneDialogState,
@@ -454,7 +454,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.SortingBottomSheet) {
+            if (uiState.dialogState is QuestOverviewDialogState.SortingBottomSheet) {
                 QuestSortingBottomSheet(
                     onDismiss = {
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
@@ -470,7 +470,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (dialogState is DialogState.CreateCategory) {
+            if (dialogState is QuestOverviewDialogState.CreateCategory) {
                 CreateCategoryDialog(
                     onConfirm = { value ->
                         onUiEvent(QuestOverviewUiEvent.AddQuestCategory(value = value))
@@ -483,7 +483,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (dialogState is DialogState.UpdateCategory) {
+            if (dialogState is QuestOverviewDialogState.UpdateCategory) {
                 RenameCategoryDialog(
                     onDismiss = {
                         onUiEvent(QuestOverviewUiEvent.CloseDialog)
@@ -502,7 +502,7 @@ private fun QuestOverviewScreen(
                 )
             }
 
-            if (dialogState is DialogState.DeleteCategory) {
+            if (dialogState is QuestOverviewDialogState.DeleteCategory) {
                 DeleteQuestCategoryDialog(
                     onConfirm = {
                         onUiEvent(

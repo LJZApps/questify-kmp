@@ -1,4 +1,4 @@
-package de.ljz.questify.core.data.datastore.serializer
+package de.ljz.questify.feature.settings.data.serializer
 
 import androidx.datastore.core.okio.OkioSerializer
 import de.ljz.questify.feature.settings.data.models.AppSettings
@@ -12,7 +12,7 @@ object AppSettingsSerializer : OkioSerializer<AppSettings> {
 
     override suspend fun readFrom(source: BufferedSource): AppSettings {
         return try {
-            Json.decodeFromString(
+            Json.Default.decodeFromString(
                 AppSettings.serializer(),
                 source.readUtf8()
             )
@@ -24,7 +24,7 @@ object AppSettingsSerializer : OkioSerializer<AppSettings> {
 
     override suspend fun writeTo(t: AppSettings, sink: BufferedSink) {
         sink.use {
-            it.writeUtf8(Json.encodeToString(AppSettings.serializer(), t))
+            it.writeUtf8(Json.Default.encodeToString(AppSettings.serializer(), t))
         }
     }
 }

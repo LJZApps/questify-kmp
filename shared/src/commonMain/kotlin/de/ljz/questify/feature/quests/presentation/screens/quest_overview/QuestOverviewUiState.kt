@@ -5,7 +5,7 @@ import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
 
 data class QuestOverviewUIState(
-    val dialogState: DialogState,
+    val dialogState: QuestOverviewDialogState,
     val allQuestPageState: AllQuestPageState,
 )
 
@@ -22,12 +22,13 @@ data class QuestDoneDialogState(
     val newLevel: Int,
 )
 
-sealed class DialogState {
-    object None : DialogState()
-    object SortingBottomSheet : DialogState()
-    object CreateCategory : DialogState()
+sealed class QuestOverviewDialogState {
+    object None : QuestOverviewDialogState()
+    object SortingBottomSheet : QuestOverviewDialogState()
+    object CreateCategory : QuestOverviewDialogState()
 
-    data class QuestDone(val questDoneDialogState: QuestDoneDialogState) : DialogState()
-    data class UpdateCategory(val questCategoryEntity: QuestCategoryEntity) : DialogState()
-    data class DeleteCategory(val questCategoryEntity: QuestCategoryEntity) : DialogState()
+    data class QuestDone(val questDoneDialogState: QuestDoneDialogState) : QuestOverviewDialogState()
+    data class UpdateCategory(val questCategoryEntity: QuestCategoryEntity) : QuestOverviewDialogState()
+    data class DeleteCategory(val questCategoryEntity: QuestCategoryEntity) : QuestOverviewDialogState()
+    data class DeleteQuestConfirmation(val id: Int) : QuestOverviewDialogState()
 }
