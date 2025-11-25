@@ -12,19 +12,24 @@ struct QuestOverviewScreen: View {
     private let createQuestViewModel: CreateQuestViewModel = ProvideViewModel.shared.getCreateQuestViewModel(selectedQuestCategoryIndex: nil)
 
     @State private var state: QuestOverviewUIState
+    @State private var showingCreateQuestSheet = false
     
     init() {
         _state = State(initialValue: ProvideViewModel.shared.getQuestOverviewViewModel().uiState.value)
-        
-        createQuestViewModel.onUiEvent(event: CreateQuestUiEventOnTitleUpdated(value: "Test-Quest"))
-        createQuestViewModel.onUiEvent(event: CreateQuestUiEventOnDescriptionUpdated(value: "Test-Beschreibung mit langem Text hahahahahaha"))
-        createQuestViewModel.onUiEvent(event: CreateQuestUiEventOnCreateQuest())
     }
     
     var body: some View {
         VStack {
             if state.allQuestPageState.quests.isEmpty {
-                ContentUnavailableView("Keine Quests", systemImage: "list.bullet.clipboard")
+                ContentUnavailableView {
+                    Label("Du hast noch keine Quests erstellt.", systemImage: "checkmark.circle")
+                } description: {
+                    Button(action: {
+                        showingCreateQuestSheet = true
+                    }) {
+                        Text("Jetzt eine Quest erstellen")
+                    }
+                }
             } else {
                 List(state.allQuestPageState.quests, id: \.quest.id) { questWithSub in
                     HStack {
@@ -76,13 +81,15 @@ struct QuestOverviewScreen: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {}) {
+            ToolbarItem {
+                Button(action: {
+                    showingCreateQuestSheet = true
+                }) {
                     Image(systemName: "plus")
                 }
             }
             
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem {
                 Menu {
                     Section("Sortierung") {
                         Button {
@@ -116,23 +123,8 @@ struct QuestOverviewScreen: View {
                 }
             }
         }
-        .sheet(isPresented: Binding(
-            get: {
-                state.dialogState is DialogState___.SortingBottomSheet
-            },
-            set: { isPresented in
-                if !isPresented {
-                    viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
-                }
-            }
-        )) {
-            SortingBottomSheet()
+        .sheet(isPresented: $showingCreateQuestSheet) {
+            CreateQuestSheet()
         }
-    }
-}
-
-struct SortingBottomSheet: View {
-    var body: some View {
-        Text("Hallo")
     }
 }
