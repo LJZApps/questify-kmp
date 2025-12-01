@@ -1,11 +1,19 @@
 package de.ljz.questify.core.presentation.screens
 
-/*
-@HiltViewModel
-class AppViewModel @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
-    private val notificationHelper: NotificationHelper
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import de.ljz.questify.feature.settings.domain.use_cases.GetAppSettingsUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class AppViewModel(
+    private val getAppSettingsUseCase: GetAppSettingsUseCase
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
@@ -15,7 +23,7 @@ class AppViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
-                val appSettings = appSettingsRepository.getAppSettings().firstOrNull()
+                val appSettings = getAppSettingsUseCase().firstOrNull()
 
                 _uiState.update {
                     it.copy(
@@ -25,11 +33,6 @@ class AppViewModel @Inject constructor(
 
                 _isAppReady.update { true }
             }
-
-            launch {
-                notificationHelper.createNotificationChannel()
-            }
         }
     }
 }
-*/
