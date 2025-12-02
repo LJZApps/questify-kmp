@@ -53,7 +53,7 @@ struct QuestOverviewScreen: View {
                     }
                     .swipeActions {
                         Button(role: .destructive) {
-                            viewModel.onUiEvent(event: QuestOverviewUiEventOnQuestDelete(id: questWithSub.quest.id))
+                            viewModel.onUiEvent(event: QuestOverviewUiEventShowDialog(questOverviewDialogState: .DeleteQuestConfirmation(id: questWithSub.quest.id)))
                         } label: {
                             Label("Löschen", systemImage: "trash")
                         }
@@ -126,36 +126,29 @@ struct QuestOverviewScreen: View {
         .sheet(isPresented: $showingCreateQuestSheet) {
             CreateQuestSheet()
         }
-        .confirmationDialog(
-            "Quest löschen",
-            isPresented: .create(
-                get: { state.dialogState is QuestOverviewDialogState.DeleteQuestConfirmation },
-                onDismiss: { viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog)) }
-            ),
-            titleVisibility: .visible
-        ) {
-            
-        }
-    }
-}
-
-extension Binding {
-    static func mock(_ value: Bool) -> Binding<Bool> {
-        return Binding(get: { value }, set: { _ in })
-    }
-    
-    // Die Magie für dein Projekt
-    static func create(
-        get: @escaping () -> Bool,
-        onDismiss: @escaping () -> Void
-    ) -> Binding<Bool> {
-        return Binding(
-            get: get,
-            set: { isPresented in
-                if !isPresented {
-                    onDismiss()
+        .alert(
+            "Quest löschen?",
+            isPresented: Binding(
+                get: {
+                    state.dialogState is QuestOverviewDialogState.DeleteQuestConfirmation
+                },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
+                    }
                 }
+            ),
+        ) {o
+            Button("Löschen", role: .destructive) {
+                if let deleteState = state.dialogState as? QuestOverviewDialogState.DeleteQuestConfirmation {
+                    viewModel.onUiEvent(event: QuestOverviewUiEventOnQuestDelete(id: deleteState.id))
+                }
+                viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
             }
-        )
+
+            Button("Abbrechen", role: .cancel) {
+                viewModel.onUiEvent(event: QuestOverviewUiEventCloseDialog())
+            }
+        }
     }
 }
