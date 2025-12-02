@@ -6,6 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -27,6 +29,7 @@ import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestR
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
+import org.koin.androidx.compose.koinViewModel
 
 class ActivityMain : AppCompatActivity() {
 
@@ -39,13 +42,13 @@ class ActivityMain : AppCompatActivity() {
 
         setContent {
             splashScreen.setKeepOnScreenCondition { true }
-            /*val vm: AppViewModel by viewModels()
+            val vm: AppViewModel = koinViewModel()
 
             val appUiState by vm.uiState.collectAsState()
             val isSetupDone = appUiState.isSetupDone
-            val isAppReadyState by vm.isAppReady.collectAsState()*/
+            val isAppReadyState by vm.isAppReady.collectAsState()
 
-            if (true) {
+            if (isAppReadyState) {
                 splashScreen.setKeepOnScreenCondition { false }
 
                 QuestifyTheme {
