@@ -55,8 +55,7 @@ class ActivityMain : AppCompatActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize()
                     ) {
-//                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
-                        val startKey: AppNavKey = MainRoute
+                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -113,7 +112,7 @@ class ActivityMain : AppCompatActivity() {
                                         },
                                         onNavigateToMainScreen = {
                                             backStack.clear()
-//                                            backStack.add(MainRoute)
+                                            backStack.add(MainRoute)
                                         }
                                     )
                                 }
@@ -145,60 +144,7 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                /*entry<MainRoute> {
-                                    MainScreen(
-                                        onNavigateToSettingsPermissionScreen = { backNavigationEnabled ->
-                                            backStack.clear()
-                                            backStack.add(
-                                                SettingsPermissionRoute(
-                                                    backNavigationEnabled = backNavigationEnabled
-                                                )
-                                            )
-                                        },
-                                        onNavigateToSettingsScreen = {
-                                            backStack.add(SettingsMainRoute)
-                                        },
-                                        onNavigateToCreateQuestScreen = { selectedList ->
-                                            backStack.add(
-                                                CreateQuestRoute(
-                                                    selectedCategoryIndex = selectedList
-                                                )
-                                            )
-                                        },
-                                        onNavigateToEditQuestScreen = { id ->
-                                            backStack.add(
-                                                EditQuestRoute(
-                                                    id = id
-                                                )
-                                            )
-                                        },
-                                        onNavigateToQuestDetailScreen = { id ->
-                                            backStack.add(
-                                                QuestDetailRoute(
-                                                    id = id
-                                                )
-                                            )
-                                        },
-                                        onNavigateToCreateHabitScreen = {
-                                            backStack.add(CreateHabitRoute)
-                                        }
-                                    )
-                                }
-
-                                entry<OnboardingRoute> {
-                                    OnboardingScreen(
-                                        onNavigateUp = {
-                                            backStack.removeLastOrNull()
-                                        },
-                                        onNavigateToMainScreen = {
-                                            backStack.clear()
-                                            backStack.add(MainRoute)
-                                        }
-                                    )
-                                }
-
-
-
+                                /*
                                 entry<SettingsMainRoute> {
                                     SettingsMainScreen(
                                         onNavigateUp = {
