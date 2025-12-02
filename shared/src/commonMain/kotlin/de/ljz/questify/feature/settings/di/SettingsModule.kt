@@ -7,6 +7,8 @@ import de.ljz.questify.core.domain.use_cases.UpdateShowCompletedQuestsUseCase
 import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepository
 import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepositoryImpl
 import de.ljz.questify.feature.settings.domain.use_cases.GetAppSettingsUseCase
+import de.ljz.questify.feature.settings.domain.use_cases.SetDarkModeBehaviorUseCase
+import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceViewModel
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -25,6 +27,8 @@ val settingsModule = module {
     factoryOf(::SetOnboardingDoneUseCase)
     factoryOf(::UpdateShowCompletedQuestsUseCase)
     factoryOf(::GetAppSettingsUseCase)
+    factoryOf(::SetDarkModeBehaviorUseCase)
 
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::SettingsAppearanceViewModel)
 }

@@ -29,6 +29,8 @@ import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestR
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
+import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceRoute
+import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceScreen
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
 import org.koin.androidx.compose.koinViewModel
@@ -155,7 +157,7 @@ class ActivityMain : AppCompatActivity() {
                                             //backStack.add(ViewProfileRoute)
                                         },
                                         onNavigateToSettingsAppearanceScreen = {
-                                            //backStack.add(SettingsAppearanceRoute)
+                                            backStack.add(SettingsAppearanceRoute)
                                         },
                                         onNavigateToSettingsHelpScreen = {
                                             //backStack.add(SettingsHelpRoute)
@@ -163,7 +165,6 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                /*
                                 entry<SettingsAppearanceRoute> {
                                     SettingsAppearanceScreen(
                                         onNavigateUp = {
@@ -172,6 +173,7 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
+                                /*
                                 entry<SettingsHelpRoute> {
                                     SettingsHelpScreen(
                                         onNavigateUp = {
