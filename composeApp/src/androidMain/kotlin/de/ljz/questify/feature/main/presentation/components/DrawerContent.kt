@@ -60,38 +60,10 @@ fun DrawerContent(
                 NavigationItem(
                     title = stringResource(R.string.drawer_content_quests_title),
                     icon = painterResource(R.drawable.ic_task_alt_outlined),
-                    route = QuestsRoute,
-                ),
-                /*NavigationItem(
-                    title = stringResource(R.string.drawer_content_habits_title),
-                    icon = painterResource(R.drawable.ic_eco_outlined),
-                    featureEnabled = true,
-                    route = HabitsRoute
-                ),
-                NavigationItem(
-                    title = stringResource(R.string.drawer_content_routines_title),
-                    icon = painterResource(R.drawable.ic_event_repeat_outlined),
-                    route = RoutinesOverviewRoute,
-                    featureEnabled = true
-                ),*/
+                    route = QuestsRoute
+                )
             )
-        ),
-        /*NavigationCategory(
-            title = stringResource(R.string.drawer_content_achievements_title),
-            featuresEnabled = true,
-            items = listOf(
-                NavigationItem(
-                    title = stringResource(R.string.drawer_content_stats_title),
-                    icon = painterResource(R.drawable.ic_leaderboard_outlined),
-                    route = StatsRoute
-                ),
-                NavigationItem(
-                    title = stringResource(R.string.drawer_content_leaderboard_title),
-                    icon = painterResource(R.drawable.ic_trophy_outlined),
-                    route = StatsRoute,
-                ),
-            )
-        ),*/
+        )
     )
 
     ModalDrawerSheet(
