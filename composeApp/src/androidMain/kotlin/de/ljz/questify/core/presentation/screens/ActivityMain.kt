@@ -29,6 +29,8 @@ import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestR
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
+import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
+import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
 import org.koin.androidx.compose.koinViewModel
 
 class ActivityMain : AppCompatActivity() {
@@ -76,7 +78,7 @@ class ActivityMain : AppCompatActivity() {
                                             )*/
                                         },
                                         onNavigateToSettingsScreen = {
-//                                            backStack.add(SettingsMainRoute)
+                                            backStack.add(SettingsMainRoute)
                                         },
                                         onNavigateToCreateQuestScreen = { selectedList ->
                                             backStack.add(
@@ -144,24 +146,24 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                /*
                                 entry<SettingsMainRoute> {
                                     SettingsMainScreen(
                                         onNavigateUp = {
                                             backStack.removeLastOrNull()
                                         },
                                         onNavigateToViewProfileScreen = {
-                                            backStack.add(ViewProfileRoute)
+                                            //backStack.add(ViewProfileRoute)
                                         },
                                         onNavigateToSettingsAppearanceScreen = {
-                                            backStack.add(SettingsAppearanceRoute)
+                                            //backStack.add(SettingsAppearanceRoute)
                                         },
                                         onNavigateToSettingsHelpScreen = {
-                                            backStack.add(SettingsHelpRoute)
+                                            //backStack.add(SettingsHelpRoute)
                                         }
                                     )
                                 }
 
+                                /*
                                 entry<SettingsAppearanceRoute> {
                                     SettingsAppearanceScreen(
                                         onNavigateUp = {
