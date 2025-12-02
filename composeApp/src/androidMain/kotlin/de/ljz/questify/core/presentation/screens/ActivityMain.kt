@@ -31,6 +31,8 @@ import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDet
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceRoute
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceScreen
+import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpRoute
+import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpScreen
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
 import org.koin.androidx.compose.koinViewModel
@@ -160,7 +162,7 @@ class ActivityMain : AppCompatActivity() {
                                             backStack.add(SettingsAppearanceRoute)
                                         },
                                         onNavigateToSettingsHelpScreen = {
-                                            //backStack.add(SettingsHelpRoute)
+                                            backStack.add(SettingsHelpRoute)
                                         }
                                     )
                                 }
@@ -173,7 +175,6 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                /*
                                 entry<SettingsHelpRoute> {
                                     SettingsHelpScreen(
                                         onNavigateUp = {
@@ -181,22 +182,11 @@ class ActivityMain : AppCompatActivity() {
                                         },
                                         onNavigateToOnboardingScreen = {
                                             backStack.add(OnboardingRoute)
-                                        },
-                                        onNavigateToSettingsPermissionScreen = {
-                                            backStack.add(SettingsPermissionRoute())
                                         }
                                     )
                                 }
 
-                                entry<SettingsPermissionRoute> { key ->
-                                    PermissionsScreen(
-                                        onNavigateUp = {
-                                            backStack.removeLastOrNull()
-                                        },
-                                        canNavigateBack = key.backNavigationEnabled
-                                    )
-                                }
-
+                                /*
                                 entry<ViewProfileRoute> {
                                     ViewProfileScreen(
                                         onNavigateUp = {
