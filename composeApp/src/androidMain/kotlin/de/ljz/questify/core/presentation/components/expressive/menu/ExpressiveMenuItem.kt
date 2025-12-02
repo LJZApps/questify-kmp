@@ -43,26 +43,5 @@ fun ExpressiveMenuItem(
             }
         },
         trailingContent = trailingContent
-    )/*
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(4.dp))
-            .clickable(enabled = onClick != null) {
-                onClick?.invoke()
-            }
-            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f))
-            .padding(vertical = 16.dp, horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        if (icon != null) {
-            icon()
-        }
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-        )
-    }*/
+    )
 }
