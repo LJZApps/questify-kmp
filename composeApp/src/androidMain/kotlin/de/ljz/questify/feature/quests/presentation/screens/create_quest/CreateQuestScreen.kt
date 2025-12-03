@@ -338,7 +338,7 @@ private fun CreateQuestScreen(
                             val timeInteractionSource = remember { MutableInteractionSource() }
                             val isTimeFocused: Boolean by timeInteractionSource.collectIsFocusedAsState()
 
-                            val date = Date(uiState.selectedDueDate)
+                            val date = Date(uiState.selectedCombinedDueDate)
                             val formattedDate = dateFormat.format(date)
                             val formattedTime = timeFormat.format(date)
 
@@ -355,7 +355,7 @@ private fun CreateQuestScreen(
                             }
 
                             OutlinedTextField(
-                                value = if (uiState.selectedDueDate.toInt() == 0) "" else formattedDate,
+                                value = if (uiState.selectedCombinedDueDate.toInt() == 0) "" else formattedDate,
                                 onValueChange = {},
                                 modifier = Modifier.weight(2f),
                                 placeholder = {
@@ -373,7 +373,7 @@ private fun CreateQuestScreen(
                             )
 
                             OutlinedTextField(
-                                value = if (uiState.selectedDueDate == 0L) "" else formattedTime,
+                                value = if (uiState.selectedCombinedDueDate == 0L) "" else formattedTime,
                                 onValueChange = {},
                                 modifier = Modifier.weight(1f),
                                 placeholder = {
@@ -645,12 +645,12 @@ private fun CreateQuestScreen(
                 )
             }
 
-            val initialDateTimeMillis = uiState.selectedDueDate.takeIf { it != 0L }
+            val initialDateTimeMillis = uiState.selectedCombinedDueDate.takeIf { it != 0L }
 
             if (uiState.dialogState is CreateQuestDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
@@ -668,7 +668,7 @@ private fun CreateQuestScreen(
             if (uiState.dialogState is CreateQuestDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {

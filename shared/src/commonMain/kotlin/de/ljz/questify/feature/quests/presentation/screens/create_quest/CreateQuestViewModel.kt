@@ -46,7 +46,9 @@ class CreateQuestViewModel(
             dialogState = CreateQuestDialogState.None,
             subDialogState = CreateQuestSubDialogState.None,
             selectedTime = 0,
+            selectedCombinedDueDate = 0L,
             selectedDueDate = 0L,
+            selectedDueTime = 0L,
             subQuestCreationEnabled = false,
 
             notificationTriggerTimes = emptyList(),
@@ -90,8 +92,8 @@ class CreateQuestViewModel(
                     notes = _uiState.value.description.ifEmpty { null },
                     difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
                     createdAt = Clock.System.now(),
-                    dueDate = if (_uiState.value.selectedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
-                        _uiState.value.selectedDueDate
+                    dueDate = if (_uiState.value.selectedCombinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
+                        _uiState.value.selectedCombinedDueDate
                     ),
                     categoryId = _selectedCategory.value?.id
                 )
@@ -248,10 +250,28 @@ class CreateQuestViewModel(
                 }
             }
 
-            is CreateQuestUiEvent.OnSetDueDate -> {
+            is CreateQuestUiEvent.OnSetCombinedDueDate -> {
                 _uiState.update {
                     it.copy(
-                        selectedDueDate = event.timestamp,
+                        selectedCombinedDueDate = event.timestamp,
+                        subDialogState = CreateQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnUpdateDueTime -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.value,
+                        subDialogState = CreateQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnUpdateDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueDate = event.value,
                         subDialogState = CreateQuestSubDialogState.None
                     )
                 }
@@ -260,7 +280,7 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnRemoveDueDate -> {
                 _uiState.update {
                     it.copy(
-                        selectedDueDate = 0L,
+                        selectedCombinedDueDate = 0L,
                         subDialogState = CreateQuestSubDialogState.None
                     )
                 }

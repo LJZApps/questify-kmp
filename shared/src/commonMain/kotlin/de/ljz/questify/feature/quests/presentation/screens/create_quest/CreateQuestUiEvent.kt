@@ -34,7 +34,9 @@ sealed interface CreateQuestUiEvent {
     object OnDisableSubQuestCreation : CreateQuestUiEvent
     data class OnMoveSubQuest(val fromIndex: Int, val toIndex: Int) : CreateQuestUiEvent
 
-    data class OnSetDueDate(val timestamp: Long) : CreateQuestUiEvent
+    data class OnSetCombinedDueDate(val timestamp: Long) : CreateQuestUiEvent
+    data class OnUpdateDueDate(val value: Long) : CreateQuestUiEvent
+    data class OnUpdateDueTime(val value: Long) : CreateQuestUiEvent
     object OnRemoveDueDate : CreateQuestUiEvent
 
     data class OnUpdateReminderState(val value: AddingDateTimeState) : CreateQuestUiEvent

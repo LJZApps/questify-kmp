@@ -2,15 +2,18 @@ package de.ljz.questify.feature.quests.presentation.sheets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -30,8 +33,11 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetDueDateBottomSheet(
-    selectedDueDate: Long,
+    selectedCombinedDueDate: Long,
+    selectedDate: Long,
+    selectedTime: Long,
     onShowSubDialog: (CreateQuestSubDialogState) -> Unit,
+    onConfirm: (Long) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
@@ -58,7 +64,7 @@ fun SetDueDateBottomSheet(
 
             ExpressiveSettingsSection {
                 ExpressiveMenuItem(
-                    title = "Datum auswählen",
+                    title = if (selectedDate != 0L) dateFormat.format(selectedDate) else "Datum auswählen",
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_calendar_today_outlined),
@@ -71,8 +77,8 @@ fun SetDueDateBottomSheet(
                 )
 
                 ExpressiveSettingsMenuLink(
-                    title = "Zeit auswählen",
-                    subtitle = "Automatisch: 23:59 Uhr",
+                    title = if (selectedTime != 0L) timeFormat.format(selectedTime) else "Zeit auswählen",
+                    subtitle = if (selectedTime == 0L) "Automatisch: 23:59 Uhr" else null,
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_schedule_outlined),
@@ -85,22 +91,42 @@ fun SetDueDateBottomSheet(
                 )
             }
 
-            Text(
-                text = "Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-
-            Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                Text("Speichern")
+            if (selectedTime == 0L) {
+                Text(
+                    text = "Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
             }
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {},
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Fälligkeit entfernen")
+                }
+
+                Button(
+                    onClick = {
+                        // TODO onConfirm()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Speichern")
+                }
+            }
+
         }
     }
 }

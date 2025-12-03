@@ -129,6 +129,8 @@ private fun ExperimentalCreateQuestScreen(
     categories: List<QuestCategoryEntity>,
     onUiEvent: (CreateQuestUiEvent) -> Unit
 ) {
+    val dialogState = uiState.dialogState
+
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
@@ -234,7 +236,7 @@ private fun ExperimentalCreateQuestScreen(
 
                         clickableItem(
                             onClick = {
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SetDueDateSheet))
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SetDueDateSheet(uiState.selectedCombinedDueDate)))
                             },
                             icon = {
                                 Icon(
@@ -356,7 +358,7 @@ private fun ExperimentalCreateQuestScreen(
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
-                        if (uiState.selectedDueDate != 0L) {
+                        if (uiState.selectedCombinedDueDate != 0L) {
                             InfoChip(
                                 label = {
                                     Text("3. Dez 2025 um 15:00 Uhr")
@@ -565,12 +567,13 @@ private fun ExperimentalCreateQuestScreen(
                 )
             }
 
-            val initialDateTimeMillis = uiState.selectedDueDate.takeIf { it != 0L }
+            val initialDateMillis = uiState.selectedDueDate.takeIf { it != 0L }
+            val initialTimeMillis = uiState.selectedDueTime.takeIf { it != 0L }
 
             if (uiState.subDialogState is CreateQuestSubDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnUpdateDueDate(value = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
@@ -581,14 +584,14 @@ private fun ExperimentalCreateQuestScreen(
                         onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
                         focusManager.clearFocus()
                     },
-                    initialSelectedDateTimeMillis = initialDateTimeMillis
+                    initialSelectedDateTimeMillis = initialDateMillis
                 )
             }
 
             if (uiState.subDialogState is CreateQuestSubDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnUpdateDueTime(value = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
@@ -599,7 +602,7 @@ private fun ExperimentalCreateQuestScreen(
                         onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
                         focusManager.clearFocus()
                     },
-                    initialSelectedDateTimeMillis = initialDateTimeMillis
+                    initialSelectedDateTimeMillis = initialTimeMillis
                 )
             }
 
@@ -633,11 +636,16 @@ private fun ExperimentalCreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is CreateQuestDialogState.SetDueDateSheet) {
+            if (dialogState is CreateQuestDialogState.SetDueDateSheet) {
                 SetDueDateBottomSheet(
-                    selectedDueDate = 0L,
+                    selectedCombinedDueDate = dialogState.selectedCombinedDueDate,
+                    selectedDate = uiState.selectedDueDate,
+                    selectedTime = uiState.selectedDueTime,
                     onShowSubDialog = { subDialogState ->
                         onUiEvent(CreateQuestUiEvent.OnShowSubDialog(subDialogState))
+                    },
+                    onConfirm = { timestamp ->
+                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp))
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
