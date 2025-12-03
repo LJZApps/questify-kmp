@@ -66,8 +66,8 @@ fun ListChip(
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(
-                    start = 8.dp,
-                    end = 8.dp
+                    start = 16.dp,
+                    end = 16.dp
                 ),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically

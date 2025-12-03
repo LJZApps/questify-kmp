@@ -192,6 +192,19 @@ private fun ExperimentalCreateQuestScreen(
                     AppBarRow {
                         clickableItem(
                             onClick = {
+                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add_box_outlined),
+                                    contentDescription = null
+                                )
+                            },
+                            label = "Unteraufgabe hinzufügen"
+                        )
+
+                        clickableItem(
+                            onClick = {
                                 onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
                             },
                             icon = {
@@ -471,25 +484,6 @@ private fun ExperimentalCreateQuestScreen(
                                 }
                             }
                         }
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
-                            }
-                            .padding(horizontal = 16.dp)
-                            .padding(vertical = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_add),
-                            contentDescription = null
-                        )
-
-                        Text(text = "Unteraufgabe hinzufügen")
                     }
                 }
             }
