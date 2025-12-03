@@ -1,7 +1,6 @@
 package de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,7 +36,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -70,6 +74,7 @@ import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQu
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
 import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSheet
 import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sh.calvin.reorderable.ReorderableItem
@@ -122,6 +127,7 @@ private fun ExperimentalCreateQuestScreen(
     categories: List<QuestCategoryEntity>,
     onUiEvent: (CreateQuestUiEvent) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -136,6 +142,15 @@ private fun ExperimentalCreateQuestScreen(
         onUiEvent(CreateQuestUiEvent.OnMoveSubQuest(from.index, to.index))
 
         haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+    }
+    var indexToFocus by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(indexToFocus) {
+        indexToFocus?.let { index ->
+            scope.launch {
+                listState.animateScrollToItem(index + 3)
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -192,6 +207,8 @@ private fun ExperimentalCreateQuestScreen(
                         clickableItem(
                             onClick = {
                                 onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+
+                                indexToFocus = uiState.subQuests.size
                             },
                             icon = {
                                 Icon(
@@ -221,7 +238,7 @@ private fun ExperimentalCreateQuestScreen(
                             },
                             icon = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_calendar_today_outlined),
+                                    painter = painterResource(R.drawable.ic_schedule_outlined),
                                     contentDescription = null
                                 )
                             },
@@ -404,16 +421,25 @@ private fun ExperimentalCreateQuestScreen(
                     items = uiState.subQuests,
                     key = { _, item -> item.tempId }
                 ) { index, subQuest ->
+                    val itemFocusRequester = remember { FocusRequester() }
+                    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+
+                    LaunchedEffect(indexToFocus) {
+                        if (indexToFocus == index) {
+                            itemFocusRequester.requestFocus()
+                            indexToFocus = null
+                        }
+                    }
+
                     ReorderableItem(
                         state = reorderableState,
                         key = subQuest.tempId
                     ) { isDragging ->
-                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
-
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 2.dp),
+                                .padding(horizontal = 16.dp, vertical = 2.dp)
+                                .bringIntoViewRequester(bringIntoViewRequester),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -452,9 +478,14 @@ private fun ExperimentalCreateQuestScreen(
                                                 value = it
                                             )
                                         )
+
+                                        scope.launch {
+                                            bringIntoViewRequester.bringIntoView()
+                                        }
                                     },
                                     modifier = Modifier
-                                        .weight(1f),
+                                        .weight(1f)
+                                        .focusRequester(itemFocusRequester),
                                     textStyle = MaterialTheme.typography.titleMedium.copy(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     ),
@@ -467,6 +498,8 @@ private fun ExperimentalCreateQuestScreen(
                                     ),
                                     keyboardActions = KeyboardActions {
                                         onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+
+                                        indexToFocus = uiState.subQuests.size
                                     },
                                     decorationBox = @Composable { innerTextField ->
                                         TextFieldDefaults.DecorationBox(
