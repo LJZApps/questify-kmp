@@ -1,6 +1,9 @@
 package de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +12,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -338,6 +343,20 @@ private fun ExperimentalCreateQuestScreen(
                         )
                     }
                 )
+
+                AnimatedVisibility(
+                    visible = uiState.subQuestCreationEnabled,
+                    exit = slideOutVertically { -it },
+                    enter = slideInVertically { -it }
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        itemsIndexed(items = uiState.subQuests) { i, subQuest ->
+
+                        }
+                    }
+                }
             }
 
             // Dialogs
