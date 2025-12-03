@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +39,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -410,7 +408,7 @@ fun QuestDetailScreen(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Text(
-                                        text = "Fälligkeit & Erinnerungen",
+                                        text = "Fälligkeit",
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -437,57 +435,6 @@ fun QuestDetailScreen(
                                                 )
                                             }
                                         }
-
-                                    uiState.questState.notificationTriggerTimes
-                                        .takeIf { it.isNotEmpty() }
-                                        ?.let { notifications ->
-                                            HorizontalDivider(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                            )
-
-                                            Column {
-                                                Text(
-                                                    text = "Gesetzte Erinnerungen:",
-                                                    fontSize = 14.sp
-                                                )
-
-                                                notifications.forEach { notification ->
-                                                    Row(
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            8.dp
-                                                        ),
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Icon(
-                                                            painter = painterResource(R.drawable.ic_notifications_outlined),
-                                                            contentDescription = null,
-                                                            tint = MaterialTheme.colorScheme.primary,
-                                                            modifier = Modifier.size(16.dp)
-                                                        )
-
-                                                        Text(
-                                                            text = SimpleDateFormat(
-                                                                "dd. MMMM YYYY 'um' HH:mm",
-                                                                Locale.getDefault()
-                                                            ).format(notification),
-                                                            fontSize = 14.sp
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                    if (!questState.done) {
-                                        TextButton(
-                                            onClick = {
-
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            Text(text = "Erinnerungen verwalten")
-                                        }
-                                    }
                                 }
                             }
                         }

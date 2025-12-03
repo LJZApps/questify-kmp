@@ -15,6 +15,9 @@ sealed interface CreateQuestUiEvent {
     data class OnShowDialog(val dialogState: CreateQuestDialogState) : CreateQuestUiEvent
     object OnCloseDialog : CreateQuestUiEvent
 
+    data class OnShowSubDialog(val subDialogState: CreateQuestSubDialogState) : CreateQuestUiEvent
+    object OnCloseSubDialog : CreateQuestUiEvent
+
     data class OnCreateQuestCategory(val value: String) : CreateQuestUiEvent
     data class OnSelectQuestCategory(val questCategoryEntity: QuestCategoryEntity) : CreateQuestUiEvent
 

@@ -8,6 +8,7 @@ data class CreateQuestUiState(
     val description: String,
     val difficulty: Int,
     val dialogState: CreateQuestDialogState,
+    val subDialogState: CreateQuestSubDialogState,
     val selectedTime: Long,
     val selectedDueDate: Long,
     val subQuestCreationEnabled: Boolean,
@@ -24,4 +25,11 @@ sealed class CreateQuestDialogState {
     object DatePicker : CreateQuestDialogState()
     object TimePicker : CreateQuestDialogState()
     object SelectDifficultySheet : CreateQuestDialogState()
+    object SetDueDateSheet : CreateQuestDialogState()
+}
+
+sealed class CreateQuestSubDialogState {
+    object None : CreateQuestSubDialogState()
+    object DatePicker : CreateQuestSubDialogState()
+    object TimePicker : CreateQuestSubDialogState()
 }

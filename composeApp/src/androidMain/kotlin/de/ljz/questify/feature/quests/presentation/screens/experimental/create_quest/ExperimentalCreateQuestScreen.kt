@@ -68,12 +68,14 @@ import de.ljz.questify.feature.quests.presentation.dialogs.CreateReminderDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueDateDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueTimeDialog
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestDialogState
+import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestSubDialogState
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiEffect
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiEvent
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiState
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
 import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSheet
 import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
+import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -134,8 +136,6 @@ private fun ExperimentalCreateQuestScreen(
     val interactionSource =
         remember { MutableInteractionSource() }
 
-    val dateFormat = SimpleDateFormat("dd. MMM yyyy", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
     val listState = rememberLazyListState()
     val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
@@ -234,7 +234,7 @@ private fun ExperimentalCreateQuestScreen(
 
                         clickableItem(
                             onClick = {
-
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SetDueDateSheet))
                             },
                             icon = {
                                 Icon(
@@ -567,14 +567,14 @@ private fun ExperimentalCreateQuestScreen(
 
             val initialDateTimeMillis = uiState.selectedDueDate.takeIf { it != 0L }
 
-            if (uiState.dialogState is CreateQuestDialogState.DatePicker) {
+            if (uiState.subDialogState is CreateQuestSubDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
-                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                        onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
                         focusManager.clearFocus()
                     },
                     onRemoveDueDate = {
@@ -585,14 +585,14 @@ private fun ExperimentalCreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is CreateQuestDialogState.TimePicker) {
+            if (uiState.subDialogState is CreateQuestSubDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
-                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                        onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
                         focusManager.clearFocus()
                     },
                     onRemoveDueDate = {
@@ -626,6 +626,18 @@ private fun ExperimentalCreateQuestScreen(
                     difficulty = uiState.difficulty,
                     onDifficultySelected = { value ->
                         onUiEvent(CreateQuestUiEvent.OnDifficultyUpdated(value))
+                    },
+                    onDismiss = {
+                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                    }
+                )
+            }
+
+            if (uiState.dialogState is CreateQuestDialogState.SetDueDateSheet) {
+                SetDueDateBottomSheet(
+                    selectedDueDate = 0L,
+                    onShowSubDialog = { subDialogState ->
+                        onUiEvent(CreateQuestUiEvent.OnShowSubDialog(subDialogState))
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
