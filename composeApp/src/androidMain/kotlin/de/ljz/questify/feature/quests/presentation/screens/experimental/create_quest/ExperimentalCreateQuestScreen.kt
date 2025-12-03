@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FlexibleBottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +44,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -57,16 +59,19 @@ import de.ljz.questify.R
 import de.ljz.questify.core.presentation.components.chips.InfoChip
 import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
+import de.ljz.questify.feature.quests.presentation.components.EasyIcon
 import de.ljz.questify.feature.quests.presentation.components.HardIcon
+import de.ljz.questify.feature.quests.presentation.components.MediumIcon
 import de.ljz.questify.feature.quests.presentation.dialogs.CreateReminderDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueDateDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueTimeDialog
+import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestDialogState
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiEffect
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiEvent
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestUiState
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
-import de.ljz.questify.feature.quests.presentation.screens.create_quest.DialogState
 import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSheet
+import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
@@ -187,7 +192,7 @@ private fun ExperimentalCreateQuestScreen(
                     AppBarRow {
                         clickableItem(
                             onClick = {
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.SelectCategorySheet))
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
                             },
                             icon = {
                                 Icon(
@@ -286,14 +291,38 @@ private fun ExperimentalCreateQuestScreen(
                 ) {
                     InfoChip(
                         label = {
-                            Text("Schwer")
+                            Text(
+                                text = when (uiState.difficulty) {
+                                    0 -> "Leicht"
+                                    1 -> "Mittel"
+                                    2 -> "Schwer"
+                                    else -> ""
+                                }
+                            )
                         },
                         leadingIcon = {
-                            HardIcon()
-                        }
+                            when (uiState.difficulty) {
+                                0 -> EasyIcon(
+                                    tint = LocalContentColor.current
+                                )
+                                1 -> MediumIcon(
+                                    tint = LocalContentColor.current
+                                )
+                                2 -> HardIcon(
+                                    tint = LocalContentColor.current
+                                )
+                            }
+                        },
+                        modifier = Modifier.clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+                            onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectDifficultySheet))
+                        },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                     )
 
-                    if (uiState.selectedDueDate == 0L) {
+                    if (uiState.selectedDueDate != 0L) {
                         InfoChip(
                             label = {
                                 Text("3. Dez 2025 um 15:00 Uhr")
@@ -466,7 +495,7 @@ private fun ExperimentalCreateQuestScreen(
             }
 
             // Dialogs
-            if (uiState.dialogState is DialogState.AddReminder) {
+            if (uiState.dialogState is CreateQuestDialogState.AddReminder) {
                 CreateReminderDialog(
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
@@ -484,7 +513,7 @@ private fun ExperimentalCreateQuestScreen(
 
             val initialDateTimeMillis = uiState.selectedDueDate.takeIf { it != 0L }
 
-            if (uiState.dialogState is DialogState.DatePicker) {
+            if (uiState.dialogState is CreateQuestDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
@@ -502,7 +531,7 @@ private fun ExperimentalCreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.TimePicker) {
+            if (uiState.dialogState is CreateQuestDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
@@ -520,7 +549,7 @@ private fun ExperimentalCreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.SelectCategorySheet) {
+            if (uiState.dialogState is CreateQuestDialogState.SelectCategorySheet) {
                 SelectCategoryBottomSheet(
                     categories = categories,
                     onCategorySelect = { category ->
@@ -534,6 +563,18 @@ private fun ExperimentalCreateQuestScreen(
                     },
                     onCreateCategory = { text ->
                         onUiEvent(CreateQuestUiEvent.OnCreateQuestCategory(value = text))
+                    }
+                )
+            }
+
+            if (uiState.dialogState is CreateQuestDialogState.SelectDifficultySheet) {
+                SelectDifficultyBottomSheet(
+                    difficulty = uiState.difficulty,
+                    onDifficultySelected = { value ->
+                        onUiEvent(CreateQuestUiEvent.OnDifficultyUpdated(value))
+                    },
+                    onDismiss = {
+                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
                     }
                 )
             }

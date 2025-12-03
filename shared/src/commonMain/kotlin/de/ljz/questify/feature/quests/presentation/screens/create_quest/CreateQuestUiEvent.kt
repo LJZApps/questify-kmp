@@ -12,7 +12,7 @@ sealed interface CreateQuestUiEvent {
     data class OnDescriptionUpdated(val value: String) : CreateQuestUiEvent
     data class OnDifficultyUpdated(val value: Int) : CreateQuestUiEvent
 
-    data class OnShowDialog(val dialogState: DialogState) : CreateQuestUiEvent
+    data class OnShowDialog(val dialogState: CreateQuestDialogState) : CreateQuestUiEvent
     object OnCloseDialog : CreateQuestUiEvent
 
     data class OnCreateQuestCategory(val value: String) : CreateQuestUiEvent

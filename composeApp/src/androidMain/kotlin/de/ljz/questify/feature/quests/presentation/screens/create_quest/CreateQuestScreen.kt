@@ -215,7 +215,7 @@ private fun CreateQuestScreen(
                             },
                             onClick = {
                                 dropdownExpanded = false
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.SelectCategorySheet))
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
                             }
                         )
                     }
@@ -344,13 +344,13 @@ private fun CreateQuestScreen(
 
                             LaunchedEffect(isDateFocused) {
                                 if (isDateFocused) {
-                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.DatePicker))
+                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.DatePicker))
                                 }
                             }
 
                             LaunchedEffect(isTimeFocused) {
                                 if (isTimeFocused) {
-                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.TimePicker))
+                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.TimePicker))
                                 }
                             }
 
@@ -426,7 +426,7 @@ private fun CreateQuestScreen(
 
                         AppOutlinedButton(
                             onClick = {
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.AddReminder))
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.AddReminder))
                             },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
@@ -629,7 +629,7 @@ private fun CreateQuestScreen(
             }
 
             // Dialogs
-            if (uiState.dialogState is DialogState.AddReminder) {
+            if (uiState.dialogState is CreateQuestDialogState.AddReminder) {
                 CreateReminderDialog(
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
@@ -647,7 +647,7 @@ private fun CreateQuestScreen(
 
             val initialDateTimeMillis = uiState.selectedDueDate.takeIf { it != 0L }
 
-            if (uiState.dialogState is DialogState.DatePicker) {
+            if (uiState.dialogState is CreateQuestDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
@@ -665,7 +665,7 @@ private fun CreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.TimePicker) {
+            if (uiState.dialogState is CreateQuestDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetDueDate(timestamp = timestamp))
@@ -683,7 +683,7 @@ private fun CreateQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.SelectCategorySheet) {
+            if (uiState.dialogState is CreateQuestDialogState.SelectCategorySheet) {
                 SelectCategoryBottomSheet(
                     categories = categories,
                     onCategorySelect = { category ->

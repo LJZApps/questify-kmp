@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,18 +27,21 @@ fun InfoChip(
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = containerColor,
+        contentColor = contentColor,
         border = BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.surfaceContainer,
+            color = containerColor,
         ),
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier
+        modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .height(32.dp)
+            .then(modifier)
     ) {
         Row(
             modifier = Modifier
@@ -51,7 +55,7 @@ fun InfoChip(
         ) {
             leadingIcon?.let {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant
+                    LocalContentColor provides contentColor
                 ) {
                     leadingIcon()
                 }

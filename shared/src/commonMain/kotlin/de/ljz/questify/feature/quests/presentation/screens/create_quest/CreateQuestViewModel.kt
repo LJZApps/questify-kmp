@@ -43,7 +43,7 @@ class CreateQuestViewModel(
             title = "",
             description = "",
             difficulty = 0,
-            dialogState = DialogState.None,
+            dialogState = CreateQuestDialogState.None,
             selectedTime = 0,
             selectedDueDate = 0L,
             subQuestCreationEnabled = false,
@@ -146,7 +146,7 @@ class CreateQuestViewModel(
 
             is CreateQuestUiEvent.OnCloseDialog -> {
                 _uiState.update {
-                    it.copy(dialogState = DialogState.None)
+                    it.copy(dialogState = CreateQuestDialogState.None)
                 }
             }
 
@@ -229,7 +229,7 @@ class CreateQuestViewModel(
                 _uiState.update {
                     it.copy(
                         selectedDueDate = event.timestamp,
-                        dialogState = DialogState.None
+                        dialogState = CreateQuestDialogState.None
                     )
                 }
             }
@@ -238,7 +238,7 @@ class CreateQuestViewModel(
                 _uiState.update {
                     it.copy(
                         selectedDueDate = 0L,
-                        dialogState = DialogState.None
+                        dialogState = CreateQuestDialogState.None
                     )
                 }
             }
