@@ -107,15 +107,15 @@ class CreateQuestViewModel(
                         addQuestNotificationUseCase.invoke(questNotification)
                     }
 
-                    val subQuestEntities = _uiState.value.subQuests.map { subTask ->
+                    val subQuestEntities = _uiState.value.subQuests.mapIndexed { index, subTask ->
                         SubQuestEntity(
                             text = subTask.text,
-                            questId = questId
+                            questId = questId,
+                            orderIndex = index
                         )
                     }
 
                     addSubQuestsUseCase.invoke(subQuestEntities = subQuestEntities)
-
                     _uiEffects.send(CreateQuestUiEffect.OnNavigateUp)
                 }
             }
@@ -222,6 +222,16 @@ class CreateQuestViewModel(
                         subQuestCreationEnabled = false,
                         subQuests = emptyList()
                     )
+                }
+            }
+
+            is CreateQuestUiEvent.OnMoveSubQuest -> {
+                _uiState.update { state ->
+                    val mutableList = state.subQuests.toMutableList()
+                    val item = mutableList.removeAt(event.fromIndex - 3)
+                    mutableList.add(event.toIndex - 3, item)
+
+                    state.copy(subQuests = mutableList)
                 }
             }
 

@@ -30,5 +30,8 @@ data class SubQuestEntity(
     val isDone: Boolean = false,
 
     @ColumnInfo(name = "quest_id")
-    val questId: Long
+    val questId: Long,
+
+    @ColumnInfo(name = "order_index")
+    val orderIndex: Int = 0
 )

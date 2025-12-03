@@ -343,7 +343,9 @@ fun QuestDetailScreen(
                                     )
 
                                     Column {
-                                        subQuestEntities.forEach { subQuestEntity ->
+                                        subQuestEntities
+                                            .sortedBy { it.orderIndex }
+                                            .forEach { subQuestEntity ->
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()

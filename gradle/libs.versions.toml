@@ -20,6 +20,7 @@ sqlite = "2.6.2"
 ksp = "2.3.3"
 koin = "4.1.1"
 kotlinxSerialization = "1.9.0"
+reorderable = "3.0.0"
 
 adaptive = "1.2.0"
 coilCompose = "3.3.0"
@@ -134,8 +135,8 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 # Optional add-on libraries
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
-
 androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 
 [plugins]

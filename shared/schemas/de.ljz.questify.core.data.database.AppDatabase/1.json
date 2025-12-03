@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8caa6df20fe5788b6b32205c475e566a",
+    "identityHash": "c55a8e6af2370ea0511b5b0eefed6215",
     "entities": [
       {
         "tableName": "quest_entity",
@@ -187,7 +187,7 @@
       },
       {
         "tableName": "sub_quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, FOREIGN KEY(`quest_id`) REFERENCES `quest_entity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `order_index` INTEGER NOT NULL, FOREIGN KEY(`quest_id`) REFERENCES `quest_entity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -210,6 +210,12 @@
           {
             "fieldPath": "questId",
             "columnName": "quest_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orderIndex",
+            "columnName": "order_index",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -248,7 +254,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8caa6df20fe5788b6b32205c475e566a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c55a8e6af2370ea0511b5b0eefed6215')"
     ]
   }
 }

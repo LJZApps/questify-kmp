@@ -1,23 +1,23 @@
 package de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AppBarRow
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FlexibleBottomAppBar
@@ -35,9 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -74,6 +72,8 @@ import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSh
 import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -122,8 +122,6 @@ private fun ExperimentalCreateQuestScreen(
     categories: List<QuestCategoryEntity>,
     onUiEvent: (CreateQuestUiEvent) -> Unit
 ) {
-    var dropdownExpanded by remember { mutableStateOf(false) }
-
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -133,11 +131,12 @@ private fun ExperimentalCreateQuestScreen(
     val dateFormat = SimpleDateFormat("dd. MMM yyyy", Locale.getDefault())
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
-    val difficultyOptions = listOf(
-        stringResource(R.string.difficulty_easy),
-        stringResource(R.string.difficulty_medium),
-        stringResource(R.string.difficulty_hard),
-    )
+    val listState = rememberLazyListState()
+    val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
+        onUiEvent(CreateQuestUiEvent.OnMoveSubQuest(from.index, to.index))
+
+        haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -241,167 +240,180 @@ private fun ExperimentalCreateQuestScreen(
             }
         },
         content = { innerPadding ->
-            Column(
+            LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                BasicTextField(
-                    value = uiState.title,
-                    onValueChange = { value ->
-                        onUiEvent(CreateQuestUiEvent.OnTitleUpdated(value))
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    textStyle = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    decorationBox = @Composable { innerTextField ->
-                        TextFieldDefaults.DecorationBox(
-                            value = uiState.title,
-                            enabled = true,
-                            innerTextField = innerTextField,
-                            singleLine = false,
-                            visualTransformation = VisualTransformation.None,
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = "Titel",
-                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                                )
-                            },
-                            contentPadding = PaddingValues(0.dp),
-                            interactionSource = interactionSource
-                        )
-                    }
-                )
-
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    InfoChip(
-                        label = {
-                            Text(
-                                text = when (uiState.difficulty) {
-                                    0 -> "Leicht"
-                                    1 -> "Mittel"
-                                    2 -> "Schwer"
-                                    else -> ""
-                                }
+                item {
+                    BasicTextField(
+                        value = uiState.title,
+                        onValueChange = { value ->
+                            onUiEvent(CreateQuestUiEvent.OnTitleUpdated(value))
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        textStyle = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        decorationBox = @Composable { innerTextField ->
+                            TextFieldDefaults.DecorationBox(
+                                value = uiState.title,
+                                enabled = true,
+                                innerTextField = innerTextField,
+                                singleLine = false,
+                                visualTransformation = VisualTransformation.None,
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        text = "Titel",
+                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                    )
+                                },
+                                contentPadding = PaddingValues(0.dp),
+                                interactionSource = interactionSource
                             )
-                        },
-                        leadingIcon = {
-                            when (uiState.difficulty) {
-                                0 -> EasyIcon(
-                                    tint = LocalContentColor.current
-                                )
-                                1 -> MediumIcon(
-                                    tint = LocalContentColor.current
-                                )
-                                2 -> HardIcon(
-                                    tint = LocalContentColor.current
-                                )
-                            }
-                        },
-                        modifier = Modifier.clickable {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-
-                            onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectDifficultySheet))
-                        },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        }
                     )
+                }
 
-                    if (uiState.selectedDueDate != 0L) {
+                item {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                    ) {
                         InfoChip(
                             label = {
-                                Text("3. Dez 2025 um 15:00 Uhr")
+                                Text(
+                                    text = when (uiState.difficulty) {
+                                        0 -> "Leicht"
+                                        1 -> "Mittel"
+                                        2 -> "Schwer"
+                                        else -> ""
+                                    }
+                                )
                             },
                             leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_event_filled),
-                                    contentDescription = null
-                                )
-                            }
+                                when (uiState.difficulty) {
+                                    0 -> EasyIcon(
+                                        tint = LocalContentColor.current
+                                    )
+
+                                    1 -> MediumIcon(
+                                        tint = LocalContentColor.current
+                                    )
+
+                                    2 -> HardIcon(
+                                        tint = LocalContentColor.current
+                                    )
+                                }
+                            },
+                            modifier = Modifier.clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectDifficultySheet))
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                         )
+
+                        if (uiState.selectedDueDate != 0L) {
+                            InfoChip(
+                                label = {
+                                    Text("3. Dez 2025 um 15:00 Uhr")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_event_filled),
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
 
-                BasicTextField(
-                    value = uiState.description,
-                    onValueChange = { value ->
-                        onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(value))
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    minLines = 2,
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
-                    decorationBox = @Composable { innerTextField ->
-                        TextFieldDefaults.DecorationBox(
-                            value = uiState.description,
-                            enabled = true,
-                            innerTextField = innerTextField,
-                            singleLine = false,
-                            visualTransformation = VisualTransformation.None,
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = "Beschreibung",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                            },
-                            contentPadding = PaddingValues(0.dp),
-                            interactionSource = interactionSource
-                        )
-                    }
-                )
+                item {
+                    BasicTextField(
+                        value = uiState.description,
+                        onValueChange = { value ->
+                            onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(value))
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        minLines = 2,
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                        decorationBox = @Composable { innerTextField ->
+                            TextFieldDefaults.DecorationBox(
+                                value = uiState.description,
+                                enabled = true,
+                                innerTextField = innerTextField,
+                                singleLine = false,
+                                visualTransformation = VisualTransformation.None,
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        text = "Beschreibung",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
+                                contentPadding = PaddingValues(0.dp),
+                                interactionSource = interactionSource
+                            )
+                        }
+                    )
+                }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    uiState.subQuests.forEachIndexed { i, subQuest ->
+                itemsIndexed(
+                    items = uiState.subQuests,
+                    key = { _, item -> item.tempId }
+                ) { index, subQuest ->
+                    ReorderableItem(
+                        state = reorderableState,
+                        key = subQuest.tempId
+                    ) { isDragging ->
+                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(vertical = 2.dp),
+                                .padding(horizontal = 16.dp, vertical = 2.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -413,7 +425,22 @@ private fun ExperimentalCreateQuestScreen(
                                 CompositionLocalProvider(
                                     value = LocalMinimumInteractiveComponentSize provides 0.dp
                                 ) {
-                                    Checkbox(checked = false, onCheckedChange = null)
+                                    IconButton(
+                                        onClick = {},
+                                        modifier = Modifier.draggableHandle(
+                                            onDragStarted = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                            },
+                                            onDragStopped = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                            },
+                                        )
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_drag_indicator),
+                                            contentDescription = "Verschieben",
+                                        )
+                                    }
                                 }
 
                                 BasicTextField(
@@ -421,7 +448,7 @@ private fun ExperimentalCreateQuestScreen(
                                     onValueChange = {
                                         onUiEvent(
                                             CreateQuestUiEvent.OnUpdateSubQuest(
-                                                index = i,
+                                                index = index,
                                                 value = it
                                             )
                                         )
@@ -474,7 +501,7 @@ private fun ExperimentalCreateQuestScreen(
                             ) {
                                 IconButton(
                                     onClick = {
-                                        onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index = i))
+                                        onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index = index))
                                     },
                                 ) {
                                     Icon(
