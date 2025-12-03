@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import de.ljz.questify.feature.quests.presentation.components.EasyIcon
@@ -53,48 +56,60 @@ fun SelectDifficultyBottomSheet(
                 state.hide()
             }
         },
-        sheetState = state,
-        dragHandle = null
+        sheetState = state
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-            modifier = Modifier.padding(16.dp)
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            val modifiers = List(difficultyOptions.size) { Modifier.weight(1f) }
+            Text(
+                text = "Schwierigkeit auswählen",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
-            difficultyOptions.forEachIndexed { index, label ->
-                ToggleButton(
-                    checked = difficulty == index,
-                    onCheckedChange = {
-                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                modifier = Modifier.padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                val modifiers = List(difficultyOptions.size) { Modifier.weight(1f) }
 
-                        onDifficultySelected(index)
-                    },
-                    modifier = modifiers[index].semantics {
-                        role = Role.RadioButton
-                    },
-                    shapes = when (index) {
-                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                        difficultyOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                    },
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                difficultyOptions.forEachIndexed { index, label ->
+                    ToggleButton(
+                        checked = difficulty == index,
+                        onCheckedChange = {
+                            haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
+                            onDifficultySelected(index)
+                        },
+                        modifier = modifiers[index].semantics {
+                            role = Role.RadioButton
+                        },
+                        shapes = when (index) {
+                            0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                            difficultyOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                            else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                        },
                     ) {
-                        val tint = if (difficulty == index)
-                            MaterialTheme.colorScheme.onPrimary
-                        else
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            val tint = if (difficulty == index)
+                                MaterialTheme.colorScheme.onPrimary
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
 
-                        when (index) {
-                            0 -> EasyIcon(tint = tint)
-                            1 -> MediumIcon(tint = tint)
-                            2 -> HardIcon(tint = tint)
+                            when (index) {
+                                0 -> EasyIcon(tint = tint)
+                                1 -> MediumIcon(tint = tint)
+                                2 -> HardIcon(tint = tint)
+                            }
+
+                            Text(label)
                         }
-
-                        Text(label)
                     }
                 }
             }

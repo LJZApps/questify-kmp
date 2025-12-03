@@ -54,7 +54,7 @@ fun SelectCategoryBottomSheet(
     val filteredLists = categories
         .filter {
             it.text.contains(
-                searchText,
+                searchText.trim(),
                 ignoreCase = true
             )
         }
@@ -106,9 +106,7 @@ fun SelectCategoryBottomSheet(
                 ) {
                     if (
                         searchText.trim().isNotEmpty() &&
-                        filteredLists.count {
-                            it.text.equals(searchText.trim(), ignoreCase = true)
-                        } == 0
+                        filteredLists.count { it.text.equals(searchText.trim(), ignoreCase = true) } == 0
                     ) {
                         ExpressiveMenuItem(
                             title = stringResource(

@@ -439,7 +439,6 @@ fun QuestDetailScreen(
                             }
                         }
 
-
                     OutlinedCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
