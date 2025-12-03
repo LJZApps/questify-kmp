@@ -10,10 +10,11 @@ data class CreateQuestUiState(
     val dialogState: DialogState,
     val selectedTime: Long,
     val selectedDueDate: Long,
+    val subQuestCreationEnabled: Boolean,
 
     val notificationTriggerTimes: List<Long>,
     val addingDateTimeState: AddingDateTimeState,
-    val subTasks: List<SubQuestModel>
+    val subQuests: List<SubQuestModel>
 )
 
 sealed class DialogState {

@@ -46,9 +46,11 @@ class CreateQuestViewModel(
             dialogState = DialogState.None,
             selectedTime = 0,
             selectedDueDate = 0L,
+            subQuestCreationEnabled = false,
+
             notificationTriggerTimes = emptyList(),
             addingDateTimeState = AddingDateTimeState.DATE,
-            subTasks = emptyList()
+            subQuests = emptyList()
         )
     )
     val uiState: StateFlow<CreateQuestUiState> = _uiState.asStateFlow()
@@ -105,7 +107,7 @@ class CreateQuestViewModel(
                         addQuestNotificationUseCase.invoke(questNotification)
                     }
 
-                    val subQuestEntities = _uiState.value.subTasks.map { subTask ->
+                    val subQuestEntities = _uiState.value.subQuests.map { subTask ->
                         SubQuestEntity(
                             text = subTask.text,
                             questId = questId
@@ -185,7 +187,7 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnCreateSubQuest -> {
                 _uiState.update {
                     it.copy(
-                        subTasks = _uiState.value.subTasks + SubQuestModel(text = "")
+                        subQuests = _uiState.value.subQuests + SubQuestModel(text = "")
                     )
                 }
             }
@@ -193,7 +195,7 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnUpdateSubQuest -> {
                 _uiState.update { state ->
                     state.copy(
-                        subTasks = state.subTasks.mapIndexed { i, subTask ->
+                        subQuests = state.subQuests.mapIndexed { i, subTask ->
                             if (i == event.index) subTask.copy(text = event.value) else subTask
                         }
                     )
@@ -203,7 +205,22 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnRemoveSubQuest -> {
                 _uiState.update { state ->
                     state.copy(
-                        subTasks = state.subTasks.filterIndexed { i, _ -> i != event.index }
+                        subQuests = state.subQuests.filterIndexed { i, _ -> i != event.index }
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnEnableSubQuestCreation -> {
+                _uiState.update {
+                    it.copy(subQuestCreationEnabled = true)
+                }
+            }
+
+            is CreateQuestUiEvent.OnDisableSubQuestCreation -> {
+                _uiState.update {
+                    it.copy(
+                        subQuestCreationEnabled = false,
+                        subQuests = emptyList()
                     )
                 }
             }

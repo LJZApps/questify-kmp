@@ -59,7 +59,7 @@ fun MediumIcon(
 @Composable
 fun HardIcon(
     modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.primary
+    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     DifficultyIconContainer {
         Column(

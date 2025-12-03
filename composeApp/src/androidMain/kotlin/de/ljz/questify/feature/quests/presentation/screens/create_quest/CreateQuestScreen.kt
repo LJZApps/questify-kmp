@@ -506,7 +506,7 @@ private fun CreateQuestScreen(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            uiState.subTasks.forEachIndexed { index, subTask ->
+                            uiState.subQuests.forEachIndexed { index, subTask ->
                                 val subTaskFocusManager = LocalFocusManager.current
                                 val subTaskFocusRequester = remember { FocusRequester() }
 
@@ -587,7 +587,7 @@ private fun CreateQuestScreen(
 
                                         IconButton(
                                             onClick = {
-                                                if ((uiState.subTasks.count() - 1) > 0) {
+                                                if ((uiState.subQuests.count() - 1) > 0) {
                                                     subTaskFocusManager.moveFocus(FocusDirection.Previous)
                                                 } else {
                                                     subTaskFocusManager.clearFocus()
