@@ -1,0 +1,183 @@
+package de.ljz.questify.feature.profile.presentation.screens.view_profile
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import de.ljz.questify.R
+import org.koin.androidx.compose.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun ViewProfileScreen(
+    viewModel: ViewProfileViewModel = koinViewModel(),
+    onNavigateUp: () -> Unit,
+    onNavigateToEditProfileScreen: () -> Unit
+) {
+    val uiState = viewModel.uiState.collectAsState().value
+
+    ViewProfileScreen(
+        uiState = uiState,
+        onUiEvent = { event ->
+            when (event) {
+                is ViewProfileUiEvent.OnNavigateUp -> onNavigateUp()
+
+                is ViewProfileUiEvent.OnNavigateToEditProfileScreen -> onNavigateToEditProfileScreen()
+
+                else -> viewModel.onUiEvent(event)
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ViewProfileScreen(
+    uiState: ViewProfileUiState,
+    onUiEvent: (ViewProfileUiEvent) -> Unit
+) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.view_profile_screen_title),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            onUiEvent(ViewProfileUiEvent.OnNavigateToEditProfileScreen)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            onUiEvent(ViewProfileUiEvent.OnNavigateUp)
+                        },
+                    ) {
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+                    }
+                }
+            )
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Profile picture
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (uiState.profilePictureUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = uiState.profilePictureUrl,
+                            contentDescription = "Profilbild",
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profilbild",
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Display name
+                Text(
+                    text = uiState.displayName,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // About me
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.view_profile_screen_about_me),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (uiState.aboutMe.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.view_profile_screen_no_information),
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Start,
+                            fontStyle = FontStyle.Italic
+                        )
+                    } else {
+                        Text(
+                            text = uiState.aboutMe,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Start
+                        )
+                    }
+                }
+            }
+        }
+    )
+}

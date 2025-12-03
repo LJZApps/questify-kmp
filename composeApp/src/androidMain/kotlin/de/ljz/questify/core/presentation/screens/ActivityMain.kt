@@ -23,6 +23,10 @@ import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingScreen
+import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileRoute
+import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileScreen
+import de.ljz.questify.feature.profile.presentation.screens.view_profile.ViewProfileRoute
+import de.ljz.questify.feature.profile.presentation.screens.view_profile.ViewProfileScreen
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestRoute
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestRoute
@@ -156,7 +160,7 @@ class ActivityMain : AppCompatActivity() {
                                             backStack.removeLastOrNull()
                                         },
                                         onNavigateToViewProfileScreen = {
-                                            //backStack.add(ViewProfileRoute)
+                                            backStack.add(ViewProfileRoute)
                                         },
                                         onNavigateToSettingsAppearanceScreen = {
                                             backStack.add(SettingsAppearanceRoute)
@@ -186,7 +190,6 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                /*
                                 entry<ViewProfileRoute> {
                                     ViewProfileScreen(
                                         onNavigateUp = {
@@ -204,7 +207,7 @@ class ActivityMain : AppCompatActivity() {
                                             backStack.removeLastOrNull()
                                         }
                                     )
-                                }*/
+                                }
                             },
                             transitionSpec = {
                                 scaleContentTransform(ScaleTransitionDirection.INWARDS)
