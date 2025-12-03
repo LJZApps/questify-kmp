@@ -1,36 +1,37 @@
 package de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AppBarRow
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FlexibleBottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -144,8 +146,12 @@ private fun ExperimentalCreateQuestScreen(
                         selectedCategory
                     ) {
                         it?.let {
-                            Text(
-                                text = it.text
+                            InfoChip(
+                                label = {
+                                    Text(
+                                        text = it.text
+                                    )
+                                }
                             )
                         }
                     }
@@ -170,57 +176,49 @@ private fun ExperimentalCreateQuestScreen(
         },
         bottomBar = {
             FlexibleBottomAppBar(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .imePadding()
             ) {
-                AppBarRow {
-                    clickableItem(
-                        onClick = {
-                            if (uiState.subQuestCreationEnabled)
-                                onUiEvent(CreateQuestUiEvent.OnDisableSubQuestCreation)
-                            else
-                                onUiEvent(CreateQuestUiEvent.OnEnableSubQuestCreation)
-                        },
-                        icon = {
-                            if (uiState.subQuestCreationEnabled)
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AppBarRow {
+                        clickableItem(
+                            onClick = {
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.SelectCategorySheet))
+                            },
+                            icon = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_indeterminate_check_box_filled),
+                                    painter = painterResource(R.drawable.ic_label_outlined),
                                     contentDescription = null
                                 )
-                            else
+                            },
+                            label = "Liste"
+                        )
+
+                        clickableItem(
+                            onClick = {
+
+                            },
+                            icon = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_add_box_outlined),
+                                    painter = painterResource(R.drawable.ic_calendar_today_outlined),
                                     contentDescription = null
                                 )
-                        },
-                        label = if (uiState.subQuestCreationEnabled) "Unteraufgaben entfernen" else "Unteraufgaben hinzufügen"
-                    )
+                            },
+                            label = "Fälligkeit"
+                        )
+                    }
 
-                    clickableItem(
+                    TextButton(
                         onClick = {
-                            onUiEvent(CreateQuestUiEvent.OnShowDialog(DialogState.SelectCategorySheet))
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_label_outlined),
-                                contentDescription = null
-                            )
-                        },
-                        label = "Liste"
-                    )
-
-                    clickableItem(
-                        onClick = {
-
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_calendar_today_outlined),
-                                contentDescription = null
-                            )
-                        },
-                        label = "Fälligkeit"
-                    )
+                            onUiEvent(CreateQuestUiEvent.OnCreateQuest)
+                        }
+                    ) {
+                        Text("Speichern")
+                    }
                 }
             }
         },
@@ -230,8 +228,7 @@ private fun ExperimentalCreateQuestScreen(
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -240,12 +237,15 @@ private fun ExperimentalCreateQuestScreen(
                     onValueChange = { value ->
                         onUiEvent(CreateQuestUiEvent.OnTitleUpdated(value))
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
                         .focusRequester(focusRequester),
-                    textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    keyboardActions = KeyboardActions(
-
+                    textStyle = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -280,7 +280,9 @@ private fun ExperimentalCreateQuestScreen(
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
                 ) {
                     InfoChip(
                         label = {
@@ -311,12 +313,17 @@ private fun ExperimentalCreateQuestScreen(
                     onValueChange = { value ->
                         onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(value))
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences
                     ),
                     minLines = 2,
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
                     decorationBox = @Composable { innerTextField ->
                         TextFieldDefaults.DecorationBox(
                             value = uiState.description,
@@ -344,17 +351,116 @@ private fun ExperimentalCreateQuestScreen(
                     }
                 )
 
-                AnimatedVisibility(
-                    visible = uiState.subQuestCreationEnabled,
-                    exit = slideOutVertically { -it },
-                    enter = slideInVertically { -it }
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        itemsIndexed(items = uiState.subQuests) { i, subQuest ->
+                    uiState.subQuests.forEachIndexed { i, subQuest ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                CompositionLocalProvider(
+                                    value = LocalMinimumInteractiveComponentSize provides 0.dp
+                                ) {
+                                    Checkbox(checked = false, onCheckedChange = null)
+                                }
 
+                                BasicTextField(
+                                    value = subQuest.text,
+                                    onValueChange = {
+                                        onUiEvent(
+                                            CreateQuestUiEvent.OnUpdateSubQuest(
+                                                index = i,
+                                                value = it
+                                            )
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    textStyle = MaterialTheme.typography.titleMedium.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    ),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                                    singleLine = true,
+                                    maxLines = 1,
+                                    keyboardOptions = KeyboardOptions(
+                                        imeAction = ImeAction.Next,
+                                        capitalization = KeyboardCapitalization.Sentences
+                                    ),
+                                    keyboardActions = KeyboardActions {
+                                        onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+                                    },
+                                    decorationBox = @Composable { innerTextField ->
+                                        TextFieldDefaults.DecorationBox(
+                                            value = subQuest.text,
+                                            enabled = true,
+                                            innerTextField = innerTextField,
+                                            singleLine = true,
+                                            visualTransformation = VisualTransformation.None,
+                                            colors = TextFieldDefaults.colors(
+                                                focusedIndicatorColor = Color.Transparent,
+                                                unfocusedIndicatorColor = Color.Transparent,
+                                                disabledIndicatorColor = Color.Transparent,
+                                                focusedContainerColor = Color.Transparent,
+                                                unfocusedContainerColor = Color.Transparent,
+                                                disabledContainerColor = Color.Transparent,
+                                            ),
+                                            interactionSource = interactionSource,
+                                            placeholder = {
+                                                Text(
+                                                    text = "Neue Unteraufgabe"
+                                                )
+                                            },
+                                            contentPadding = PaddingValues(0.dp)
+                                        )
+                                    }
+                                )
+                            }
+
+
+                            CompositionLocalProvider(
+                                value = LocalMinimumInteractiveComponentSize provides 0.dp
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index = i))
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_close),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+                            }
+                            .padding(horizontal = 16.dp)
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_add),
+                            contentDescription = null
+                        )
+
+                        Text(text = "Unteraufgabe hinzufügen")
                     }
                 }
             }
