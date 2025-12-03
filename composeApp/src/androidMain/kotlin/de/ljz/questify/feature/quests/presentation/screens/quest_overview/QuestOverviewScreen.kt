@@ -280,7 +280,7 @@ private fun QuestOverviewScreen(
                         .fillMaxWidth()
                         .horizontalScroll(scrollState)
                         .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     allTabs.forEachIndexed { index, tab ->
                         var chipDropdownExpanded by remember { mutableStateOf(false) }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -67,18 +66,14 @@ fun ListChip(
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(
-                    start = 12.dp,
-                    end = 12.dp
+                    start = 8.dp,
+                    end = 8.dp
                 ),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             leadingIcon?.let {
-                CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colorScheme.primary
-                ) {
-                    leadingIcon()
-                }
+                leadingIcon()
             }
 
             CompositionLocalProvider(
