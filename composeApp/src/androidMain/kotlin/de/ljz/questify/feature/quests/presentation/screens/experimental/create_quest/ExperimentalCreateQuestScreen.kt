@@ -361,7 +361,7 @@ private fun ExperimentalCreateQuestScreen(
                         if (uiState.selectedCombinedDueDate != 0L) {
                             InfoChip(
                                 label = {
-                                    Text("3. Dez 2025 um 15:00 Uhr")
+                                    Text(dateTimeFormat.format(uiState.selectedCombinedDueDate))
                                 },
                                 leadingIcon = {
                                     Icon(
@@ -644,8 +644,14 @@ private fun ExperimentalCreateQuestScreen(
                     onShowSubDialog = { subDialogState ->
                         onUiEvent(CreateQuestUiEvent.OnShowSubDialog(subDialogState))
                     },
+                    onUpdateTempDueDate = { date, time ->
+                        onUiEvent(CreateQuestUiEvent.OnUpdateTempDueDate(date, time))
+                    },
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp))
+                    },
+                    onRemoveDueDate = {
+                        onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)

@@ -37,6 +37,7 @@ sealed interface CreateQuestUiEvent {
     data class OnSetCombinedDueDate(val timestamp: Long) : CreateQuestUiEvent
     data class OnUpdateDueDate(val value: Long) : CreateQuestUiEvent
     data class OnUpdateDueTime(val value: Long) : CreateQuestUiEvent
+    data class OnUpdateTempDueDate(val date: Long, val time: Long) : CreateQuestUiEvent
     object OnRemoveDueDate : CreateQuestUiEvent
 
     data class OnUpdateReminderState(val value: AddingDateTimeState) : CreateQuestUiEvent

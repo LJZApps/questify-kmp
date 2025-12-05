@@ -254,7 +254,7 @@ class CreateQuestViewModel(
                 _uiState.update {
                     it.copy(
                         selectedCombinedDueDate = event.timestamp,
-                        subDialogState = CreateQuestSubDialogState.None
+                        dialogState = CreateQuestDialogState.None
                     )
                 }
             }
@@ -277,11 +277,20 @@ class CreateQuestViewModel(
                 }
             }
 
+            is CreateQuestUiEvent.OnUpdateTempDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.time,
+                        selectedDueDate = event.date
+                    )
+                }
+            }
+
             is CreateQuestUiEvent.OnRemoveDueDate -> {
                 _uiState.update {
                     it.copy(
                         selectedCombinedDueDate = 0L,
-                        subDialogState = CreateQuestSubDialogState.None
+                        dialogState = CreateQuestDialogState.None
                     )
                 }
             }
