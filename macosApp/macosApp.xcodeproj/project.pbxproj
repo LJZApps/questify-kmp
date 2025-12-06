@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		124802FE418322DF4D2451CF /* Pods-macosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macosApp.release.xcconfig"; path = "Target Support Files/Pods-macosApp/Pods-macosApp.release.xcconfig"; sourceTree = "<group>"; };
-		3348BCA42EE450C700542BEB /* macosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = macosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3348BCA42EE450C700542BEB /* Questify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Questify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A511CD810CB5DFDA38CE7A93 /* Pods-macosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macosApp.debug.xcconfig"; path = "Target Support Files/Pods-macosApp/Pods-macosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A7D24E6D4C0A799733B3977D /* Pods_macosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -50,7 +50,7 @@
 		3348BCA52EE450C700542BEB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3348BCA42EE450C700542BEB /* macosApp.app */,
+				3348BCA42EE450C700542BEB /* Questify.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,9 +75,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3348BCA32EE450C700542BEB /* macosApp */ = {
+		3348BCA32EE450C700542BEB /* Questify */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3348BCAF2EE450C700542BEB /* Build configuration list for PBXNativeTarget "macosApp" */;
+			buildConfigurationList = 3348BCAF2EE450C700542BEB /* Build configuration list for PBXNativeTarget "Questify" */;
 			buildPhases = (
 				30CA51BD4EFA1701EAB3C4BE /* [CP] Check Pods Manifest.lock */,
 				33C6E8E62EE4537300356A41 /* Compile Kotlin Framework */,
@@ -93,9 +93,9 @@
 			fileSystemSynchronizedGroups = (
 				3348BCA62EE450C700542BEB /* macosApp */,
 			);
-			name = macosApp;
+			name = Questify;
 			productName = macosApp;
-			productReference = 3348BCA42EE450C700542BEB /* macosApp.app */;
+			productReference = 3348BCA42EE450C700542BEB /* Questify.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -127,7 +127,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3348BCA32EE450C700542BEB /* macosApp */,
+				3348BCA32EE450C700542BEB /* Questify */,
 			);
 		};
 /* End PBXProject section */
@@ -342,7 +342,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A511CD810CB5DFDA38CE7A93 /* Pods-macosApp.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = QuestifyAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -354,6 +354,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Questify;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -378,7 +379,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 124802FE418322DF4D2451CF /* Pods-macosApp.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = QuestifyAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -390,6 +391,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Questify;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -422,7 +424,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3348BCAF2EE450C700542BEB /* Build configuration list for PBXNativeTarget "macosApp" */ = {
+		3348BCAF2EE450C700542BEB /* Build configuration list for PBXNativeTarget "Questify" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3348BCB02EE450C700542BEB /* Debug */,
