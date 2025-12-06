@@ -1,0 +1,16 @@
+PODS:
+  - SharedKMP (1.0)
+
+DEPENDENCIES:
+  - SharedKMP (from `../shared`)
+
+EXTERNAL SOURCES:
+  SharedKMP:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  SharedKMP: 3e2b634d607cb1b1bd60d82349e680deba699017
+
+PODFILE CHECKSUM: 209b90d098a6da65b3c0ef4c1ad0b63e4668f1d0
+
+COCOAPODS: 1.16.2

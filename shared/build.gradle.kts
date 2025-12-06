@@ -29,9 +29,14 @@ skie {
 }
 
 kotlin {
+    // iOS
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    // MacOS
+    macosX64()
+    macosArm64()
 
     cocoapods {
         version = "1.0"
@@ -107,4 +112,7 @@ dependencies {
 
     add("kspIosArm64", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+
+    add("kspMacosX64", libs.androidx.room.compiler)
+    add("kspMacosArm64", libs.androidx.room.compiler)
 }

@@ -138,7 +138,7 @@ struct QuestOverviewScreen: View {
                     }
                 }
             ),
-        ) {o
+        ) {
             Button("Löschen", role: .destructive) {
                 if let deleteState = state.dialogState as? QuestOverviewDialogState.DeleteQuestConfirmation {
                     viewModel.onUiEvent(event: QuestOverviewUiEventOnQuestDelete(id: deleteState.id))
