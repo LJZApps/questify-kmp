@@ -10,6 +10,7 @@ import SharedKMP
 
 struct HomeScreen: View {
     @State private var selection: AppRoute? = .quests
+    @State private var isOn: Bool = false
 
     var body: some View {
         NavigationSplitView {
@@ -42,20 +43,59 @@ struct HomeScreen: View {
                             Text("Create one now")
                         }
                     }
+                    .toolbar {
+                        ToolbarItem {
+                            Menu {
+                                Section("Sortierung") {
+                                    Button {
+                                        
+                                    } label: {
+                                        Label("Aufsteigend", systemImage: "arrow.up")
+                                    }
+
+                                    Button {
+                                        
+                                    } label: {
+                                        Label("Absteigend", systemImage: "arrow.down")
+                                    }
+                                }
+
+                                Section("Filter") {
+                                    Toggle(isOn: $isOn) {
+                                        Label("Erledigte anzeigen", systemImage: "checkmark.circle")
+                                    }
+                                }
+                                
+                            } label: {
+                                Image(systemName: "line.3.horizontal.decrease.circle")
+                            }
+                        }
+                        
+                        ToolbarItem {
+                            Button(action: {
+                                
+                            }) {
+                                Label("Create quest", systemImage: "plus")
+                            }
+                        }
+                    }
+                    .navigationTitle("Quests")
+                    
+                case .habits:
+                    ContentUnavailableView {
+                        Label("You haven't created any habits yet.", systemImage: "leaf")
+                    } description: {
+                        Button(action: {
+                            
+                        }) {
+                            Text("Create one now")
+                        }
+                    }
+                    .navigationTitle("Habits")
                 }
             } else {
                 Text("Wähle einen Menüpunkt")
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    
-                }) {
-                    Label("Create quest", systemImage: "plus")
-                }
-            }
-        }
-        .navigationTitle("Quests")
     }
 }
