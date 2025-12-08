@@ -591,10 +591,9 @@ private fun EditQuestScreen(
                     difficulty = uiState.difficulty,
                     onDifficultySelected = { value ->
                         onUiEvent(EditQuestUiEvent.OnDifficultyUpdated(value))
-                        showDifficultySheet = false
                     },
                     onDismiss = {
-                        showDifficultySheet = false
+                        onUiEvent(EditQuestUiEvent.OnCloseDialog)
                     }
                 )
             }
@@ -610,14 +609,12 @@ private fun EditQuestScreen(
                     onUpdateTempDueDate = { _, _ -> /* Optional */ },
                     onConfirm = { timestamp ->
                         onUiEvent(EditQuestUiEvent.OnSetDueDate(timestamp))
-                        showDueDateSheet = false
                     },
                     onRemoveDueDate = {
                         onUiEvent(EditQuestUiEvent.OnRemoveDueDate)
-                        showDueDateSheet = false
                     },
                     onDismiss = {
-                        showDueDateSheet = false
+                        onUiEvent(EditQuestUiEvent.OnCloseDialog)
                     }
                 )
             }
