@@ -13,8 +13,11 @@ sealed interface EditQuestUiEvent {
     data class OnDescriptionUpdated(val value: String) : EditQuestUiEvent
     data class OnDifficultyUpdated(val value: Int) : EditQuestUiEvent
 
-    data class OnShowDialog(val dialogState: DialogState) : EditQuestUiEvent
+    data class OnShowDialog(val dialogState: EditQuestDialogState) : EditQuestUiEvent
     object OnCloseDialog : EditQuestUiEvent
+
+    data class OnShowSubDialog(val subDialogState: EditQuestSubDialogState) : EditQuestUiEvent
+    object OnCloseSubDialog : EditQuestUiEvent
 
     data class OnCreateQuestCategory(val value: String) : EditQuestUiEvent
     data class OnSelectQuestCategory(val questCategoryEntity: QuestCategoryEntity) :
@@ -28,9 +31,13 @@ sealed interface EditQuestUiEvent {
         val index: Int,
         val value: String
     ) : EditQuestUiEvent
-
     data class OnRemoveSubQuest(val index: Int) : EditQuestUiEvent
+    data class OnMoveSubQuest(val fromIndex: Int, val toIndex: Int) : EditQuestUiEvent
 
+    data class OnSetCombinedDueDate(val timestamp: Long) : EditQuestUiEvent
+    data class OnUpdateDueDate(val value: Long) : EditQuestUiEvent
+    data class OnUpdateDueTime(val value: Long) : EditQuestUiEvent
+    data class OnUpdateTempDueDate(val date: Long, val time: Long) : EditQuestUiEvent
     data class OnSetDueDate(val timestamp: Long) : EditQuestUiEvent
     object OnRemoveDueDate : EditQuestUiEvent
 

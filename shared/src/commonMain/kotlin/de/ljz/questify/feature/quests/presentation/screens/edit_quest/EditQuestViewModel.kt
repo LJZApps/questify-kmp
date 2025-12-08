@@ -51,14 +51,17 @@ class EditQuestViewModel(
             title = "",
             notes = "",
             difficulty = 0,
-            dueDate = 0,
+            combinedDueDate = 0,
             categoryId = null,
 
             notificationTriggerTimes = emptyList(),
-            subTasks = emptyList(),
+            subQuests = emptyList(),
 
             addingDateTimeState = AddingDateTimeState.DATE,
-            dialogState = DialogState.None,
+            dialogState = EditQuestDialogState.None,
+            subDialogState = EditQuestSubDialogState.None,
+            selectedDueDate = 0L,
+            selectedDueTime = 0L
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -97,7 +100,7 @@ class EditQuestViewModel(
                                 title = questEntity.title,
                                 notes = questEntity.notes ?: "",
                                 difficulty = questEntity.difficulty.ordinal,
-                                dueDate = questEntity.dueDate?.toEpochMilliseconds() ?: 0L,
+                                combinedDueDate = questEntity.dueDate?.toEpochMilliseconds() ?: 0L,
                                 categoryId = questEntity.categoryId,
                                 notificationTriggerTimes = notifications
                             )
@@ -111,7 +114,7 @@ class EditQuestViewModel(
                     questWithSubQuestsFlow.collectLatest { questWithSubQuests ->
                         questWithSubQuests?.subTasks.let { subQuestEntities ->
                             _uiState.update {
-                                it.copy(subTasks = subQuestEntities ?: emptyList())
+                                it.copy(subQuests = subQuestEntities ?: emptyList())
                             }
                         }
                     }
@@ -131,15 +134,15 @@ class EditQuestViewModel(
                                 title = _uiState.value.title,
                                 notes = _uiState.value.notes,
                                 difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
-                                dueDate = if (_uiState.value.dueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
-                                    _uiState.value.dueDate
+                                dueDate = if (_uiState.value.combinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
+                                    _uiState.value.combinedDueDate
                                 ),
                                 categoryId = _selectedCategory.value?.id
                             )
 
                             upsertQuestUseCase.invoke(updatedQuestEntity)
 
-                            addSubQuestsUseCase.invoke(_uiState.value.subTasks)
+                            addSubQuestsUseCase.invoke(_uiState.value.subQuests)
 
                             _subQuestsToDelete.forEach { id ->
                                 deleteSubQuestUseCase(id)
@@ -196,7 +199,7 @@ class EditQuestViewModel(
 
             is EditQuestUiEvent.OnCloseDialog -> {
                 _uiState.update {
-                    it.copy(dialogState = DialogState.None)
+                    it.copy(dialogState = EditQuestDialogState.None)
                 }
             }
 
@@ -237,7 +240,7 @@ class EditQuestViewModel(
             is EditQuestUiEvent.OnCreateSubQuest -> {
                 _uiState.update {
                     it.copy(
-                        subTasks = _uiState.value.subTasks + SubQuestEntity(
+                        subQuests = _uiState.value.subQuests + SubQuestEntity(
                             text = "",
                             questId = id.toLong()
                         )
@@ -248,7 +251,7 @@ class EditQuestViewModel(
             is EditQuestUiEvent.OnUpdateSubQuest -> {
                 _uiState.update { state ->
                     state.copy(
-                        subTasks = state.subTasks.mapIndexed { i, subTask ->
+                        subQuests = state.subQuests.mapIndexed { i, subTask ->
                             if (i == event.index) subTask.copy(text = event.value) else subTask
                         }
                     )
@@ -256,22 +259,22 @@ class EditQuestViewModel(
             }
 
             is EditQuestUiEvent.OnRemoveSubQuest -> {
-                val subTasks = _uiState.value.subTasks.toMutableList()
+                val subTasks = _uiState.value.subQuests.toMutableList()
                 if (event.index in subTasks.indices) {
                     val itemToRemove = subTasks[event.index]
                     if (itemToRemove.id != 0) {
                         _subQuestsToDelete.add(itemToRemove.id)
                     }
                     subTasks.removeAt(event.index)
-                    _uiState.update { it.copy(subTasks = subTasks) }
+                    _uiState.update { it.copy(subQuests = subTasks) }
                 }
             }
 
             is EditQuestUiEvent.OnSetDueDate -> {
                 _uiState.update {
                     it.copy(
-                        dueDate = event.timestamp,
-                        dialogState = DialogState.None
+                        combinedDueDate = event.timestamp,
+                        dialogState = EditQuestDialogState.None
                     )
                 }
             }
@@ -279,8 +282,8 @@ class EditQuestViewModel(
             is EditQuestUiEvent.OnRemoveDueDate -> {
                 _uiState.update {
                     it.copy(
-                        dueDate = 0L,
-                        dialogState = DialogState.None
+                        combinedDueDate = 0L,
+                        dialogState = EditQuestDialogState.None
                     )
                 }
             }

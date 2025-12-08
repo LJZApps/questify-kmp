@@ -571,15 +571,9 @@ private fun CreateQuestScreen(
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnUpdateDueDate(value = timestamp))
-                        focusManager.clearFocus()
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
-                        focusManager.clearFocus()
-                    },
-                    onRemoveDueDate = {
-                        onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
-                        focusManager.clearFocus()
                     },
                     initialSelectedDateTimeMillis = initialDateMillis
                 )
@@ -589,15 +583,9 @@ private fun CreateQuestScreen(
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
                         onUiEvent(CreateQuestUiEvent.OnUpdateDueTime(value = timestamp))
-                        focusManager.clearFocus()
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
-                        focusManager.clearFocus()
-                    },
-                    onRemoveDueDate = {
-                        onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
-                        focusManager.clearFocus()
                     },
                     initialSelectedDateTimeMillis = initialTimeMillis
                 )
@@ -609,11 +597,9 @@ private fun CreateQuestScreen(
                     onCategorySelect = { category ->
                         onUiEvent(CreateQuestUiEvent.OnSelectQuestCategory(category))
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
-                        focusManager.clearFocus()
                     },
                     onDismiss = {
                         onUiEvent(CreateQuestUiEvent.OnCloseDialog)
-                        focusManager.clearFocus()
                     },
                     onCreateCategory = { text ->
                         onUiEvent(CreateQuestUiEvent.OnCreateQuestCategory(value = text))

@@ -7,21 +7,30 @@ data class EditQuestUiState(
     val title: String,
     val notes: String,
     val difficulty: Int,
-    val dueDate: Long,
+    val selectedDueDate: Long,
+    val selectedDueTime: Long,
+    val combinedDueDate: Long,
     val categoryId: Int?,
 
     val notificationTriggerTimes: List<Long>,
-    val subTasks: List<SubQuestEntity>,
+    val subQuests: List<SubQuestEntity>,
 
     val addingDateTimeState: AddingDateTimeState,
-    val dialogState: DialogState
+    val dialogState: EditQuestDialogState,
+    val subDialogState: EditQuestSubDialogState
 )
 
-sealed class DialogState {
-    object None : DialogState()
-    object DeletionConfirmation : DialogState()
-    object AddReminder : DialogState()
-    object SelectCategorySheet : DialogState()
-    object DatePicker : DialogState()
-    object TimePicker : DialogState()
+sealed class EditQuestDialogState {
+    object None : EditQuestDialogState()
+    object DeletionConfirmation : EditQuestDialogState()
+    object AddReminder : EditQuestDialogState()
+    object SelectCategorySheet : EditQuestDialogState()
+    object SelectDifficultySheet : EditQuestDialogState()
+    data class SetDueDateSheet(val selectedCombinedDueDate: Long) : EditQuestDialogState()
+}
+
+sealed class EditQuestSubDialogState {
+    object None : EditQuestSubDialogState()
+    object DatePicker : EditQuestSubDialogState()
+    object TimePicker : EditQuestSubDialogState()
 }

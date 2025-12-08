@@ -27,7 +27,6 @@ import java.util.Calendar
 fun SetDueDateDialog(
     onConfirm: (Long) -> Unit,
     onDismiss: () -> Unit,
-    onRemoveDueDate: () -> Unit,
     initialSelectedDateTimeMillis: Long?
 ) {
     val currentTime = Calendar.getInstance()
@@ -61,12 +60,6 @@ fun SetDueDateDialog(
                     .fillMaxWidth()
                     .padding(start = 4.dp)
             ) {
-                AppTextButton(
-                    onClick = onRemoveDueDate,
-                ) {
-                    Text("Fälligkeit entfernen")
-                }
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {

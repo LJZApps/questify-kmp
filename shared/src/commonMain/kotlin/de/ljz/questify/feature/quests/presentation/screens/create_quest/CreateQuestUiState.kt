@@ -24,8 +24,6 @@ sealed class CreateQuestDialogState {
     object None : CreateQuestDialogState()
     object AddReminder : CreateQuestDialogState()
     object SelectCategorySheet : CreateQuestDialogState()
-    object DatePicker : CreateQuestDialogState()
-    object TimePicker : CreateQuestDialogState()
     object SelectDifficultySheet : CreateQuestDialogState()
     data class SetDueDateSheet(val selectedCombinedDueDate: Long) : CreateQuestDialogState()
 }

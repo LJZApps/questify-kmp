@@ -68,6 +68,8 @@ import de.ljz.questify.feature.quests.presentation.components.HardIcon
 import de.ljz.questify.feature.quests.presentation.components.MediumIcon
 import de.ljz.questify.feature.quests.presentation.dialogs.CreateReminderDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.DeleteConfirmationDialog
+import de.ljz.questify.feature.quests.presentation.dialogs.SetDueDateDialog
+import de.ljz.questify.feature.quests.presentation.dialogs.SetDueTimeDialog
 import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSheet
 import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
 import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
@@ -118,6 +120,8 @@ private fun EditQuestScreen(
     categories: List<QuestCategoryEntity>,
     onUiEvent: (EditQuestUiEvent) -> Unit
 ) {
+    val dialogState = uiState.dialogState
+
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -192,7 +196,7 @@ private fun EditQuestScreen(
                             },
                             onClick = {
                                 showDeleteMenu = false
-                                onUiEvent(EditQuestUiEvent.OnShowDialog(DialogState.DeletionConfirmation))
+                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.DeletionConfirmation))
                             },
                             colors = MenuDefaults.itemColors(
                                 textColor = MaterialTheme.colorScheme.error,
@@ -217,7 +221,7 @@ private fun EditQuestScreen(
                         clickableItem(
                             onClick = {
                                 onUiEvent(EditQuestUiEvent.OnCreateSubQuest)
-                                indexToFocus = uiState.subTasks.size
+                                indexToFocus = uiState.subQuests.size
                             },
                             icon = {
                                 Icon(
@@ -230,7 +234,7 @@ private fun EditQuestScreen(
 
                         clickableItem(
                             onClick = {
-                                onUiEvent(EditQuestUiEvent.OnShowDialog(DialogState.SelectCategorySheet))
+                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SelectCategorySheet))
                             },
                             icon = {
                                 Icon(
@@ -359,10 +363,10 @@ private fun EditQuestScreen(
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
-                        if (uiState.dueDate != 0L) {
+                        if (uiState.combinedDueDate != 0L) {
                             InfoChip(
                                 label = {
-                                    Text(dateTimeFormat.format(uiState.dueDate))
+                                    Text(dateTimeFormat.format(uiState.combinedDueDate))
                                 },
                                 leadingIcon = {
                                     Icon(
@@ -426,7 +430,7 @@ private fun EditQuestScreen(
                 }
 
                 itemsIndexed(
-                    items = uiState.subTasks,
+                    items = uiState.subQuests,
                     key = { i, subTask -> subTask.id }
                 ) { index, subTask ->
                     val itemFocusRequester = remember { FocusRequester() }
@@ -486,7 +490,7 @@ private fun EditQuestScreen(
                                 ),
                                 keyboardActions = KeyboardActions {
                                     onUiEvent(EditQuestUiEvent.OnCreateSubQuest)
-                                    indexToFocus = uiState.subTasks.size
+                                    indexToFocus = uiState.subQuests.size
                                 },
                                 decorationBox = @Composable { innerTextField ->
                                     TextFieldDefaults.DecorationBox(
@@ -536,7 +540,7 @@ private fun EditQuestScreen(
 
             // Dialogs & Sheets
 
-            if (uiState.dialogState is DialogState.AddReminder) {
+            if (uiState.dialogState is EditQuestDialogState.AddReminder) {
                 CreateReminderDialog(
                     onDismiss = {
                         onUiEvent(EditQuestUiEvent.OnCloseDialog)
@@ -552,7 +556,7 @@ private fun EditQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.SelectCategorySheet) {
+            if (uiState.dialogState is EditQuestDialogState.SelectCategorySheet) {
                 SelectCategoryBottomSheet(
                     categories = categories,
                     onCategorySelect = { category ->
@@ -570,7 +574,7 @@ private fun EditQuestScreen(
                 )
             }
 
-            if (uiState.dialogState is DialogState.DeletionConfirmation) {
+            if (uiState.dialogState is EditQuestDialogState.DeletionConfirmation) {
                 DeleteConfirmationDialog(
                     onConfirm = {
                         onUiEvent(EditQuestUiEvent.OnDeleteQuest)
@@ -582,7 +586,7 @@ private fun EditQuestScreen(
             }
 
             // Local Sheets
-            if (showDifficultySheet) {
+            if (uiState.dialogState is EditQuestDialogState.SelectDifficultySheet) {
                 SelectDifficultyBottomSheet(
                     difficulty = uiState.difficulty,
                     onDifficultySelected = { value ->
@@ -595,18 +599,14 @@ private fun EditQuestScreen(
                 )
             }
 
-            if (showDueDateSheet) {
-                // Konvertieren des einfachen dueDate Longs in Date/Time Komponenten
-                // falls SetDueDateBottomSheet getrennte Werte erwartet.
-                // Hier Annahme: SetDueDateBottomSheet kann mit Long initialisiert werden oder wir übergeben 0L wenn nicht gesetzt.
+            if (dialogState is EditQuestDialogState.SetDueDateSheet) {
                 SetDueDateBottomSheet(
-                    selectedCombinedDueDate = uiState.dueDate,
-                    // Dummy-Werte für Date/Time Split, falls die Component das benötigt.
-                    // Ideal wäre wenn SetDueDateBottomSheet einen Timestamp akzeptiert.
-                    // Wir nutzen hier den Timestamp für beides, da es sich um eine Editierung handelt.
-                    selectedDate = uiState.dueDate,
-                    selectedTime = uiState.dueDate,
-                    onShowSubDialog = { /* SubDialogs müssten hier auch lokal gehandelt werden wenn VM das nicht kann */ },
+                    selectedCombinedDueDate = uiState.combinedDueDate,
+                    selectedDate = uiState.combinedDueDate,
+                    selectedTime = uiState.combinedDueDate,
+                    onShowSubDialog = {
+//                        onUiEvent(EditQuestUiEvent.OnShowSubDialog(it))
+                    },
                     onUpdateTempDueDate = { _, _ -> /* Optional */ },
                     onConfirm = { timestamp ->
                         onUiEvent(EditQuestUiEvent.OnSetDueDate(timestamp))
@@ -619,6 +619,33 @@ private fun EditQuestScreen(
                     onDismiss = {
                         showDueDateSheet = false
                     }
+                )
+            }
+
+            val initialDateMillis = uiState.selectedDueDate.takeIf { it != 0L }
+            val initialTimeMillis = uiState.selectedDueTime.takeIf { it != 0L }
+
+            if (uiState.subDialogState is EditQuestSubDialogState.DatePicker) {
+                SetDueDateDialog(
+                    onConfirm = { timestamp ->
+                        onUiEvent(EditQuestUiEvent.OnUpdateDueDate(value = timestamp))
+                    },
+                    onDismiss = {
+                        onUiEvent(EditQuestUiEvent.OnCloseSubDialog)
+                    },
+                    initialSelectedDateTimeMillis = initialDateMillis
+                )
+            }
+
+            if (uiState.subDialogState is EditQuestSubDialogState.TimePicker) {
+                SetDueTimeDialog(
+                    onConfirm = { timestamp ->
+                        onUiEvent(EditQuestUiEvent.OnUpdateDueTime(value = timestamp))
+                    },
+                    onDismiss = {
+                        onUiEvent(EditQuestUiEvent.OnCloseSubDialog)
+                    },
+                    initialSelectedDateTimeMillis = initialTimeMillis
                 )
             }
         }

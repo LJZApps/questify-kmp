@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.buttons.AppTextButton
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -40,7 +39,6 @@ import java.util.Calendar
 fun SetDueTimeDialog(
     onConfirm: (Long) -> Unit,
     onDismiss: () -> Unit,
-    onRemoveDueDate: () -> Unit,
     initialSelectedDateTimeMillis: Long?
 ) {
     val currentTime = Calendar.getInstance()
@@ -90,12 +88,6 @@ fun SetDueTimeDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    AppTextButton(
-                        onClick = onRemoveDueDate
-                    ) {
-                        Text("Fälligkeit entfernen")
-                    }
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
