@@ -1,4 +1,4 @@
-rootProject.name = "Questify"
+rootProject.name = "Questify-KMP"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
