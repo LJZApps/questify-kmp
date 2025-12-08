@@ -141,10 +141,10 @@ data class ColorFamily(
 @Composable
 fun QuestifyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    vm: ThemeViewModel = koinViewModel(),
+    viewModel: ThemeViewModel = koinViewModel(),
     content: @Composable () -> Unit
 ) {
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val useDarkTheme = when (uiState.themeBehavior) {
         ThemeBehavior.DARK -> true

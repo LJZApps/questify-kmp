@@ -77,7 +77,7 @@ fun QuestDetailScreen(
     ),
     onNavigateUp: () -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val haptic = LocalHapticFeedback.current
 
