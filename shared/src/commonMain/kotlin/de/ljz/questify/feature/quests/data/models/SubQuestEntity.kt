@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import de.ljz.questify.feature.quests.data.models.descriptors.SubQuestModel
 
 @Entity(
     tableName = "sub_quest_entity",
@@ -35,3 +36,11 @@ data class SubQuestEntity(
     @ColumnInfo(name = "order_index")
     val orderIndex: Int = 0
 )
+
+fun SubQuestEntity.toModel(
+    text: String
+): SubQuestModel {
+    return SubQuestModel(
+        text = text
+    )
+}

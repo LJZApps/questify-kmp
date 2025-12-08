@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -49,7 +51,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,6 +77,8 @@ import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -123,17 +126,16 @@ private fun EditQuestScreen(
     val dialogState = uiState.dialogState
 
     val haptic = LocalHapticFeedback.current
-    val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
+        onUiEvent(EditQuestUiEvent.OnMoveSubQuest(from.index, to.index))
+
+        haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+    }
 
     val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
-
-    // Lokale States für Sheets, die ggf. nicht im ViewModel State abgebildet sind
-    var showDifficultySheet by remember { mutableStateOf(false) }
-    var showDueDateSheet by remember { mutableStateOf(false) }
     var showDeleteMenu by remember { mutableStateOf(false) }
 
     var indexToFocus by remember { mutableStateOf<Int?>(null) }
@@ -141,7 +143,6 @@ private fun EditQuestScreen(
     LaunchedEffect(indexToFocus) {
         indexToFocus?.let { index ->
             scope.launch {
-                // Scroll to item + offset for title/chips/notes
                 listState.animateScrollToItem(index + 3)
             }
         }
@@ -247,7 +248,7 @@ private fun EditQuestScreen(
 
                         clickableItem(
                             onClick = {
-                                showDueDateSheet = true
+                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SetDueDateSheet(uiState.combinedDueDate)))
                             },
                             icon = {
                                 Icon(
@@ -288,8 +289,7 @@ private fun EditQuestScreen(
                         },
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                            .fillMaxWidth(),
                         textStyle = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -357,7 +357,7 @@ private fun EditQuestScreen(
                             },
                             modifier = Modifier.clickable {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                showDifficultySheet = true
+                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SelectDifficultySheet))
                             },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
@@ -375,14 +375,14 @@ private fun EditQuestScreen(
                                     )
                                 },
                                 modifier = Modifier.clickable {
-                                    showDueDateSheet = true
+                                    onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SetDueDateSheet(uiState.combinedDueDate)))
                                 }
                             )
                         }
                     }
                 }
 
-                // Description/Notes Input
+                // Description Input
                 item {
                     BasicTextField(
                         value = uiState.notes,
@@ -431,9 +431,10 @@ private fun EditQuestScreen(
 
                 itemsIndexed(
                     items = uiState.subQuests,
-                    key = { i, subTask -> subTask.id }
+                    key = { i, subTask -> subTask.tempId }
                 ) { index, subTask ->
                     val itemFocusRequester = remember { FocusRequester() }
+                    val bringIntoViewRequester = remember { BringIntoViewRequester() }
 
                     LaunchedEffect(indexToFocus) {
                         if (indexToFocus == index) {
@@ -442,96 +443,117 @@ private fun EditQuestScreen(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 2.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    ReorderableItem(
+                        state = reorderableState,
+                        key = subTask.tempId
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 2.dp)
+                                .bringIntoViewRequester(bringIntoViewRequester = bringIntoViewRequester),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            CompositionLocalProvider(
-                                value = LocalMinimumInteractiveComponentSize provides 0.dp
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
                             ) {
-                                // Drag indicator - purely visual here if VM doesn't support reorder
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_drag_indicator),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                CompositionLocalProvider(
+                                    value = LocalMinimumInteractiveComponentSize provides 0.dp
+                                ) {
+                                    IconButton(
+                                        onClick = {},
+                                        modifier = Modifier.draggableHandle(
+                                            onDragStarted = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                            },
+                                            onDragStopped = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                            },
+                                        )
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_drag_indicator),
+                                            contentDescription = "Verschieben",
+                                        )
+                                    }
+                                }
+
+                                BasicTextField(
+                                    value = subTask.text,
+                                    onValueChange = {
+                                        onUiEvent(
+                                            EditQuestUiEvent.OnUpdateSubQuest(
+                                                index = index,
+                                                value = it
+                                            )
+                                        )
+
+                                        scope.launch {
+                                            bringIntoViewRequester.bringIntoView()
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .focusRequester(itemFocusRequester),
+                                    textStyle = MaterialTheme.typography.titleMedium.copy(
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    ),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                                    singleLine = true,
+                                    maxLines = 1,
+                                    keyboardOptions = KeyboardOptions(
+                                        imeAction = ImeAction.Next,
+                                        capitalization = KeyboardCapitalization.Sentences
+                                    ),
+                                    keyboardActions = KeyboardActions {
+                                        onUiEvent(EditQuestUiEvent.OnCreateSubQuest)
+
+                                        indexToFocus = uiState.subQuests.size
+                                    },
+                                    decorationBox = @Composable { innerTextField ->
+                                        TextFieldDefaults.DecorationBox(
+                                            value = subTask.text,
+                                            enabled = true,
+                                            innerTextField = innerTextField,
+                                            singleLine = true,
+                                            visualTransformation = VisualTransformation.None,
+                                            colors = TextFieldDefaults.colors(
+                                                focusedIndicatorColor = Color.Transparent,
+                                                unfocusedIndicatorColor = Color.Transparent,
+                                                disabledIndicatorColor = Color.Transparent,
+                                                focusedContainerColor = Color.Transparent,
+                                                unfocusedContainerColor = Color.Transparent,
+                                                disabledContainerColor = Color.Transparent,
+                                            ),
+                                            interactionSource = interactionSource,
+                                            placeholder = {
+                                                Text(
+                                                    text = "Unteraufgabe",
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            },
+                                            contentPadding = PaddingValues(0.dp)
+                                        )
+                                    }
                                 )
                             }
 
-                            BasicTextField(
-                                value = subTask.text,
-                                onValueChange = {
-                                    onUiEvent(
-                                        EditQuestUiEvent.OnUpdateSubQuest(
-                                            index = index,
-                                            value = it
-                                        )
-                                    )
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .focusRequester(itemFocusRequester),
-                                textStyle = MaterialTheme.typography.titleMedium.copy(
-                                    color = MaterialTheme.colorScheme.onSurface
-                                ),
-                                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                                singleLine = true,
-                                maxLines = 1,
-                                keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Next,
-                                    capitalization = KeyboardCapitalization.Sentences
-                                ),
-                                keyboardActions = KeyboardActions {
-                                    onUiEvent(EditQuestUiEvent.OnCreateSubQuest)
-                                    indexToFocus = uiState.subQuests.size
-                                },
-                                decorationBox = @Composable { innerTextField ->
-                                    TextFieldDefaults.DecorationBox(
-                                        value = subTask.text,
-                                        enabled = true,
-                                        innerTextField = innerTextField,
-                                        singleLine = true,
-                                        visualTransformation = VisualTransformation.None,
-                                        colors = TextFieldDefaults.colors(
-                                            focusedIndicatorColor = Color.Transparent,
-                                            unfocusedIndicatorColor = Color.Transparent,
-                                            disabledIndicatorColor = Color.Transparent,
-                                            focusedContainerColor = Color.Transparent,
-                                            unfocusedContainerColor = Color.Transparent,
-                                            disabledContainerColor = Color.Transparent,
-                                        ),
-                                        interactionSource = interactionSource,
-                                        placeholder = {
-                                            Text(
-                                                text = "Unteraufgabe",
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        },
-                                        contentPadding = PaddingValues(0.dp)
+                            CompositionLocalProvider(
+                                value = LocalMinimumInteractiveComponentSize provides 0.dp
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        onUiEvent(EditQuestUiEvent.OnRemoveSubQuest(index = index))
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_close),
+                                        contentDescription = null
                                     )
                                 }
-                            )
-                        }
-
-                        CompositionLocalProvider(
-                            value = LocalMinimumInteractiveComponentSize provides 0.dp
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    onUiEvent(EditQuestUiEvent.OnRemoveSubQuest(index = index))
-                                },
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_close),
-                                    contentDescription = null
-                                )
                             }
                         }
                     }
@@ -562,11 +584,9 @@ private fun EditQuestScreen(
                     onCategorySelect = { category ->
                         onUiEvent(EditQuestUiEvent.OnSelectQuestCategory(category))
                         onUiEvent(EditQuestUiEvent.OnCloseDialog)
-                        focusManager.clearFocus()
                     },
                     onDismiss = {
                         onUiEvent(EditQuestUiEvent.OnCloseDialog)
-                        focusManager.clearFocus()
                     },
                     onCreateCategory = { text ->
                         onUiEvent(EditQuestUiEvent.OnCreateQuestCategory(value = text))

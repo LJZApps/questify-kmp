@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
-import de.ljz.questify.feature.quests.data.models.SubQuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.AddingDateTimeState
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
+import de.ljz.questify.feature.quests.data.models.descriptors.SubQuestModel
+import de.ljz.questify.feature.quests.data.models.descriptors.toEntity
+import de.ljz.questify.feature.quests.data.models.toModel
 import de.ljz.questify.feature.quests.domain.use_cases.AddQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.AddQuestNotificationUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.AddSubQuestsUseCase
@@ -112,9 +114,9 @@ class EditQuestViewModel(
             launch {
                 getQuestByIdAsFlowUseCase.invoke(id).let { questWithSubQuestsFlow ->
                     questWithSubQuestsFlow.collectLatest { questWithSubQuests ->
-                        questWithSubQuests?.subTasks.let { subQuestEntities ->
-                            _uiState.update {
-                                it.copy(subQuests = subQuestEntities ?: emptyList())
+                        questWithSubQuests?.subTasks?.let { subQuestEntities ->
+                            _uiState.update { state ->
+                                state.copy(subQuests = subQuestEntities.map { it.toModel(text = it.text) })
                             }
                         }
                     }
@@ -142,7 +144,7 @@ class EditQuestViewModel(
 
                             upsertQuestUseCase.invoke(updatedQuestEntity)
 
-                            addSubQuestsUseCase.invoke(_uiState.value.subQuests)
+                            addSubQuestsUseCase.invoke(_uiState.value.subQuests.map { it.toEntity(text = it.text, questId = copiedQuestEntity.id.toLong()) })
 
                             _subQuestsToDelete.forEach { id ->
                                 deleteSubQuestUseCase(id)
@@ -240,9 +242,8 @@ class EditQuestViewModel(
             is EditQuestUiEvent.OnCreateSubQuest -> {
                 _uiState.update {
                     it.copy(
-                        subQuests = _uiState.value.subQuests + SubQuestEntity(
-                            text = "",
-                            questId = id.toLong()
+                        subQuests = _uiState.value.subQuests + SubQuestModel(
+                            text = ""
                         )
                     )
                 }
@@ -259,14 +260,20 @@ class EditQuestViewModel(
             }
 
             is EditQuestUiEvent.OnRemoveSubQuest -> {
-                val subTasks = _uiState.value.subQuests.toMutableList()
-                if (event.index in subTasks.indices) {
-                    val itemToRemove = subTasks[event.index]
-                    if (itemToRemove.id != 0) {
-                        _subQuestsToDelete.add(itemToRemove.id)
-                    }
-                    subTasks.removeAt(event.index)
-                    _uiState.update { it.copy(subQuests = subTasks) }
+                _uiState.update { state ->
+                    state.copy(
+                        subQuests = state.subQuests.filterIndexed { i, _ -> i != event.index }
+                    )
+                }
+            }
+
+            is EditQuestUiEvent.OnMoveSubQuest -> {
+                _uiState.update { state ->
+                    val mutableList = state.subQuests.toMutableList()
+                    val item = mutableList.removeAt(event.fromIndex - 3)
+                    mutableList.add(event.toIndex - 3, item)
+
+                    state.copy(subQuests = mutableList)
                 }
             }
 

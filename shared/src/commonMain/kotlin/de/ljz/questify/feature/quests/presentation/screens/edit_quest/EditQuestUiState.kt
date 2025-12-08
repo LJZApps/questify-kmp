@@ -1,7 +1,7 @@
 package de.ljz.questify.feature.quests.presentation.screens.edit_quest
 
-import de.ljz.questify.feature.quests.data.models.SubQuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.AddingDateTimeState
+import de.ljz.questify.feature.quests.data.models.descriptors.SubQuestModel
 
 data class EditQuestUiState(
     val title: String,
@@ -13,7 +13,7 @@ data class EditQuestUiState(
     val categoryId: Int?,
 
     val notificationTriggerTimes: List<Long>,
-    val subQuests: List<SubQuestEntity>,
+    val subQuests: List<SubQuestModel>,
 
     val addingDateTimeState: AddingDateTimeState,
     val dialogState: EditQuestDialogState,
