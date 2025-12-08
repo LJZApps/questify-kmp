@@ -21,8 +21,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import de.ljz.questify.core.presentation.components.expressive.menu.ExpressiveMenuItem
@@ -88,9 +92,22 @@ fun SetDueDateBottomSheet(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
+            val dateAnnotatedString = buildAnnotatedString {
+                append("Datum auswählen ")
+
+                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                    append("*")
+                }
+            }
+
             ExpressiveSettingsSection {
                 ExpressiveMenuItem(
-                    title = if (selectedDate != 0L) dateFormat.format(selectedDate) else "Datum auswählen",
+                    title = {
+                        if (selectedDate != 0L)
+                            Text(dateFormat.format(selectedDate))
+                        else
+                            Text(dateAnnotatedString)
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_calendar_today_outlined),
@@ -182,9 +199,12 @@ fun SetDueDateBottomSheet(
                             onConfirm(0L)
                         }
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = selectedDate != 0L
                 ) {
-                    Text("Speichern")
+                    Text(
+                        text = stringResource(R.string.save)
+                    )
                 }
             }
 

@@ -41,7 +41,6 @@ fun SetDueDateDialog(
         initialDisplayMode = DisplayMode.Picker,
         initialSelectedDateMillis = initialMillis,
         selectableDates = object : SelectableDates {
-            // Erlaube Auswahl ab heute (Mitternacht)
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val isSelectableTime = Calendar.getInstance()
                 isSelectableTime.set(Calendar.HOUR_OF_DAY, 0)

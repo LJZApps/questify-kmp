@@ -280,9 +280,9 @@ private fun ExperimentalCreateQuestScreen(
                             .focusRequester(focusRequester),
                         textStyle = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurface
                         ),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -305,7 +305,8 @@ private fun ExperimentalCreateQuestScreen(
                                 placeholder = {
                                     Text(
                                         text = "Titel",
-                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 },
                                 contentPadding = PaddingValues(0.dp),
@@ -384,13 +385,13 @@ private fun ExperimentalCreateQuestScreen(
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
                         textStyle = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurface
                         ),
                         keyboardOptions = KeyboardOptions(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
                         minLines = 2,
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                         decorationBox = @Composable { innerTextField ->
                             TextFieldDefaults.DecorationBox(
                                 value = uiState.description,
@@ -409,7 +410,8 @@ private fun ExperimentalCreateQuestScreen(
                                 placeholder = {
                                     Text(
                                         text = "Beschreibung",
-                                        style = MaterialTheme.typography.bodyLarge
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 },
                                 contentPadding = PaddingValues(0.dp),
@@ -489,9 +491,9 @@ private fun ExperimentalCreateQuestScreen(
                                         .weight(1f)
                                         .focusRequester(itemFocusRequester),
                                     textStyle = MaterialTheme.typography.titleMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = MaterialTheme.colorScheme.onSurface
                                     ),
-                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                                     singleLine = true,
                                     maxLines = 1,
                                     keyboardOptions = KeyboardOptions(
@@ -521,7 +523,8 @@ private fun ExperimentalCreateQuestScreen(
                                             interactionSource = interactionSource,
                                             placeholder = {
                                                 Text(
-                                                    text = "Neue Unteraufgabe"
+                                                    text = "Neue Unteraufgabe",
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             },
                                             contentPadding = PaddingValues(0.dp)
