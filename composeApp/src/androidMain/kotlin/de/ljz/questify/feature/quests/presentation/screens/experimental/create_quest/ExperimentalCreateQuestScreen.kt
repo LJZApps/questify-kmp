@@ -327,9 +327,9 @@ private fun ExperimentalCreateQuestScreen(
                             label = {
                                 Text(
                                     text = when (uiState.difficulty) {
-                                        0 -> "Leicht"
-                                        1 -> "Mittel"
-                                        2 -> "Schwer"
+                                        0 -> stringResource(R.string.difficulty_easy)
+                                        1 -> stringResource(R.string.difficulty_medium)
+                                        2 -> stringResource(R.string.difficulty_hard)
                                         else -> ""
                                     }
                                 )

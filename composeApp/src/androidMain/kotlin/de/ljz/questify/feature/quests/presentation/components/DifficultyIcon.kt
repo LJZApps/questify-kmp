@@ -76,25 +76,6 @@ fun HardIcon(
 }
 
 @Composable
-fun EpicIcon(
-    modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.primary
-) {
-    DifficultyIconContainer {
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                SwordIcon(modifier, tint)
-                SwordIcon(modifier, tint)
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                SwordIcon(modifier, tint)
-                SwordIcon(modifier, tint)
-            }
-        }
-    }
-}
-
-@Composable
 fun SwordIcon(
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.primary
@@ -153,14 +134,6 @@ fun DifficultyIconsPreview() {
             HardIcon()
             Text(
                 stringResource(id = R.string.difficulty_hard), 
-                fontSize = 10.sp, 
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            EpicIcon()
-            Text(
-                stringResource(id = R.string.difficulty_epic), 
                 fontSize = 10.sp, 
                 color = MaterialTheme.colorScheme.onBackground
             )
