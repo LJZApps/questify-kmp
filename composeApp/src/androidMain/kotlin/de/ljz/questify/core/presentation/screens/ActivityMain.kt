@@ -31,8 +31,6 @@ import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQu
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestRoute
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
-import de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest.ExperimentalCreateQuestRoute
-import de.ljz.questify.feature.quests.presentation.screens.experimental.create_quest.ExperimentalCreateQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceRoute
@@ -92,7 +90,7 @@ class ActivityMain : AppCompatActivity() {
                                         },
                                         onNavigateToCreateQuestScreen = { selectedList ->
                                             backStack.add(
-                                                ExperimentalCreateQuestRoute(
+                                                CreateQuestRoute(
                                                     selectedCategoryIndex = selectedList
                                                 )
                                             )
@@ -131,15 +129,6 @@ class ActivityMain : AppCompatActivity() {
 
                                 entry<CreateQuestRoute> { key ->
                                     CreateQuestScreen(
-                                        selectedCategoryIndex = key.selectedCategoryIndex,
-                                        onNavigateBack = {
-                                            backStack.removeLastOrNull()
-                                        }
-                                    )
-                                }
-
-                                entry<ExperimentalCreateQuestRoute> { key ->
-                                    ExperimentalCreateQuestScreen(
                                         selectedCategoryIndex = key.selectedCategoryIndex,
                                         onNavigateBack = {
                                             backStack.removeLastOrNull()

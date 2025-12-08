@@ -1,67 +1,56 @@
 package de.ljz.questify.feature.quests.presentation.screens.create_quest
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.AppBarRow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.FlexibleBottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.ToggleButton
-import androidx.compose.material3.TooltipAnchorPosition
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -69,9 +58,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.buttons.AppOutlinedButton
+import de.ljz.questify.core.presentation.components.chips.InfoChip
 import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
-import de.ljz.questify.core.utils.MaxWidth
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.presentation.components.EasyIcon
 import de.ljz.questify.feature.quests.presentation.components.HardIcon
@@ -80,10 +68,14 @@ import de.ljz.questify.feature.quests.presentation.dialogs.CreateReminderDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueDateDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.SetDueTimeDialog
 import de.ljz.questify.feature.quests.presentation.sheets.SelectCategoryBottomSheet
+import de.ljz.questify.feature.quests.presentation.sheets.SelectDifficultyBottomSheet
+import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -131,22 +123,31 @@ private fun CreateQuestScreen(
     categories: List<QuestCategoryEntity>,
     onUiEvent: (CreateQuestUiEvent) -> Unit
 ) {
-    var dropdownExpanded by remember { mutableStateOf(false) }
+    val dialogState = uiState.dialogState
 
+    val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val interactionSource =
+        remember { MutableInteractionSource() }
 
-    val dateFormat = SimpleDateFormat("dd. MMM yyyy", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
-    val difficultyOptions = listOf(
-        stringResource(R.string.difficulty_easy),
-        stringResource(R.string.difficulty_medium),
-        stringResource(R.string.difficulty_hard),
-    )
+    val listState = rememberLazyListState()
+    val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
+        onUiEvent(CreateQuestUiEvent.OnMoveSubQuest(from.index, to.index))
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+        haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+    }
+    var indexToFocus by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(indexToFocus) {
+        indexToFocus?.let { index ->
+            scope.launch {
+                listState.animateScrollToItem(index + 3)
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -154,15 +155,21 @@ private fun CreateQuestScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                scrollBehavior = scrollBehavior,
+            TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(
-                            R.string.create_quest_top_bar_title,
-                        ),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Crossfade(
+                        selectedCategory
+                    ) {
+                        it?.let {
+                            InfoChip(
+                                label = {
+                                    Text(
+                                        text = it.text
+                                    )
+                                }
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     BasicPlainTooltip(
@@ -179,449 +186,361 @@ private fun CreateQuestScreen(
                             )
                         }
                     }
-                },
-                actions = {
-                    BasicPlainTooltip(
-                        text = "Mehr",
-                        position = TooltipAnchorPosition.Below
-                    ) {
-                        IconButton(
-                            onClick = {
-                                dropdownExpanded = true
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_more_vert),
-                                contentDescription = null
-                            )
-                        }
-                    }
-
-                    DropdownMenu(
-                        expanded = dropdownExpanded,
-                        onDismissRequest = { dropdownExpanded = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = selectedCategory?.text ?: "Liste"
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_label_filled),
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                dropdownExpanded = false
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
-                            }
-                        )
-                    }
                 }
             )
         },
         bottomBar = {
-            Column {
-                HorizontalDivider(
+            FlexibleBottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .imePadding()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
-                )
-
-                Button(
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onUiEvent(CreateQuestUiEvent.OnCreateQuest)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .padding(bottom = 4.dp, top = 4.dp)
-                        .imePadding()
-                        .navigationBarsPadding(),
-                    enabled = uiState.title.trim().isNotEmpty()
                 ) {
-                    Text(
-                        text = "Quest erstellen"
-                    )
+                    AppBarRow {
+                        clickableItem(
+                            onClick = {
+                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+
+                                indexToFocus = uiState.subQuests.size
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add_box_outlined),
+                                    contentDescription = null
+                                )
+                            },
+                            label = "Unteraufgabe hinzufügen"
+                        )
+
+                        clickableItem(
+                            onClick = {
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_label_outlined),
+                                    contentDescription = null
+                                )
+                            },
+                            label = "Liste"
+                        )
+
+                        clickableItem(
+                            onClick = {
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SetDueDateSheet(uiState.selectedCombinedDueDate)))
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_schedule_outlined),
+                                    contentDescription = null
+                                )
+                            },
+                            label = "Fälligkeit"
+                        )
+                    }
+
+                    TextButton(
+                        onClick = {
+                            onUiEvent(CreateQuestUiEvent.OnCreateQuest)
+                        }
+                    ) {
+                        Text("Speichern")
+                    }
                 }
             }
         },
         content = { innerPadding ->
-            Column(
+            LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .widthIn(max = MaxWidth),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Column(
+                item {
+                    BasicTextField(
+                        value = uiState.title,
+                        onValueChange = { value ->
+                            onUiEvent(CreateQuestUiEvent.OnTitleUpdated(value))
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        textStyle = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        decorationBox = @Composable { innerTextField ->
+                            TextFieldDefaults.DecorationBox(
+                                value = uiState.title,
+                                enabled = true,
+                                innerTextField = innerTextField,
+                                singleLine = false,
+                                visualTransformation = VisualTransformation.None,
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        text = "Titel",
+                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                contentPadding = PaddingValues(0.dp),
+                                interactionSource = interactionSource
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
                     ) {
-                        Text(
-                            text = "Titel",
-                            style = MaterialTheme.typography.titleMedium
+                        InfoChip(
+                            label = {
+                                Text(
+                                    text = when (uiState.difficulty) {
+                                        0 -> stringResource(R.string.difficulty_easy)
+                                        1 -> stringResource(R.string.difficulty_medium)
+                                        2 -> stringResource(R.string.difficulty_hard)
+                                        else -> ""
+                                    }
+                                )
+                            },
+                            leadingIcon = {
+                                when (uiState.difficulty) {
+                                    0 -> EasyIcon(
+                                        tint = LocalContentColor.current
+                                    )
+
+                                    1 -> MediumIcon(
+                                        tint = LocalContentColor.current
+                                    )
+
+                                    2 -> HardIcon(
+                                        tint = LocalContentColor.current
+                                    )
+                                }
+                            },
+                            modifier = Modifier.clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectDifficultySheet))
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
-                        OutlinedTextField(
-                            value = uiState.title,
-                            onValueChange = {
-                                onUiEvent(CreateQuestUiEvent.OnTitleUpdated(it))
-                            },
+                        if (uiState.selectedCombinedDueDate != 0L) {
+                            InfoChip(
+                                label = {
+                                    Text(dateTimeFormat.format(uiState.selectedCombinedDueDate))
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_event_filled),
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    BasicTextField(
+                        value = uiState.description,
+                        onValueChange = { value ->
+                            onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(value))
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        minLines = 2,
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                        decorationBox = @Composable { innerTextField ->
+                            TextFieldDefaults.DecorationBox(
+                                value = uiState.description,
+                                enabled = true,
+                                innerTextField = innerTextField,
+                                singleLine = false,
+                                visualTransformation = VisualTransformation.None,
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        text = "Beschreibung",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                contentPadding = PaddingValues(0.dp),
+                                interactionSource = interactionSource
+                            )
+                        }
+                    )
+                }
+
+                itemsIndexed(
+                    items = uiState.subQuests,
+                    key = { _, item -> item.tempId }
+                ) { index, subQuest ->
+                    val itemFocusRequester = remember { FocusRequester() }
+                    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+
+                    LaunchedEffect(indexToFocus) {
+                        if (indexToFocus == index) {
+                            itemFocusRequester.requestFocus()
+                            indexToFocus = null
+                        }
+                    }
+
+                    ReorderableItem(
+                        state = reorderableState,
+                        key = subQuest.tempId
+                    ) { isDragging ->
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .focusRequester(focusRequester),
-                            placeholder = {
-                                Text(
-                                    text = "Gib den Titel deiner Quest ein..."
-                                )
-                            },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = KeyboardActions {
-                                focusManager.moveFocus(FocusDirection.Next)
-                            }
-                        )
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Notizen",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        OutlinedTextField(
-                            value = uiState.description,
-                            onValueChange = {
-                                onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(it))
-                            },
-                            placeholder = { Text("Füge hier detaillierte Notizen hinzu...") },
-                            modifier = Modifier.fillMaxWidth(),
-                            minLines = 3,
-                            maxLines = 3,
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                            )
-                        )
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Fälligkeitsdatum & Zeit",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val dateInteractionSource = remember { MutableInteractionSource() }
-                            val isDateFocused: Boolean by dateInteractionSource.collectIsFocusedAsState()
-                            val timeInteractionSource = remember { MutableInteractionSource() }
-                            val isTimeFocused: Boolean by timeInteractionSource.collectIsFocusedAsState()
-
-                            val date = Date(uiState.selectedCombinedDueDate)
-                            val formattedDate = dateFormat.format(date)
-                            val formattedTime = timeFormat.format(date)
-
-                            LaunchedEffect(isDateFocused) {
-                                if (isDateFocused) {
-                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.DatePicker))
-                                }
-                            }
-
-                            LaunchedEffect(isTimeFocused) {
-                                if (isTimeFocused) {
-                                    onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.TimePicker))
-                                }
-                            }
-
-                            OutlinedTextField(
-                                value = if (uiState.selectedCombinedDueDate.toInt() == 0) "" else formattedDate,
-                                onValueChange = {},
-                                modifier = Modifier.weight(2f),
-                                placeholder = {
-                                    Text(text = "Datum")
-                                },
-                                singleLine = true,
-                                readOnly = true,
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_calendar_today_filled),
-                                        contentDescription = null
-                                    )
-                                },
-                                interactionSource = dateInteractionSource
-                            )
-
-                            OutlinedTextField(
-                                value = if (uiState.selectedCombinedDueDate == 0L) "" else formattedTime,
-                                onValueChange = {},
-                                modifier = Modifier.weight(1f),
-                                placeholder = {
-                                    Text(text = "Zeit")
-                                },
-                                singleLine = true,
-                                readOnly = true,
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_schedule_outlined),
-                                        contentDescription = null
-                                    )
-                                },
-                                interactionSource = timeInteractionSource
-                            )
-                        }
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Erinnerungen",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            uiState.notificationTriggerTimes.sorted()
-                                .forEachIndexed { index, triggerTime ->
-                                    FilterChip(
-                                        selected = false,
-                                        onClick = {
-                                            onUiEvent(CreateQuestUiEvent.OnRemoveReminder(index = index))
-                                        },
-                                        label = { Text(dateTimeFormat.format(Date(triggerTime))) },
-                                        leadingIcon = {
-                                            Icon(
-                                                painter = painterResource(R.drawable.ic_notifications_outlined),
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(18.dp)
-                                            )
-                                        },
-                                        colors = FilterChipDefaults.elevatedFilterChipColors()
-                                    )
-                                }
-                        }
-
-                        AppOutlinedButton(
-                            onClick = {
-                                onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.AddReminder))
-                            },
-                            modifier = Modifier.fillMaxWidth(),
+                                .padding(horizontal = 16.dp, vertical = 2.dp)
+                                .bringIntoViewRequester(bringIntoViewRequester),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_add),
-                                    contentDescription = null
-                                )
-
-                                Text("Erinnerung hinzufügen")
-                            }
-                        }
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Schwierigkeit",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                        ) {
-                            val modifiers = List(difficultyOptions.size) { Modifier.weight(1f) }
-
-                            difficultyOptions.forEachIndexed { index, label ->
-                                ToggleButton(
-                                    checked = uiState.difficulty == index,
-                                    onCheckedChange = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                                        onUiEvent(CreateQuestUiEvent.OnDifficultyUpdated(value = index))
-                                    },
-                                    modifier = modifiers[index].semantics {
-                                        role = Role.RadioButton
-                                    },
-                                    shapes = when (index) {
-                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                        difficultyOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                    },
+                                CompositionLocalProvider(
+                                    value = LocalMinimumInteractiveComponentSize provides 0.dp
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    IconButton(
+                                        onClick = {},
+                                        modifier = Modifier.draggableHandle(
+                                            onDragStarted = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                            },
+                                            onDragStopped = {
+                                                haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
+                                            },
+                                        )
                                     ) {
-                                        val tint = if (uiState.difficulty == index)
-                                            MaterialTheme.colorScheme.onPrimary
-                                        else
-                                            MaterialTheme.colorScheme.onSurfaceVariant
-
-                                        when (index) {
-                                            0 -> EasyIcon(tint = tint)
-                                            1 -> MediumIcon(tint = tint)
-                                            2 -> HardIcon(tint = tint)
-                                        }
-
-                                        Text(label)
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_drag_indicator),
+                                            contentDescription = "Verschieben",
+                                        )
                                     }
                                 }
-                            }
-                        }
-                    }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Unteraufgaben",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            uiState.subQuests.forEachIndexed { index, subTask ->
-                                val subTaskFocusManager = LocalFocusManager.current
-                                val subTaskFocusRequester = remember { FocusRequester() }
-
-                                LaunchedEffect(index) {
-                                    subTaskFocusRequester.requestFocus()
-                                }
-
-                                OutlinedCard(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.outlinedCardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                                    )
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier
-                                            .padding(
-                                                horizontal = 16.dp,
-                                                vertical = 8.dp
+                                BasicTextField(
+                                    value = subQuest.text,
+                                    onValueChange = {
+                                        onUiEvent(
+                                            CreateQuestUiEvent.OnUpdateSubQuest(
+                                                index = index,
+                                                value = it
                                             )
-                                            .fillMaxWidth()
-                                    ) {
-                                        val interactionSource =
-                                            remember { MutableInteractionSource() }
-
-                                        BasicTextField(
-                                            value = subTask.text,
-                                            onValueChange = {
-                                                onUiEvent(
-                                                    CreateQuestUiEvent.OnUpdateSubQuest(
-                                                        index = index,
-                                                        value = it
-                                                    )
-                                                )
-                                            },
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .focusRequester(subTaskFocusRequester),
-                                            textStyle = MaterialTheme.typography.titleMedium.copy(
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            ),
-                                            cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurfaceVariant),
-                                            singleLine = true,
-                                            maxLines = 1,
-                                            keyboardOptions = KeyboardOptions(
-                                                imeAction = ImeAction.Next,
-                                                capitalization = KeyboardCapitalization.Sentences
-                                            ),
-                                            keyboardActions = KeyboardActions {
-                                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
-                                            },
-                                            decorationBox = @Composable { innerTextField ->
-                                                TextFieldDefaults.DecorationBox(
-                                                    value = subTask.text,
-                                                    enabled = true,
-                                                    innerTextField = innerTextField,
-                                                    singleLine = true,
-                                                    visualTransformation = VisualTransformation.None,
-                                                    colors = TextFieldDefaults.colors(
-                                                        focusedIndicatorColor = Color.Transparent,
-                                                        unfocusedIndicatorColor = Color.Transparent,
-                                                        disabledIndicatorColor = Color.Transparent,
-                                                        focusedContainerColor = Color.Transparent,
-                                                        unfocusedContainerColor = Color.Transparent,
-                                                        disabledContainerColor = Color.Transparent,
-                                                    ),
-                                                    interactionSource = interactionSource,
-                                                    placeholder = {
-                                                        Text(
-                                                            text = "Text hier eingeben"
-                                                        )
-                                                    },
-                                                    contentPadding = PaddingValues(0.dp)
-                                                )
-                                            }
                                         )
 
-                                        IconButton(
-                                            onClick = {
-                                                if ((uiState.subQuests.count() - 1) > 0) {
-                                                    subTaskFocusManager.moveFocus(FocusDirection.Previous)
-                                                } else {
-                                                    subTaskFocusManager.clearFocus()
-                                                }
-
-                                                onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index))
-                                            }
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.ic_delete_outlined),
-                                                contentDescription = null
-                                            )
+                                        scope.launch {
+                                            bringIntoViewRequester.bringIntoView()
                                         }
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .focusRequester(itemFocusRequester),
+                                    textStyle = MaterialTheme.typography.titleMedium.copy(
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    ),
+                                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                                    singleLine = true,
+                                    maxLines = 1,
+                                    keyboardOptions = KeyboardOptions(
+                                        imeAction = ImeAction.Next,
+                                        capitalization = KeyboardCapitalization.Sentences
+                                    ),
+                                    keyboardActions = KeyboardActions {
+                                        onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
+
+                                        indexToFocus = uiState.subQuests.size
+                                    },
+                                    decorationBox = @Composable { innerTextField ->
+                                        TextFieldDefaults.DecorationBox(
+                                            value = subQuest.text,
+                                            enabled = true,
+                                            innerTextField = innerTextField,
+                                            singleLine = true,
+                                            visualTransformation = VisualTransformation.None,
+                                            colors = TextFieldDefaults.colors(
+                                                focusedIndicatorColor = Color.Transparent,
+                                                unfocusedIndicatorColor = Color.Transparent,
+                                                disabledIndicatorColor = Color.Transparent,
+                                                focusedContainerColor = Color.Transparent,
+                                                unfocusedContainerColor = Color.Transparent,
+                                                disabledContainerColor = Color.Transparent,
+                                            ),
+                                            interactionSource = interactionSource,
+                                            placeholder = {
+                                                Text(
+                                                    text = "Neue Unteraufgabe",
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            },
+                                            contentPadding = PaddingValues(0.dp)
+                                        )
                                     }
-                                }
-                            }
-                        }
-
-                        AppOutlinedButton(
-                            onClick = {
-                                onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_add),
-                                    contentDescription = null
                                 )
+                            }
 
-                                Text("Unteraufgabe hinzufügen")
+
+                            CompositionLocalProvider(
+                                value = LocalMinimumInteractiveComponentSize provides 0.dp
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index = index))
+                                    },
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_close),
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
                     }
@@ -645,41 +564,42 @@ private fun CreateQuestScreen(
                 )
             }
 
-            val initialDateTimeMillis = uiState.selectedCombinedDueDate.takeIf { it != 0L }
+            val initialDateMillis = uiState.selectedDueDate.takeIf { it != 0L }
+            val initialTimeMillis = uiState.selectedDueTime.takeIf { it != 0L }
 
-            if (uiState.dialogState is CreateQuestDialogState.DatePicker) {
+            if (uiState.subDialogState is CreateQuestSubDialogState.DatePicker) {
                 SetDueDateDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnUpdateDueDate(value = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
-                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                        onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
                         focusManager.clearFocus()
                     },
                     onRemoveDueDate = {
                         onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
                         focusManager.clearFocus()
                     },
-                    initialSelectedDateTimeMillis = initialDateTimeMillis
+                    initialSelectedDateTimeMillis = initialDateMillis
                 )
             }
 
-            if (uiState.dialogState is CreateQuestDialogState.TimePicker) {
+            if (uiState.subDialogState is CreateQuestSubDialogState.TimePicker) {
                 SetDueTimeDialog(
                     onConfirm = { timestamp ->
-                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp = timestamp))
+                        onUiEvent(CreateQuestUiEvent.OnUpdateDueTime(value = timestamp))
                         focusManager.clearFocus()
                     },
                     onDismiss = {
-                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                        onUiEvent(CreateQuestUiEvent.OnCloseSubDialog)
                         focusManager.clearFocus()
                     },
                     onRemoveDueDate = {
                         onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
                         focusManager.clearFocus()
                     },
-                    initialSelectedDateTimeMillis = initialDateTimeMillis
+                    initialSelectedDateTimeMillis = initialTimeMillis
                 )
             }
 
@@ -697,6 +617,41 @@ private fun CreateQuestScreen(
                     },
                     onCreateCategory = { text ->
                         onUiEvent(CreateQuestUiEvent.OnCreateQuestCategory(value = text))
+                    }
+                )
+            }
+
+            if (uiState.dialogState is CreateQuestDialogState.SelectDifficultySheet) {
+                SelectDifficultyBottomSheet(
+                    difficulty = uiState.difficulty,
+                    onDifficultySelected = { value ->
+                        onUiEvent(CreateQuestUiEvent.OnDifficultyUpdated(value))
+                    },
+                    onDismiss = {
+                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
+                    }
+                )
+            }
+
+            if (dialogState is CreateQuestDialogState.SetDueDateSheet) {
+                SetDueDateBottomSheet(
+                    selectedCombinedDueDate = dialogState.selectedCombinedDueDate,
+                    selectedDate = uiState.selectedDueDate,
+                    selectedTime = uiState.selectedDueTime,
+                    onShowSubDialog = { subDialogState ->
+                        onUiEvent(CreateQuestUiEvent.OnShowSubDialog(subDialogState))
+                    },
+                    onUpdateTempDueDate = { date, time ->
+                        onUiEvent(CreateQuestUiEvent.OnUpdateTempDueDate(date, time))
+                    },
+                    onConfirm = { timestamp ->
+                        onUiEvent(CreateQuestUiEvent.OnSetCombinedDueDate(timestamp))
+                    },
+                    onRemoveDueDate = {
+                        onUiEvent(CreateQuestUiEvent.OnRemoveDueDate)
+                    },
+                    onDismiss = {
+                        onUiEvent(CreateQuestUiEvent.OnCloseDialog)
                     }
                 )
             }
