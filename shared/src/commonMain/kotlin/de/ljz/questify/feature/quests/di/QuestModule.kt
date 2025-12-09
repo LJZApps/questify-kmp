@@ -22,6 +22,7 @@ import de.ljz.questify.feature.quests.domain.use_cases.CompleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteQuestUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.DeleteSubQuestUseCase
+import de.ljz.questify.feature.quests.domain.use_cases.DeleteSubQuestsUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.GetAllQuestCategoriesUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.GetAllQuestsForCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.GetAllQuestsUseCase
@@ -74,6 +75,7 @@ val questModule = module {
     factoryOf(::DeleteQuestCategoryUseCase)
     factoryOf(::DeleteQuestUseCase)
     factoryOf(::DeleteSubQuestUseCase)
+    factoryOf(::DeleteSubQuestsUseCase)
     factoryOf(::GetAllQuestCategoriesUseCase)
     factoryOf(::GetAllQuestsForCategoryUseCase)
     factoryOf(::GetAllQuestsUseCase)
@@ -117,6 +119,7 @@ val questModule = module {
             addQuestCategoryUseCase = get(),
             getAllQuestCategoriesUseCase = get(),
             addSubQuestsUseCase = get(),
+            deleteSubQuestsUseCase = get(),
             deleteSubQuestUseCase = get(),
             addQuestNotificationUseCase = get(),
             cancelQuestNotificationsUseCase = get(),

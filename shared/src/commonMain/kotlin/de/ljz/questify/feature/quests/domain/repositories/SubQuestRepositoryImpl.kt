@@ -24,6 +24,12 @@ class SubQuestRepositoryImpl(
         )
     }
 
+    override suspend fun deleteSubQuests(id: Int) {
+        subQuestDao.deleteSubQuests(
+            id = id
+        )
+    }
+
     override suspend fun checkSubQuest(id: Int, checked: Boolean) {
         subQuestDao.checkSubQuest(
             id = id,

@@ -1,0 +1,11 @@
+package de.ljz.questify.feature.quests.domain.use_cases
+
+import de.ljz.questify.feature.quests.domain.repositories.SubQuestRepository
+
+class DeleteSubQuestsUseCase(
+    private val subQuestRepository: SubQuestRepository
+) {
+    suspend operator fun invoke(id: Int) {
+        subQuestRepository.deleteSubQuests(id)
+    }
+}

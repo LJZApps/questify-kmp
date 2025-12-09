@@ -403,7 +403,7 @@ private fun CreateQuestScreen(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "Beschreibung",
+                                        text = "Notizen",
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

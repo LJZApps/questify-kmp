@@ -38,9 +38,11 @@ data class SubQuestEntity(
 )
 
 fun SubQuestEntity.toModel(
+    id: Int,
     text: String
 ): SubQuestModel {
     return SubQuestModel(
+        id = id,
         text = text
     )
 }
