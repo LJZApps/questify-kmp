@@ -248,4 +248,7 @@
     <string name="drawer_content_questify_title">Questify</string>
     <string name="drawer_content_profile_picture_content_description">Profile picture</string>
     <string name="drawer_content_settings_title">Settings</string>
+    <string name="onboarding_start_questify_page_title">Ready to conquer your goals?</string>
+    <string name="onboarding_start_questify_page_description">Your adventure in productivity begins now. Let\'s complete these quests!</string>
+    <string name="onboarding_start_questify_page_start_questify_button">Start Questify</string>
 </resources>

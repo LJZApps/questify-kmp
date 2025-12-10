@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,7 +54,7 @@ fun StartQuestifyPage(
             )
 
             Text(
-                text = "Bereit, deine Ziele zu erobern?",
+                text = stringResource(R.string.onboarding_start_questify_page_title),
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -62,7 +63,7 @@ fun StartQuestifyPage(
             )
 
             Text(
-                text = "Dein Abenteuer in der Produktivität beginnt jetzt. Lass uns diese Quests erledigen!",
+                text = stringResource(R.string.onboarding_start_questify_page_description),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 lineHeight = 28.sp,
@@ -81,7 +82,7 @@ fun StartQuestifyPage(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Text("Questify starten")
+            Text(stringResource(R.string.onboarding_start_questify_page_start_questify_button))
         }
     }
 }

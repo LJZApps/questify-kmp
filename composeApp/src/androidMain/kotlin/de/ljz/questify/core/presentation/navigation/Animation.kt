@@ -29,7 +29,6 @@ fun scaleContentTransform(
         animationSpec = tween(durationMillis = durationMillis, delayMillis = delayMillis, easing = FastOutSlowInEasing)
     ) + fadeOut(animationSpec = tween(durationMillis = durationMillis, delayMillis = delayMillis, easing = FastOutSlowInEasing))
 
-    // EnterTransition togetherWith ExitTransition => ContentTransform
     return enter togetherWith exit
 }
 

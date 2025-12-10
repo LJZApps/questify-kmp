@@ -52,23 +52,12 @@ fun TopBar(
             }) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }
         },
         actions = {
             actions()
-            /*IconButton(
-                onClick = {
-                    showMenu = !showMenu
-                }
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.no_profile_pic),
-                    contentDescription = null,
-                    modifier = Modifier.clip(CircleShape)
-                )
-            }*/
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(

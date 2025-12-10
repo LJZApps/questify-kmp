@@ -246,4 +246,7 @@
     <string name="drawer_content_questify_title">Questify</string>
     <string name="drawer_content_profile_picture_content_description">Profilbild</string>
     <string name="drawer_content_settings_title">Einstellungen</string>
+    <string name="onboarding_start_questify_page_title">Bereit, deine Zeile zu erobern?</string>
+    <string name="onboarding_start_questify_page_description">Dein Abenteuer in der Produktivität beginnt jetzt. Lass uns diese Quests erledigen!</string>
+    <string name="onboarding_start_questify_page_start_questify_button">Questify starten</string>
 </resources>
