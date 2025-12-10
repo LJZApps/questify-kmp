@@ -26,7 +26,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Instant
@@ -85,27 +88,36 @@ class EditQuestViewModel(
 
     init {
         viewModelScope.launch {
-            launch {
-                getAllQuestCategoriesUseCase.invoke()
-                    .collectLatest { _categories.value = it }
+            val questFlow = flow { emit(getQuestByIdUseCase(id)) }
+            val categoriesFlow = getAllQuestCategoriesUseCase()
+
+            combine(questFlow, categoriesFlow) { questWithDetails, categories ->
+                Triple(questWithDetails, categories, questWithDetails.quest.categoryId)
             }
+                .take(1)
+                .collect { (questWithDetails, categories, categoryId) ->
+
+                    _categories.value = categories
+                    _copiedQuestEntity = questWithDetails.quest
+
+                    val matchingCategory = categories.find { it.id == categoryId }
+                    _selectedCategory.value = matchingCategory
+
+                    _uiState.update { state ->
+                        state.copy(
+                            title = questWithDetails.quest.title,
+                            notes = questWithDetails.quest.notes ?: "",
+                            difficulty = questWithDetails.quest.difficulty.ordinal,
+                            combinedDueDate = questWithDetails.quest.dueDate?.toEpochMilliseconds() ?: 0L,
+                            categoryId = categoryId,
+                            subQuests = questWithDetails.subTasks.map { it.toModel(id = it.id, text = it.text) }
+                        )
+                    }
+                }
 
             launch {
-                getQuestByIdUseCase.invoke(id).let { questWithSubQuests ->
-                    questWithSubQuests.quest.let { questEntity ->
-                        _copiedQuestEntity = questEntity
-
-                        _uiState.update { state ->
-                            state.copy(
-                                title = questEntity.title,
-                                notes = questEntity.notes ?: "",
-                                difficulty = questEntity.difficulty.ordinal,
-                                combinedDueDate = questEntity.dueDate?.toEpochMilliseconds() ?: 0L,
-                                categoryId = questEntity.categoryId,
-                                subQuests = questWithSubQuests.subTasks.map { it.toModel(id = it.id, text = it.text) }
-                            )
-                        }
-                    }
+                getAllQuestCategoriesUseCase().collectLatest {
+                    _categories.value = it
                 }
             }
         }
