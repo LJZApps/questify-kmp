@@ -124,6 +124,10 @@ android {
     namespace = "de.ljz.questify"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    androidResources {
+        localeFilters += listOf("en", "de")
+    }
+
     defaultConfig {
         val major = 0
         val minor = 11

@@ -451,6 +451,7 @@ fun QuestDetailScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.quest_detail_rewards_title),
+                            )
 
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),

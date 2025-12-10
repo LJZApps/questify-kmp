@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -130,6 +131,7 @@ private fun QuestOverviewScreen(
     val dialogState = uiState.dialogState
 
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val staticAllTab = QuestCategoryEntity(
         id = -1,
@@ -177,7 +179,7 @@ private fun QuestOverviewScreen(
                 when (effect) {
                     is QuestOverviewUiEffect.ShowDeleteSuccessfulSnackBar -> {
                         snackbarHostState.showSnackbar(
-                            message = stringResource(R.string.delete_successful_snackbar, effect.text)
+                            message = context.getString(R.string.delete_successful_snackbar, effect.text)
                         )
                     }
                 }

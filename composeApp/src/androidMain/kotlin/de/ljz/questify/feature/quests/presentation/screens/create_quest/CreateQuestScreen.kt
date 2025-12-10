@@ -47,6 +47,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -126,6 +127,7 @@ private fun CreateQuestScreen(
     val dialogState = uiState.dialogState
 
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -212,7 +214,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = stringResource(R.string.add_subtask_label)
+                            label = context.getString(R.string.add_subtask_label)
                         )
 
                         clickableItem(
@@ -225,7 +227,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = stringResource(R.string.create_quest_screen_lists_title)
+                            label = context.getString(R.string.create_quest_screen_lists_title)
                         )
 
                         clickableItem(
@@ -238,7 +240,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = stringResource(R.string.quest_detail_screen_due_date_title)
+                            label = context.getString(R.string.quest_detail_screen_due_date_title)
                         )
                     }
 
