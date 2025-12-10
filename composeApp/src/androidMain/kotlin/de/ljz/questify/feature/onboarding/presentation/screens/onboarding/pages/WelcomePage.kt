@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,7 @@ fun WelcomePage(
             }
 
             Text(
-                text = "Willkommen bei Questify!",
+                text = stringResource(R.string.welcome_page_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp,
@@ -60,7 +61,7 @@ fun WelcomePage(
             )
 
             Text(
-                text = "Verwandle deine Aufgaben in spannende Quests und steigere deine Produktivität. Lass uns Aufgaben zum Vergnügen machen!",
+                text = stringResource(R.string.welcome_page_description),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 lineHeight = 28.sp,

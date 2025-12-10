@@ -136,7 +136,7 @@ private fun EditQuestScreen(
         haptic.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
     }
 
-    val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
+    val dateTimeFormat = SimpleDateFormat(stringResource(R.string.quest_due_date_format_short), Locale.getDefault())
     var showDeleteMenu by remember { mutableStateOf(false) }
 
     var indexToFocus by remember { mutableStateOf<Int?>(null) }
@@ -162,7 +162,7 @@ private fun EditQuestScreen(
                     }
                 },
                 navigationIcon = {
-                    BasicPlainTooltip(text = "Zurück") {
+                    BasicPlainTooltip(text = stringResource(R.string.back_tooltip)) {
                         IconButton(onClick = { onUiEvent(EditQuestUiEvent.OnNavigateUp) }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_arrow_back),
@@ -175,7 +175,7 @@ private fun EditQuestScreen(
                     val groupInteractionSource = remember { MutableInteractionSource() }
 
                     BasicPlainTooltip(
-                        text = "Mehr",
+                        text = stringResource(R.string.more_options_tooltip),
                         position = TooltipAnchorPosition.Below
                     ) {
                         IconButton(onClick = { showDeleteMenu = true }) {
@@ -200,7 +200,7 @@ private fun EditQuestScreen(
                                         contentAlignment = Alignment.CenterStart,
                                         padding = PaddingValues(start = 4.dp, end = 4.dp)
                                     ) {
-                                        Text("Quest löschen")
+                                        Text(stringResource(R.string.edit_quest_delete_menu_item))
                                     }
                                 },
                                 shape = MaterialTheme.shapes.medium,
@@ -246,7 +246,7 @@ private fun EditQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Unteraufgabe hinzufügen"
+                            label = stringResource(R.string.add_subtask_label)
                         )
 
                         clickableItem(
@@ -259,7 +259,7 @@ private fun EditQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Liste"
+                            label = stringResource(R.string.create_quest_screen_lists_title)
                         )
 
                         clickableItem(
@@ -278,7 +278,7 @@ private fun EditQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Fälligkeit"
+                            label = stringResource(R.string.quest_detail_screen_due_date_title)
                         )
                     }
 
@@ -287,7 +287,7 @@ private fun EditQuestScreen(
                             onUiEvent(EditQuestUiEvent.OnSaveQuest)
                         }
                     ) {
-                        Text("Speichern")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }
@@ -338,7 +338,7 @@ private fun EditQuestScreen(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "Titel",
+                                        text = stringResource(R.string.text_field_quest_title),
                                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -445,7 +445,7 @@ private fun EditQuestScreen(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "Notizen",
+                                        text = stringResource(R.string.text_field_quest_note),
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -504,7 +504,7 @@ private fun EditQuestScreen(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.ic_drag_indicator),
-                                            contentDescription = "Verschieben",
+                                            contentDescription = stringResource(R.string.move_subtask_content_description),
                                         )
                                     }
                                 }
@@ -559,7 +559,7 @@ private fun EditQuestScreen(
                                             interactionSource = interactionSource,
                                             placeholder = {
                                                 Text(
-                                                    text = "Unteraufgabe",
+                                                    text = stringResource(R.string.add_subtask_placeholder),
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             },

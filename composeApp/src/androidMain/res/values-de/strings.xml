@@ -249,4 +249,59 @@
     <string name="onboarding_start_questify_page_title">Bereit, deine Zeile zu erobern?</string>
     <string name="onboarding_start_questify_page_description">Dein Abenteuer in der Produktivität beginnt jetzt. Lass uns diese Quests erledigen!</string>
     <string name="onboarding_start_questify_page_start_questify_button">Questify starten</string>
+
+    <!-- Quest Strings -->
+    <string name="back_tooltip">Zurück</string>
+    <string name="add_subtask_label">Unteraufgabe hinzufügen</string>
+    <string name="add_subtask_placeholder">Neue Unteraufgabe</string>
+    <string name="move_subtask_content_description">Verschieben</string>
+    <string name="edit_quest_delete_menu_item">Quest löschen</string>
+    <string name="more_options_tooltip">Mehr</string>
+    <string name="complete_subtasks_first_hint">Erledige zuerst alle Unteraufgaben.</string>
+    <string name="quest_detail_complete_quest_button">Quest abschließen</string>
+    <string name="quest_progress_title">Fortschritt</string>
+    <string name="quest_progress_current_label">Aktueller Fortschritt:</string>
+    <string name="quest_progress_subtasks_count">%1$d von %2$d Unteraufgaben erledigt</string>
+    <string name="quest_detail_subtasks_title">Unteraufgaben</string>
+    <string name="quest_due_date_format_full">dd. MMMM yyyy \'um\' HH:mm</string>
+    <string name="quest_due_date_format_short">dd. MMM yyyy HH:mm</string>
+    <string name="quest_overview_nav_drawer_tooltip">Navigationsleiste öffnen</string>
+    <string name="quest_overview_more_options_tooltip">Weitere Optionen</string>
+    <string name="quest_overview_create_quest_tooltip">Neue Quest erstellen</string>
+    <string name="quest_overview_create_list_tooltip">Neue Liste erstellen</string>
+    <string name="quest_overview_title">Quests</string>
+    <string name="delete_successful_snackbar">%1$s gelöscht</string>
+
+    <!-- Welcome Page -->
+    <string name="welcome_page_title">Willkommen bei Questify!</string>
+    <string name="welcome_page_description">Verwandle deine Aufgaben in spannende Quests und steigere deine Produktivität. Lass uns Aufgaben zum Vergnügen machen!</string>
+
+    <!-- Settings and Profile Strings -->
+    <string name="settings_main_screen_profile_title">Mein Profil</string>
+    <string name="profile_picture_content_description">Profilbild</string>
+    <string name="settings_main_screen_settings_title">Einstellungen</string>
+    <string name="settings_main_screen_experiments_title">Experimente</string>
+    <string name="settings_main_screen_experiments_subtitle">Teste neue Funktionen vor allen anderen</string>
+    <string name="feedback_email_subject">Feedback für Questify</string>
+    <string name="feedback_email_body_template">Version name: %1$s\nVersion code: %2$d\nType: %3$s\n\n</string>
+    <string name="quest_detail_rewards_title">Belohnungen</string>
+
+    <!-- Tutorial Quests Page -->
+    <string name="tutorial_quests_page_title">Deine Quests, Dein Abenteuer</string>
+    <string name="tutorial_quests_page_create_title">Quests erstellen</string>
+    <string name="tutorial_quests_page_create_description">Teile deine Ziele in umsetzbare Aufgaben auf.</string>
+    <string name="tutorial_quests_page_manage_title">Quests verwalten</string>
+    <string name="tutorial_quests_page_manage_description">Setze Fristen und Schwierigkeiten für deine Aufgaben.</string>
+    <string name="tutorial_quests_page_complete_title">Quests abschließen</string>
+    <string name="tutorial_quests_page_complete_description">Verdiene Belohnungen und fühle dich erfüllt.</string>
+
+    <!-- Tutorial Rewards Page -->
+    <string name="tutorial_rewards_page_title">Belohnungen verdienen, aufsteigen!</string>
+    <string name="tutorial_rewards_page_description">Schließe Quests ab, um Punkte und Erfahrung (XP) zu sammeln. Sammle XP, um aufzusteigen und neue Funktionen oder Belohnungen freizuschalten!</string>
+    <string name="tutorial_rewards_page_points_title">Punkte</string>
+    <string name="tutorial_rewards_page_points_description">Für jede abgeschlossene Quest</string>
+    <string name="tutorial_rewards_page_xp_title">Erfahrung (XP)</string>
+    <string name="tutorial_rewards_page_xp_description">Bringt dich dem nächsten Level näher</string>
+    <string name="tutorial_rewards_page_rank_title">Dein Rang</string>
+    <string name="tutorial_rewards_page_rank_description">Schalte exklusive Belohnungen frei</string>
 </resources>

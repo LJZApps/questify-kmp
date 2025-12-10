@@ -28,8 +28,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.ljz.questify.R
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.StartQuestifyPage
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.TutorialQuestsPage
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.pages.TutorialRewardsPage
@@ -119,7 +121,7 @@ private fun OnboardingScreen(
                                     .fillMaxWidth()
                                     .padding(horizontal = 24.dp)
                             ) {
-                                Text(text = "Weiter")
+                                Text(text = stringResource(R.string.next))
                             }
                         }
                     }

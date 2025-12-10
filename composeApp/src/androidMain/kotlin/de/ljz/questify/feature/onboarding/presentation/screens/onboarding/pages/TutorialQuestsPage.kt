@@ -17,10 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.ljz.questify.R
 import de.ljz.questify.feature.onboarding.presentation.components.TutorialQuestComponent
 
 @Composable
@@ -37,7 +39,7 @@ fun TutorialQuestsPage(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Deine Quests, Dein Abenteuer",
+            text = stringResource(R.string.tutorial_quests_page_title),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -48,8 +50,8 @@ fun TutorialQuestsPage(
         TutorialQuestComponent(
             modifier = Modifier
                 .fillMaxWidth(),
-            title = "Quests erstellen",
-            description = "Teile deine Ziele in umsetzbare Aufgaben auf.",
+            title = stringResource(R.string.tutorial_quests_page_create_title),
+            description = stringResource(R.string.tutorial_quests_page_create_description),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Add,
@@ -62,8 +64,8 @@ fun TutorialQuestsPage(
         TutorialQuestComponent(
             modifier = Modifier
                 .fillMaxWidth(),
-            title = "Quests verwalten",
-            description = "Setze Fristen und Schwierigkeiten für deine Aufgaben.",
+            title = stringResource(R.string.tutorial_quests_page_manage_title),
+            description = stringResource(R.string.tutorial_quests_page_manage_description),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
@@ -76,8 +78,8 @@ fun TutorialQuestsPage(
         TutorialQuestComponent(
             modifier = Modifier
                 .fillMaxWidth(),
-            title = "Quests abschließen",
-            description = "Verdiene Belohnungen und fühle dich erfüllt.",
+            title = stringResource(R.string.tutorial_quests_page_complete_title),
+            description = stringResource(R.string.tutorial_quests_page_complete_description),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Check,

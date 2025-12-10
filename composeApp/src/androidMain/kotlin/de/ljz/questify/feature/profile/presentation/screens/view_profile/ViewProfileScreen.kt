@@ -122,7 +122,7 @@ private fun ViewProfileScreen(
                     if (uiState.profilePictureUrl.isNotEmpty()) {
                         AsyncImage(
                             model = uiState.profilePictureUrl,
-                            contentDescription = "Profilbild",
+                            contentDescription = stringResource(R.string.profile_picture_content_description),
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(CircleShape),
@@ -131,7 +131,7 @@ private fun ViewProfileScreen(
                     } else {
                         Icon(
                             imageVector = Icons.Default.Person,
-                            contentDescription = "Profilbild",
+                            contentDescription = stringResource(R.string.profile_picture_content_description),
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
