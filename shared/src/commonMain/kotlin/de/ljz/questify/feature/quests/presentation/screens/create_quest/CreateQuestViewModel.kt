@@ -250,6 +250,42 @@ class CreateQuestViewModel(
                 }
             }
 
+            is CreateQuestUiEvent.OnSetCombinedDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedCombinedDueDate = event.timestamp,
+                        dialogState = CreateQuestDialogState.None
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnUpdateDueTime -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.value,
+                        subDialogState = CreateQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnUpdateDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueDate = event.value,
+                        subDialogState = CreateQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is CreateQuestUiEvent.OnUpdateTempDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.time,
+                        selectedDueDate = event.date
+                    )
+                }
+            }
+
             is CreateQuestUiEvent.OnRemoveDueDate -> {
                 _uiState.update {
                     it.copy(

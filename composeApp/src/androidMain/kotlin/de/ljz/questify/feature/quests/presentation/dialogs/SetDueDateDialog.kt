@@ -16,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import java.util.Calendar
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -29,24 +31,43 @@ fun SetDueDateDialog(
     onDismiss: () -> Unit,
     initialSelectedDateTimeMillis: Long?
 ) {
-    val currentTime = Calendar.getInstance()
-    val initialMillis = initialSelectedDateTimeMillis ?: currentTime.timeInMillis
+    val initialMillis = initialSelectedDateTimeMillis ?: System.currentTimeMillis()
 
-    if (initialSelectedDateTimeMillis == null) {
-        currentTime.timeInMillis = initialMillis
+    val initialDateMillis = remember(initialMillis) {
+        val localCal = Calendar.getInstance().apply { timeInMillis = initialMillis }
+        val utcCal = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            clear()
+            set(
+                localCal.get(Calendar.YEAR),
+                localCal.get(Calendar.MONTH),
+                localCal.get(Calendar.DAY_OF_MONTH)
+            )
+        }
+        utcCal.timeInMillis
+    }
+
+    val todayUtcMillis = remember {
+        val nowLocal = Calendar.getInstance()
+        val todayUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            clear()
+            set(
+                nowLocal.get(Calendar.YEAR),
+                nowLocal.get(Calendar.MONTH),
+                nowLocal.get(Calendar.DAY_OF_MONTH)
+            )
+        }
+        todayUtc.timeInMillis
     }
 
     val datePickerState = rememberDatePickerState(
         initialDisplayMode = DisplayMode.Picker,
-        initialSelectedDateMillis = initialMillis,
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val isSelectableTime = Calendar.getInstance()
-                isSelectableTime.set(Calendar.HOUR_OF_DAY, 0)
-                isSelectableTime.set(Calendar.MINUTE, 0)
-                isSelectableTime.set(Calendar.SECOND, 0)
-                isSelectableTime.set(Calendar.MILLISECOND, 0)
-                return utcTimeMillis > isSelectableTime.timeInMillis
+        initialSelectedDateMillis = initialDateMillis,
+        selectableDates = remember(todayUtcMillis) {
+            object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    // Vergleiche UTC-Zeitstempel. Erlaube alles ab heute.
+                    return utcTimeMillis >= todayUtcMillis
+                }
             }
         }
     )
