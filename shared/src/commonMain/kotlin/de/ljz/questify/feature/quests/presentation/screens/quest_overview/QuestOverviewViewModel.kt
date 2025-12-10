@@ -163,9 +163,8 @@ class QuestOverviewViewModel(
                     deleteQuestCategoryUseCase.invoke(event.questCategoryEntity.id)
 
                     sendEffect(
-                        QuestOverviewUiEffect.ShowSnackbar(
-                            message = "${event.questCategoryEntity.text} gelöscht",
-                            withDismissAction = true
+                        QuestOverviewUiEffect.ShowDeleteSuccessfulSnackBar(
+                            text = event.questCategoryEntity.text,
                         )
                     )
                 }

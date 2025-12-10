@@ -175,10 +175,9 @@ private fun QuestOverviewScreen(
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             effectFlow.collect { effect ->
                 when (effect) {
-                    is QuestOverviewUiEffect.ShowSnackbar -> {
+                    is QuestOverviewUiEffect.ShowDeleteSuccessfulSnackBar -> {
                         snackbarHostState.showSnackbar(
-                            message = effect.message,
-                            withDismissAction = effect.withDismissAction
+                            message = "${effect.text} gelöscht"
                         )
                     }
                 }
