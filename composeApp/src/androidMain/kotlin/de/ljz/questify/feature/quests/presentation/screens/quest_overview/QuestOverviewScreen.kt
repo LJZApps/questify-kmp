@@ -177,7 +177,7 @@ private fun QuestOverviewScreen(
                 when (effect) {
                     is QuestOverviewUiEffect.ShowDeleteSuccessfulSnackBar -> {
                         snackbarHostState.showSnackbar(
-                            message = "${effect.text} gelöscht"
+                            message = stringResource(R.string.delete_successful_snackbar, effect.text)
                         )
                     }
                 }
@@ -191,7 +191,7 @@ private fun QuestOverviewScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     BasicPlainTooltip(
-                        text = "Navigationsleiste öffnen",
+                        text = stringResource(R.string.quest_overview_nav_drawer_tooltip),
                         position = TooltipAnchorPosition.Below
                     ) {
                         IconButton(
@@ -201,14 +201,14 @@ private fun QuestOverviewScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_menu),
-                                contentDescription = "Localized description"
+                                contentDescription = stringResource(R.string.quest_overview_nav_drawer_tooltip)
                             )
                         }
                     }
                 },
                 actions = {
                     BasicPlainTooltip(
-                        text = "Weitere Optionen",
+                        text = stringResource(R.string.quest_overview_more_options_tooltip),
                         position = TooltipAnchorPosition.Below
                     ) {
                         IconButton(
@@ -254,7 +254,7 @@ private fun QuestOverviewScreen(
                 },
                 title = {
                     Text(
-                        text = "Quests",
+                        text = stringResource(R.string.quest_overview_title),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -262,7 +262,7 @@ private fun QuestOverviewScreen(
         },
         floatingActionButton = {
             BasicPlainTooltip(
-                text = "Neue Quest erstellen",
+                text = stringResource(R.string.quest_overview_create_quest_tooltip),
                 position = TooltipAnchorPosition.Above
             ) {
                 FloatingActionButton(
@@ -403,7 +403,7 @@ private fun QuestOverviewScreen(
                     }
 
                     BasicPlainTooltip(
-                        text = "Neue Liste erstellen",
+                        text = stringResource(R.string.quest_overview_create_list_tooltip),
                         position = TooltipAnchorPosition.Below
                     ) {
                         ListChip(

@@ -251,4 +251,59 @@
     <string name="onboarding_start_questify_page_title">Ready to conquer your goals?</string>
     <string name="onboarding_start_questify_page_description">Your adventure in productivity begins now. Let\'s complete these quests!</string>
     <string name="onboarding_start_questify_page_start_questify_button">Start Questify</string>
+
+    <!-- Quest Strings -->
+    <string name="back_tooltip">Back</string>
+    <string name="add_subtask_label">Add subtask</string>
+    <string name="add_subtask_placeholder">New subtask</string>
+    <string name="move_subtask_content_description">Move</string>
+    <string name="edit_quest_delete_menu_item">Delete quest</string>
+    <string name="more_options_tooltip">More</string>
+    <string name="complete_subtasks_first_hint">Complete all subtasks first.</string>
+    <string name="quest_detail_complete_quest_button">Complete Quest</string>
+    <string name="quest_progress_title">Progress</string>
+    <string name="quest_progress_current_label">Current progress:</string>
+    <string name="quest_progress_subtasks_count">%1$d of %2$d subtasks completed</string>
+    <string name="quest_detail_subtasks_title">Subtasks</string>
+    <string name="quest_due_date_format_full">dd. MMMM yyyy \'at\' HH:mm</string>
+    <string name="quest_due_date_format_short">dd. MMM yyyy HH:mm</string>
+    <string name="quest_overview_nav_drawer_tooltip">Open navigation drawer</string>
+    <string name="quest_overview_more_options_tooltip">More options</string>
+    <string name="quest_overview_create_quest_tooltip">Create new quest</string>
+    <string name="quest_overview_create_list_tooltip">Create new list</string>
+    <string name="quest_overview_title">Quests</string>
+    <string name="delete_successful_snackbar">%1$s deleted</string>
+
+    <!-- Welcome Page -->
+    <string name="welcome_page_title">Welcome to Questify!</string>
+    <string name="welcome_page_description">Turn your tasks into exciting quests and increase your productivity. Let\'s make tasks fun!</string>
+
+    <!-- Settings and Profile Strings -->
+    <string name="settings_main_screen_profile_title">My Profile</string>
+    <string name="profile_picture_content_description">Profile picture</string>
+    <string name="settings_main_screen_settings_title">Settings</string>
+    <string name="settings_main_screen_experiments_title">Experiments</string>
+    <string name="settings_main_screen_experiments_subtitle">Test new features before anyone else</string>
+    <string name="feedback_email_subject">Feedback for Questify</string>
+    <string name="feedback_email_body_template">Version name: %1$s\nVersion code: %2$d\nType: %3$s\n\n</string>
+    <string name="quest_detail_rewards_title">Rewards</string>
+
+    <!-- Tutorial Quests Page -->
+    <string name="tutorial_quests_page_title">Your Quests, Your Adventure</string>
+    <string name="tutorial_quests_page_create_title">Create Quests</string>
+    <string name="tutorial_quests_page_create_description">Break your goals down into actionable tasks.</string>
+    <string name="tutorial_quests_page_manage_title">Manage Quests</string>
+    <string name="tutorial_quests_page_manage_description">Set deadlines and difficulties for your tasks.</string>
+    <string name="tutorial_quests_page_complete_title">Complete Quests</string>
+    <string name="tutorial_quests_page_complete_description">Earn rewards and feel fulfilled.</string>
+
+    <!-- Tutorial Rewards Page -->
+    <string name="tutorial_rewards_page_title">Earn rewards, level up!</string>
+    <string name="tutorial_rewards_page_description">Complete quests to earn points and experience (XP). Collect XP to level up and unlock new features or rewards!</string>
+    <string name="tutorial_rewards_page_points_title">Points</string>
+    <string name="tutorial_rewards_page_points_description">For every completed quest</string>
+    <string name="tutorial_rewards_page_xp_title">Experience (XP)</string>
+    <string name="tutorial_rewards_page_xp_description">Brings you closer to the next level</string>
+    <string name="tutorial_rewards_page_rank_title">Your Rank</string>
+    <string name="tutorial_rewards_page_rank_description">Unlock exclusive rewards</string>
 </resources>

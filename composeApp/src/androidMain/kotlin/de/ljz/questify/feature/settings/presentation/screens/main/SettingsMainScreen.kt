@@ -75,7 +75,7 @@ fun SettingsMainScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             ExpressiveSettingsSection(
-                title = "Mein Profil"
+                title = stringResource(R.string.settings_main_screen_profile_title)
             ) {
                 ExpressiveSettingsMenuLink(
                     title = uiState.userName,
@@ -91,7 +91,7 @@ fun SettingsMainScreen(
                             if (uiState.userProfilePicture.isNotEmpty()) {
                                 AsyncImage(
                                     model = uiState.userProfilePicture,
-                                    contentDescription = "Profilbild",
+                                    contentDescription = stringResource(R.string.profile_picture_content_description),
                                     modifier = Modifier
                                         .size(40.dp),
                                     contentScale = ContentScale.Crop
@@ -99,7 +99,7 @@ fun SettingsMainScreen(
                             } else {
                                 Icon(
                                     imageVector = Icons.Default.Person,
-                                    contentDescription = "Profilbild",
+                                    contentDescription = stringResource(R.string.profile_picture_content_description),
                                     modifier = Modifier
                                         .size(40.dp)
                                         .padding(5.dp),
@@ -115,7 +115,7 @@ fun SettingsMainScreen(
             }
 
             ExpressiveSettingsSection(
-                title = "Einstellungen",
+                title = stringResource(R.string.settings_main_screen_settings_title),
 //                subtitle = "Diese Funktionen sind noch in der Entwicklung. Es könnten unerwartete Fehler auftreten."
             ) {
                 /*ExpressiveSettingsMenuLink(

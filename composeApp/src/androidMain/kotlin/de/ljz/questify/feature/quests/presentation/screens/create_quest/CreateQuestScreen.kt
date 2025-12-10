@@ -132,7 +132,7 @@ private fun CreateQuestScreen(
     val interactionSource =
         remember { MutableInteractionSource() }
 
-    val dateTimeFormat = SimpleDateFormat("dd. MMM yyy HH:mm", Locale.getDefault())
+    val dateTimeFormat = SimpleDateFormat(stringResource(R.string.quest_due_date_format_short), Locale.getDefault())
     val listState = rememberLazyListState()
     val reorderableState = rememberReorderableLazyListState(listState) { from, to ->
         onUiEvent(CreateQuestUiEvent.OnMoveSubQuest(from.index, to.index))
@@ -173,7 +173,7 @@ private fun CreateQuestScreen(
                 },
                 navigationIcon = {
                     BasicPlainTooltip(
-                        text = "Zurück",
+                        text = stringResource(R.string.back_tooltip),
                     ) {
                         IconButton(
                             onClick = {
@@ -212,7 +212,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Unteraufgabe hinzufügen"
+                            label = stringResource(R.string.add_subtask_label)
                         )
 
                         clickableItem(
@@ -225,7 +225,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Liste"
+                            label = stringResource(R.string.create_quest_screen_lists_title)
                         )
 
                         clickableItem(
@@ -238,7 +238,7 @@ private fun CreateQuestScreen(
                                     contentDescription = null
                                 )
                             },
-                            label = "Fälligkeit"
+                            label = stringResource(R.string.quest_detail_screen_due_date_title)
                         )
                     }
 
@@ -247,7 +247,7 @@ private fun CreateQuestScreen(
                             onUiEvent(CreateQuestUiEvent.OnCreateQuest)
                         }
                     ) {
-                        Text("Speichern")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }
@@ -298,7 +298,7 @@ private fun CreateQuestScreen(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "Titel",
+                                        text = stringResource(R.string.text_field_quest_title),
                                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -403,7 +403,7 @@ private fun CreateQuestScreen(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "Notizen",
+                                        text = stringResource(R.string.text_field_quest_note),
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -462,7 +462,7 @@ private fun CreateQuestScreen(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.ic_drag_indicator),
-                                            contentDescription = "Verschieben",
+                                            contentDescription = stringResource(R.string.move_subtask_content_description),
                                         )
                                     }
                                 }
@@ -517,7 +517,7 @@ private fun CreateQuestScreen(
                                             interactionSource = interactionSource,
                                             placeholder = {
                                                 Text(
-                                                    text = "Neue Unteraufgabe",
+                                                    text = stringResource(R.string.add_subtask_placeholder),
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             },

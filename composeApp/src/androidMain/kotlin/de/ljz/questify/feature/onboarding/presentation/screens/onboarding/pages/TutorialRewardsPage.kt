@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,7 @@ fun TutorialRewardsPage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Belohnungen verdienen, aufsteigen!",
+            text = stringResource(R.string.tutorial_rewards_page_title),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -44,7 +45,7 @@ fun TutorialRewardsPage(
         )
 
         Text(
-            text = "Schließe Quests ab, um Punkte und Erfahrung (XP) zu sammeln. Sammle XP, um aufzusteigen und neue Funktionen oder Belohnungen freizuschalten!",
+            text = stringResource(R.string.tutorial_rewards_page_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             lineHeight = 28.sp,
@@ -53,22 +54,22 @@ fun TutorialRewardsPage(
 
         TutorialRewardComponent(
             modifier = Modifier.fillMaxWidth(),
-            title = "Punkte",
-            description = "Für jede abgeschlossene Quests",
+            title = stringResource(R.string.tutorial_rewards_page_points_title),
+            description = stringResource(R.string.tutorial_rewards_page_points_description),
             icon = painterResource(R.drawable.coins)
         )
 
         TutorialRewardComponent(
             modifier = Modifier.fillMaxWidth(),
-            title = "Erfahrung (XP)",
-            description = "Bringt dich dem nächsten Level näher",
+            title = stringResource(R.string.tutorial_rewards_page_xp_title),
+            description = stringResource(R.string.tutorial_rewards_page_xp_description),
             icon = painterResource(R.drawable.ic_sparkles)
         )
 
         TutorialRewardComponent(
             modifier = Modifier.fillMaxWidth(),
-            title = "Dein Rang",
-            description = "Schalte exklusive Belohnungen frei",
+            title = stringResource(R.string.tutorial_rewards_page_rank_title),
+            description = stringResource(R.string.tutorial_rewards_page_rank_description),
             icon = painterResource(R.drawable.ic_trending_up)
         )
     }

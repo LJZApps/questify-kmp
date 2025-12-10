@@ -50,12 +50,14 @@ fun SettingsHelpScreen(
                         // "mailto:" sorgt dafür, dass nur E-Mail-Apps geöffnet werden
                         data = "mailto:".toUri()
                         putExtra(Intent.EXTRA_EMAIL, arrayOf("lnzpk.dev@gmail.com"))
-                        putExtra(Intent.EXTRA_SUBJECT, "Feedback for Questify")
+                        putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.feedback_email_subject))
                         putExtra(
-                            Intent.EXTRA_TEXT, "" +
-                                    "Version name: ${BuildConfig.VERSION_NAME}\n" +
-                                    "Version code: ${BuildConfig.VERSION_CODE}\n" +
-                                    "Type: ${BuildConfig.BUILD_TYPE}\n\n"
+                            Intent.EXTRA_TEXT, context.getString(
+                                R.string.feedback_email_body_template,
+                                BuildConfig.VERSION_NAME,
+                                BuildConfig.VERSION_CODE,
+                                BuildConfig.BUILD_TYPE
+                            )
                         )
                     }
 

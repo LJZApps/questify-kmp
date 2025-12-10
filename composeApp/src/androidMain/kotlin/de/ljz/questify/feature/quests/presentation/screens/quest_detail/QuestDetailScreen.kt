@@ -52,6 +52,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -149,7 +150,7 @@ fun QuestDetailScreen(
 
                         if (hasSubQuests && !allSubQuestsDone) {
                             Text(
-                                text = "Erledige zuerst alle Unteraufgaben.",
+                                text = stringResource(R.string.complete_subtasks_first_hint),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier
@@ -173,7 +174,7 @@ fun QuestDetailScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            Text(text = "Quest abschließen")
+                            Text(text = stringResource(R.string.quest_detail_complete_quest_button))
                         }
 
                     }
@@ -233,9 +234,9 @@ fun QuestDetailScreen(
                                 ) {
                                     Text(
                                         text = when (uiState.questState.difficulty) {
-                                            Difficulty.EASY -> "Leicht"
-                                            Difficulty.MEDIUM -> "Mittel"
-                                            Difficulty.HARD -> "Schwer"
+                                            Difficulty.EASY -> stringResource(R.string.difficulty_easy)
+                                            Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
+                                            Difficulty.HARD -> stringResource(R.string.difficulty_hard)
                                         },
                                         modifier = Modifier.padding(4.dp)
                                     )
@@ -286,7 +287,7 @@ fun QuestDetailScreen(
                                     )
 
                                     Text(
-                                        text = "Fortschritt",
+                                        text = stringResource(R.string.quest_progress_title),
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -297,7 +298,7 @@ fun QuestDetailScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
-                                            text = "Aktueller Fortschritt:",
+                                            text = stringResource(R.string.quest_progress_current_label),
                                             fontWeight = FontWeight.Bold
                                         )
 
@@ -315,7 +316,7 @@ fun QuestDetailScreen(
                                     )
 
                                     Text(
-                                        text = "$doneCount von $totalCount Unteraufgaben erledigt",
+                                        text = stringResource(R.string.quest_progress_subtasks_count, doneCount, totalCount),
                                         fontSize = 12.sp
                                     )
                                 }
@@ -335,7 +336,7 @@ fun QuestDetailScreen(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Text(
-                                        text = "Unteraufgaben",
+                                        text = stringResource(R.string.quest_detail_subtasks_title),
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -408,7 +409,7 @@ fun QuestDetailScreen(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Text(
-                                        text = "Fälligkeit",
+                                        text = stringResource(R.string.quest_detail_screen_due_date_title),
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -428,7 +429,7 @@ fun QuestDetailScreen(
 
                                                 Text(
                                                     text = SimpleDateFormat(
-                                                        "dd. MMMM YYYY 'um' HH:mm",
+                                                        stringResource(R.string.quest_due_date_format_full),
                                                         Locale.getDefault()
                                                     ).format(dueDate),
                                                     fontWeight = FontWeight.SemiBold
@@ -449,10 +450,7 @@ fun QuestDetailScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = "Belohnungen",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
-                            )
+                                text = stringResource(R.string.quest_detail_rewards_title),
 
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
