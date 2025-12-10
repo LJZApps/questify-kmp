@@ -649,15 +649,17 @@ private fun EditQuestScreen(
             if (dialogState is EditQuestDialogState.SetDueDateSheet) {
                 SetDueDateBottomSheet(
                     selectedCombinedDueDate = uiState.combinedDueDate,
-                    selectedDate = uiState.combinedDueDate,
-                    selectedTime = uiState.combinedDueDate,
+                    selectedDate = uiState.selectedDueDate,
+                    selectedTime = uiState.selectedDueTime,
                     onShowTimePickerDialog = {
                         onUiEvent(EditQuestUiEvent.OnShowSubDialog(EditQuestSubDialogState.TimePicker))
                     },
                     onShowDatePickerDialog = {
                         onUiEvent(EditQuestUiEvent.OnShowSubDialog(EditQuestSubDialogState.DatePicker))
                     },
-                    onUpdateTempDueDate = { _, _ -> /* Optional */ },
+                    onUpdateTempDueDate = { date, time ->
+                        onUiEvent(EditQuestUiEvent.OnUpdateTempDueDate(date, time))
+                    },
                     onConfirm = { timestamp ->
                         onUiEvent(EditQuestUiEvent.OnSetDueDate(timestamp))
                     },
