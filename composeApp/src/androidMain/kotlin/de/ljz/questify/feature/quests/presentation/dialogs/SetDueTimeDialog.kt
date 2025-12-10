@@ -88,21 +88,27 @@ fun SetDueTimeDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    IconButton(
+                        onClick = {
+                            showTimeInput.value = !showTimeInput.value
+                        },
+                    ) {
+                        Icon(
+                            if (showTimeInput.value)
+                                painterResource(R.drawable.ic_keyboard_hide_outlined)
+                            else
+                                painterResource(R.drawable.ic_keyboard_outlined),
+                            contentDescription = null
+                        )
+                    }
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = {
-                                showTimeInput.value = !showTimeInput.value
-                            },
+                        TextButton(
+                            onClick = onDismiss
                         ) {
-                            Icon(
-                                if (showTimeInput.value)
-                                    painterResource(R.drawable.ic_keyboard_hide_outlined)
-                                else
-                                    painterResource(R.drawable.ic_keyboard_outlined),
-                                contentDescription = null
-                            )
+                            Text(stringResource(R.string.cancel))
                         }
 
                         Spacer(modifier = Modifier.width(2.dp))

@@ -13,13 +13,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.buttons.AppTextButton
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -60,36 +60,32 @@ fun SetDueDateDialog(
                     .fillMaxWidth()
                     .padding(start = 4.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                TextButton(
+                    onClick = onDismiss,
                 ) {
-                    AppTextButton(
-                        onClick = onDismiss,
-                    ) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                    Text(stringResource(R.string.cancel))
+                }
 
-                    AppTextButton(
-                        onClick = {
-                            datePickerState.selectedDateMillis?.let { selectedMillis ->
-                                val initialCal = Calendar.getInstance().apply {
-                                    timeInMillis = initialMillis
-                                }
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { selectedMillis ->
+                            val initialCal = Calendar.getInstance().apply {
+                                timeInMillis = initialMillis
+                            }
 
-                                val selectedCal = Calendar.getInstance().apply {
-                                    timeInMillis = selectedMillis
+                            val selectedCal = Calendar.getInstance().apply {
+                                timeInMillis = selectedMillis
 
-                                    set(Calendar.HOUR_OF_DAY, initialCal.get(Calendar.HOUR_OF_DAY))
-                                    set(Calendar.MINUTE, initialCal.get(Calendar.MINUTE))
-                                    set(Calendar.SECOND, 0)
-                                    set(Calendar.MILLISECOND, 0)
-                                }
-                                onConfirm(selectedCal.timeInMillis)
-                            } ?: onDismiss()
-                        },
-                    ) {
-                        Text(stringResource(R.string.save))
-                    }
+                                set(Calendar.HOUR_OF_DAY, initialCal.get(Calendar.HOUR_OF_DAY))
+                                set(Calendar.MINUTE, initialCal.get(Calendar.MINUTE))
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
+                            onConfirm(selectedCal.timeInMillis)
+                        } ?: onDismiss()
+                    },
+                ) {
+                    Text(stringResource(R.string.save))
                 }
             }
         }
