@@ -210,7 +210,10 @@ private fun EditQuestScreen(
                                         contentDescription = null,
                                     )
                                 },
-                                onClick = {},
+                                onClick = {
+                                    showDeleteMenu = false
+                                    onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.DeletionConfirmation))
+                                },
                                 colors = MenuDefaults.itemColors(
                                     textColor = MaterialTheme.colorScheme.error,
                                     trailingIconColor = MaterialTheme.colorScheme.error
