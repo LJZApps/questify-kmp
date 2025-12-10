@@ -19,8 +19,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AppBarRow
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FlexibleBottomAppBar
@@ -171,6 +172,8 @@ private fun EditQuestScreen(
                     }
                 },
                 actions = {
+                    val groupInteractionSource = remember { MutableInteractionSource() }
+
                     BasicPlainTooltip(
                         text = "Mehr",
                         position = TooltipAnchorPosition.Below
@@ -183,27 +186,37 @@ private fun EditQuestScreen(
                         }
                     }
 
-                    DropdownMenu(
+                    DropdownMenuPopup(
                         expanded = showDeleteMenu,
-                        onDismissRequest = { showDeleteMenu = false },
+                        onDismissRequest = { showDeleteMenu = false }
                     ) {
-                        DropdownMenuItem(
-                            text = { Text("Quest löschen") },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_delete_filled),
-                                    contentDescription = null,
+                        DropdownMenuGroup(
+                            shapes = MenuDefaults.groupShapes(),
+                            interactionSource = groupInteractionSource
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    MenuDefaults.Label(
+                                        contentAlignment = Alignment.CenterStart,
+                                        padding = PaddingValues(start = 4.dp, end = 4.dp)
+                                    ) {
+                                        Text("Quest löschen")
+                                    }
+                                },
+                                shape = MaterialTheme.shapes.medium,
+                                trailingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_delete_filled),
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = {},
+                                colors = MenuDefaults.itemColors(
+                                    textColor = MaterialTheme.colorScheme.error,
+                                    trailingIconColor = MaterialTheme.colorScheme.error
                                 )
-                            },
-                            onClick = {
-                                showDeleteMenu = false
-                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.DeletionConfirmation))
-                            },
-                            colors = MenuDefaults.itemColors(
-                                textColor = MaterialTheme.colorScheme.error,
-                                leadingIconColor = MaterialTheme.colorScheme.error
                             )
-                        )
+                        }
                     }
                 }
             )
@@ -248,7 +261,13 @@ private fun EditQuestScreen(
 
                         clickableItem(
                             onClick = {
-                                onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SetDueDateSheet(uiState.combinedDueDate)))
+                                onUiEvent(
+                                    EditQuestUiEvent.OnShowDialog(
+                                        EditQuestDialogState.SetDueDateSheet(
+                                            uiState.combinedDueDate
+                                        )
+                                    )
+                                )
                             },
                             icon = {
                                 Icon(
@@ -375,7 +394,13 @@ private fun EditQuestScreen(
                                     )
                                 },
                                 modifier = Modifier.clickable {
-                                    onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SetDueDateSheet(uiState.combinedDueDate)))
+                                    onUiEvent(
+                                        EditQuestUiEvent.OnShowDialog(
+                                            EditQuestDialogState.SetDueDateSheet(
+                                                uiState.combinedDueDate
+                                            )
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -623,8 +648,11 @@ private fun EditQuestScreen(
                     selectedCombinedDueDate = uiState.combinedDueDate,
                     selectedDate = uiState.combinedDueDate,
                     selectedTime = uiState.combinedDueDate,
-                    onShowSubDialog = {
-//                        onUiEvent(EditQuestUiEvent.OnShowSubDialog(it))
+                    onShowTimePickerDialog = {
+                        onUiEvent(EditQuestUiEvent.OnShowSubDialog(EditQuestSubDialogState.TimePicker))
+                    },
+                    onShowDatePickerDialog = {
+                        onUiEvent(EditQuestUiEvent.OnShowSubDialog(EditQuestSubDialogState.DatePicker))
                     },
                     onUpdateTempDueDate = { _, _ -> /* Optional */ },
                     onConfirm = { timestamp ->

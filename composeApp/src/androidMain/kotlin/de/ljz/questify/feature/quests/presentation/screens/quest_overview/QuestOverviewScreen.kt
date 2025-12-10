@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +18,16 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -41,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -218,23 +222,35 @@ private fun QuestOverviewScreen(
                         }
                     }
 
-                    DropdownMenu(
+                    DropdownMenuPopup(
                         expanded = dropdownExpanded,
                         onDismissRequest = { dropdownExpanded = false }
                     ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.quest_overview_screen_dropdown_sort_title)) },
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_filter_alt_filled),
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                dropdownExpanded = false
-                                onUiEvent(QuestOverviewUiEvent.ShowDialog(QuestOverviewDialogState.SortingBottomSheet))
-                            }
-                        )
+                        DropdownMenuGroup(
+                            shapes = MenuDefaults.groupShapes()
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    MenuDefaults.Label(
+                                        contentAlignment = Alignment.CenterStart,
+                                        padding = PaddingValues(start = 4.dp, end = 4.dp)
+                                    ) {
+                                        Text(stringResource(R.string.quest_overview_screen_dropdown_sort_title))
+                                    }
+                                },
+                                shape = MaterialTheme.shapes.medium,
+                                trailingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_filter_alt_filled),
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    dropdownExpanded = false
+                                    onUiEvent(QuestOverviewUiEvent.ShowDialog(QuestOverviewDialogState.SortingBottomSheet))
+                                }
+                            )
+                        }
                     }
                 },
                 title = {
@@ -314,53 +330,75 @@ private fun QuestOverviewScreen(
                                 }
                             )
 
-                            DropdownMenu(
+                            DropdownMenuPopup(
                                 expanded = chipDropdownExpanded,
                                 onDismissRequest = { chipDropdownExpanded = false },
                                 offset = DpOffset(x = 0.dp, y = 8.dp)
                             ) {
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.manage_categories_bottom_sheet_dropdown_rename_title)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_edit_filled),
-                                            contentDescription = null
-                                        )
-                                    },
-                                    onClick = {
-                                        chipDropdownExpanded = false
-                                        onUiEvent(
-                                            QuestOverviewUiEvent.ShowUpdateCategoryDialog(
-                                                questCategoryEntity = tab
+                                DropdownMenuGroup(
+                                    shapes = MenuDefaults.groupShapes()
+                                ) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            MenuDefaults.Label(
+                                                contentAlignment = Alignment.CenterStart,
+                                                padding = PaddingValues(start = 4.dp, end = 4.dp)
+                                            ) {
+                                                Text(stringResource(R.string.manage_categories_bottom_sheet_dropdown_rename_title))
+                                            }
+                                        },
+                                        shapes = MenuDefaults.itemShape(0, 2),
+                                        selected = false,
+                                        trailingIcon = {
+                                            Icon(
+                                                painter = painterResource(R.drawable.ic_edit_filled),
+                                                contentDescription = null
                                             )
-                                        )
-                                    }
-                                )
+                                        },
+                                        onClick = {
+                                            chipDropdownExpanded = false
 
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = stringResource(R.string.manage_categories_bottom_sheet_dropdown_delete_title),
-                                            color = MaterialTheme.colorScheme.error
-                                        )
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_delete_filled),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
-                                    },
-                                    onClick = {
-                                        chipDropdownExpanded = false
-
-                                        onUiEvent(
-                                            QuestOverviewUiEvent.ShowDialog(
-                                                QuestOverviewDialogState.DeleteCategory(tab)
+                                            onUiEvent(
+                                                QuestOverviewUiEvent.ShowUpdateCategoryDialog(
+                                                    questCategoryEntity = tab
+                                                )
                                             )
+                                        }
+                                    )
+
+                                    DropdownMenuItem(
+                                        text = {
+                                            MenuDefaults.Label(
+                                                contentAlignment = Alignment.CenterStart,
+                                                padding = PaddingValues(start = 4.dp, end = 4.dp)
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.manage_categories_bottom_sheet_dropdown_delete_title)
+                                                )
+                                            }
+                                        },
+                                        shapes = MenuDefaults.itemShape(1, 2),
+                                        selected = false,
+                                        trailingIcon = {
+                                            Icon(
+                                                painter = painterResource(R.drawable.ic_delete_filled),
+                                                contentDescription = null
+                                            )
+                                        },
+                                        onClick = {
+                                            chipDropdownExpanded = false
+                                            onUiEvent(
+                                                QuestOverviewUiEvent.ShowDialog(
+                                                    QuestOverviewDialogState.DeleteCategory(tab)
+                                                )
+                                            )
+                                        },
+                                        colors = MenuDefaults.itemColors(
+                                            textColor = MaterialTheme.colorScheme.error,
+                                            trailingIconColor = MaterialTheme.colorScheme.error
                                         )
-                                    }
-                                )
+                                    )
+                                }
                             }
                         }
                     }

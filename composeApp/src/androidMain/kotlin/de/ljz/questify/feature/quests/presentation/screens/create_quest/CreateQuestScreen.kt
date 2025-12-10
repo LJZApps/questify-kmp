@@ -624,8 +624,11 @@ private fun CreateQuestScreen(
                     selectedCombinedDueDate = dialogState.selectedCombinedDueDate,
                     selectedDate = uiState.selectedDueDate,
                     selectedTime = uiState.selectedDueTime,
-                    onShowSubDialog = { subDialogState ->
-                        onUiEvent(CreateQuestUiEvent.OnShowSubDialog(subDialogState))
+                    onShowTimePickerDialog = {
+                        onUiEvent(CreateQuestUiEvent.OnShowSubDialog(CreateQuestSubDialogState.TimePicker))
+                    },
+                    onShowDatePickerDialog = {
+                        onUiEvent(CreateQuestUiEvent.OnShowSubDialog(CreateQuestSubDialogState.DatePicker))
                     },
                     onUpdateTempDueDate = { date, time ->
                         onUiEvent(CreateQuestUiEvent.OnUpdateTempDueDate(date, time))

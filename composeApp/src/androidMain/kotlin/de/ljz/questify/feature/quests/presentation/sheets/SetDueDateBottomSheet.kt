@@ -32,7 +32,6 @@ import de.ljz.questify.R
 import de.ljz.questify.core.presentation.components.expressive.menu.ExpressiveMenuItem
 import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsMenuLink
 import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSection
-import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestSubDialogState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -44,7 +43,8 @@ fun SetDueDateBottomSheet(
     selectedCombinedDueDate: Long,
     selectedDate: Long,
     selectedTime: Long,
-    onShowSubDialog: (CreateQuestSubDialogState) -> Unit,
+    onShowTimePickerDialog: () -> Unit,
+    onShowDatePickerDialog: () -> Unit,
     onUpdateTempDueDate: (date: Long, time: Long) -> Unit,
     onConfirm: (Long) -> Unit,
     onRemoveDueDate: () -> Unit,
@@ -115,7 +115,7 @@ fun SetDueDateBottomSheet(
                         )
                     },
                     onClick = {
-                        onShowSubDialog(CreateQuestSubDialogState.DatePicker)
+                        onShowDatePickerDialog()
                     }
                 )
 
@@ -129,7 +129,7 @@ fun SetDueDateBottomSheet(
                         )
                     },
                     onClick = {
-                        onShowSubDialog(CreateQuestSubDialogState.TimePicker)
+                        onShowTimePickerDialog()
                     }
                 )
             }

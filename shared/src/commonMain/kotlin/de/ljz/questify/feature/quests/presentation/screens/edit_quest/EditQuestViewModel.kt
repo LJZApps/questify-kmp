@@ -216,6 +216,18 @@ class EditQuestViewModel(
                 }
             }
 
+            is EditQuestUiEvent.OnShowSubDialog -> {
+                _uiState.update {
+                    it.copy(subDialogState = event.subDialogState)
+                }
+            }
+
+            is EditQuestUiEvent.OnCloseSubDialog -> {
+                _uiState.update {
+                    it.copy(subDialogState = EditQuestSubDialogState.None)
+                }
+            }
+
             is EditQuestUiEvent.OnCreateQuestCategory -> {
                 viewModelScope.launch {
                     addQuestCategoryUseCase.invoke(
@@ -297,6 +309,42 @@ class EditQuestViewModel(
                     it.copy(
                         combinedDueDate = event.timestamp,
                         dialogState = EditQuestDialogState.None
+                    )
+                }
+            }
+
+            is EditQuestUiEvent.OnSetCombinedDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        combinedDueDate = event.timestamp,
+                        dialogState = EditQuestDialogState.None
+                    )
+                }
+            }
+
+            is EditQuestUiEvent.OnUpdateDueTime -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.value,
+                        subDialogState = EditQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is EditQuestUiEvent.OnUpdateDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueDate = event.value,
+                        subDialogState = EditQuestSubDialogState.None
+                    )
+                }
+            }
+
+            is EditQuestUiEvent.OnUpdateTempDueDate -> {
+                _uiState.update {
+                    it.copy(
+                        selectedDueTime = event.time,
+                        selectedDueDate = event.date
                     )
                 }
             }
