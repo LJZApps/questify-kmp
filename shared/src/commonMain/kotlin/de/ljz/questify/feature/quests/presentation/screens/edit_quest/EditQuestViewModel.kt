@@ -92,39 +92,22 @@ class EditQuestViewModel(
 
             launch {
                 getQuestByIdUseCase.invoke(id).let { questWithSubQuests ->
-                    val notifications = questWithSubQuests.notifications
-                        .filter { !it.notified }
-                        .map { it.notifyAt.toEpochMilliseconds() }
-
                     questWithSubQuests.quest.let { questEntity ->
                         _copiedQuestEntity = questEntity
 
-                        _uiState.update {
-                            it.copy(
+                        _uiState.update { state ->
+                            state.copy(
                                 title = questEntity.title,
                                 notes = questEntity.notes ?: "",
                                 difficulty = questEntity.difficulty.ordinal,
                                 combinedDueDate = questEntity.dueDate?.toEpochMilliseconds() ?: 0L,
                                 categoryId = questEntity.categoryId,
-                                notificationTriggerTimes = notifications
+                                subQuests = questWithSubQuests.subTasks.map { it.toModel(id = it.id, text = it.text) }
                             )
                         }
                     }
                 }
             }
-
-            launch {
-                getQuestByIdAsFlowUseCase.invoke(id).let { questWithSubQuestsFlow ->
-                    questWithSubQuestsFlow.collectLatest { questWithSubQuests ->
-                        questWithSubQuests?.subTasks?.let { subQuestEntities ->
-                            _uiState.update { state ->
-                                state.copy(subQuests = subQuestEntities.map { it.toModel(id = it.id, text = it.text) })
-                            }
-                        }
-                    }
-                }
-            }
-
         }
     }
 
@@ -148,11 +131,12 @@ class EditQuestViewModel(
 
                             addSubQuestsUseCase.invoke(
                                 subQuestEntities =
-                                    _uiState.value.subQuests.map {
-                                        it.toEntity(
-                                            id = it.id,
-                                            text = it.text,
-                                            questId = copiedQuestEntity.id.toLong()
+                                    _uiState.value.subQuests.mapIndexed { index, model ->
+                                        model.toEntity(
+                                            id = model.id,
+                                            text = model.text,
+                                            questId = copiedQuestEntity.id.toLong(),
+                                            orderIndex = index
                                         )
                                     }
                             )

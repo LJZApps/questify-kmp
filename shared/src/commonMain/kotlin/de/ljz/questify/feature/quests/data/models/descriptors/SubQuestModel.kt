@@ -12,11 +12,13 @@ data class SubQuestModel(
 fun SubQuestModel.toEntity(
     id: Int = 0,
     text: String,
-    questId: Long
+    questId: Long,
+    orderIndex: Int
 ): SubQuestEntity {
     return SubQuestEntity(
         id = id,
         text = text,
-        questId = questId
+        questId = questId,
+        orderIndex = orderIndex
     )
 }
