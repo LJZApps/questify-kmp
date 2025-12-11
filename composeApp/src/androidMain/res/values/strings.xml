@@ -306,4 +306,23 @@
     <string name="tutorial_rewards_page_xp_description">Brings you closer to the next level</string>
     <string name="tutorial_rewards_page_rank_title">Your Rank</string>
     <string name="tutorial_rewards_page_rank_description">Unlock exclusive rewards</string>
+    <string name="quest_item_tooltip_edit">Edit</string>
+    <string name="quest_item_done">Completed</string>
+    <string name="quest_item_tooltip_done">Complete</string>
+    <string name="create_reminder_dialog_remove_due_button">Remove due date</string>
+    <string name="delete_confirmation_dialog_confirm_button">Delete quest</string>
+    <string name="delete_quest_category_dialog_confirm_button">Delete list</string>
+    <string name="delete_quest_category_dialog_title">Delete %1$s?</string>
+    <string name="delete_quest_category_dialog_text">Your quests in this list will not be deleted.</string>
+    <string name="quest_detail_screen_xp">%1$d XP</string>
+    <string name="quest_detail_screen_points">%1$d Points</string>
+    <string name="all_quests_page_create_button">Create one now</string>
+    <string name="select_difficulty_bottom_sheet_title">Select difficulty</string>
+    <string name="set_due_date_bottom_sheet_title">Set due date</string>
+    <string name="set_due_date_bottom_sheet_date_button">"Select date "</string>
+    <string name="set_due_date_bottom_sheet_time_title">Select time</string>
+    <string name="set_due_date_bottom_sheet_time_subtitle">Automatic: 11:59 p.m.</string>
+    <string name="set_due_date_bottom_sheet_time_hint">If no time has been selected, this quest is due at 11:59 p.m. on the selected date.</string>
+    <string name="set_due_date_bottom_sheet_remove_due_button">Remove due date</string>
+    <string name="quest_item_subtasks">%1$d Subtasks</string>
 </resources>

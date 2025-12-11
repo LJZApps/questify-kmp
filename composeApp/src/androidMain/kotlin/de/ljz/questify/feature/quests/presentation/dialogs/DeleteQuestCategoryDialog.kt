@@ -38,7 +38,7 @@ fun DeleteQuestCategoryDialog(
                     contentColor = MaterialTheme.colorScheme.error,
                 )
             ) {
-                Text(text = "Liste löschen")
+                Text(text = stringResource(R.string.delete_quest_category_dialog_confirm_button))
             }
         },
         dismissButton = {
@@ -52,14 +52,17 @@ fun DeleteQuestCategoryDialog(
         },
         title = {
             Text(
-                text = "${questCategoryEntity.text} löschen?",
+                text = stringResource(
+                    R.string.delete_quest_category_dialog_title,
+                    questCategoryEntity.text
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
         },
         text = {
             Text(
-                text = "Deine Quests in dieser Liste werden nicht gelöscht."
+                text = stringResource(R.string.delete_quest_category_dialog_text)
             )
         }
     )

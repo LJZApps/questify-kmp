@@ -118,7 +118,7 @@ fun AllQuestsPage(
             Button(
                 onClick = onCreateNewQuestButtonClicked
             ) {
-                Text("Jetzt eine Quest erstellen")
+                Text(stringResource(R.string.all_quests_page_create_button))
             }
             Spacer(modifier = Modifier.weight(1f))
         }

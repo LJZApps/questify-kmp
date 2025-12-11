@@ -64,14 +64,15 @@ fun SelectDifficultyBottomSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Schwierigkeit auswählen",
+                text = stringResource(R.string.select_difficulty_bottom_sheet_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp)
             ) {
                 val modifiers = List(difficultyOptions.size) { Modifier.weight(1f) }

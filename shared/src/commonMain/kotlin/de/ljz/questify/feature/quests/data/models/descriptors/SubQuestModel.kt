@@ -6,7 +6,8 @@ import kotlin.random.Random
 data class SubQuestModel(
     val id: Int = 0,
     val text: String,
-    val tempId: Long = Random.nextLong()
+    val tempId: Long = Random.nextLong(),
+    val orderIndex: Int = 0,
 )
 
 fun SubQuestModel.toEntity(

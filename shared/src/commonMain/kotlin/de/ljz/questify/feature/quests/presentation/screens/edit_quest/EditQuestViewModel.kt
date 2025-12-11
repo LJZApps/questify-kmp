@@ -110,7 +110,7 @@ class EditQuestViewModel(
                             difficulty = questWithDetails.quest.difficulty.ordinal,
                             combinedDueDate = questWithDetails.quest.dueDate?.toEpochMilliseconds() ?: 0L,
                             categoryId = categoryId,
-                            subQuests = questWithDetails.subTasks.map { it.toModel(id = it.id, text = it.text) }
+                            subQuests = questWithDetails.subTasks.sortedBy { it.orderIndex }.map { it.toModel(id = it.id, text = it.text, orderIndex = it.orderIndex) }
                         )
                     }
                 }

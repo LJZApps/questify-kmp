@@ -39,10 +39,12 @@ data class SubQuestEntity(
 
 fun SubQuestEntity.toModel(
     id: Int,
-    text: String
+    text: String,
+    orderIndex: Int
 ): SubQuestModel {
     return SubQuestModel(
         id = id,
-        text = text
+        text = text,
+        orderIndex = orderIndex
     )
 }

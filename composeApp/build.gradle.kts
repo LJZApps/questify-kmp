@@ -130,7 +130,7 @@ android {
 
     defaultConfig {
         val major = 0
-        val minor = 11
+        val minor = 12
         val patch = 0
 
         versionName = "$major.$minor.$patch"

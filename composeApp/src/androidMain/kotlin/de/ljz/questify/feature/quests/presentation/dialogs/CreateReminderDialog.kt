@@ -124,7 +124,7 @@ fun CreateReminderDialog(
                                 onClick = onDismiss,
                             ) {
                                 Text(
-                                    text = "Fälligkeit entfernen"
+                                    text = stringResource(R.string.create_reminder_dialog_remove_due_button)
                                 )
                             }
 

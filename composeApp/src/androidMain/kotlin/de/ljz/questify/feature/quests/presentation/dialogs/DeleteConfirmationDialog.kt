@@ -36,7 +36,7 @@ fun DeleteConfirmationDialog(
                     contentColor = MaterialTheme.colorScheme.error,
                 )
             ) {
-                Text(text = "Quest löschen")
+                Text(text = stringResource(R.string.delete_confirmation_dialog_confirm_button))
             }
         },
         dismissButton = {

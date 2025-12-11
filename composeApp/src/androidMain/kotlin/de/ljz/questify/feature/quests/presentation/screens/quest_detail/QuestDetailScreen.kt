@@ -350,7 +350,7 @@ fun QuestDetailScreen(
                                                     .fillMaxWidth()
                                                     .padding(vertical = 4.dp)
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .clickable{
+                                                    .clickable {
                                                         haptic.performHapticFeedback(
                                                             HapticFeedbackType.LongPress
                                                         )
@@ -467,12 +467,18 @@ fun QuestDetailScreen(
                                 ) {
                                     RewardItem(
                                         icon = painterResource(R.drawable.star),
-                                        text = "${uiState.questState.difficulty.xpValue} XP"
+                                        text = stringResource(
+                                            R.string.quest_detail_screen_xp,
+                                            uiState.questState.difficulty.xpValue
+                                        )
                                     )
 
                                     RewardItem(
                                         icon = painterResource(R.drawable.coins),
-                                        text = "${uiState.questState.difficulty.pointsValue} Punkte"
+                                        text = stringResource(
+                                            R.string.quest_detail_screen_points,
+                                            uiState.questState.difficulty.pointsValue
+                                        )
                                     )
                                 }
                             }

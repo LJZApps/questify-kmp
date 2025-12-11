@@ -87,13 +87,13 @@ fun SetDueDateBottomSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Fälligkeit setzen",
+                text = stringResource(R.string.set_due_date_bottom_sheet_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             val dateAnnotatedString = buildAnnotatedString {
-                append("Datum auswählen ")
+                append(stringResource(R.string.set_due_date_bottom_sheet_date_button))
 
                 withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                     append("*")
@@ -120,8 +120,10 @@ fun SetDueDateBottomSheet(
                 )
 
                 ExpressiveSettingsMenuLink(
-                    title = if (selectedTime != 0L) timeFormat.format(selectedTime) else "Zeit auswählen",
-                    subtitle = if (selectedTime == 0L) "Automatisch: 23:59 Uhr" else null,
+                    title = if (selectedTime != 0L) timeFormat.format(selectedTime) else stringResource(
+                        R.string.set_due_date_bottom_sheet_time_title
+                    ),
+                    subtitle = if (selectedTime == 0L) stringResource(R.string.set_due_date_bottom_sheet_time_subtitle) else null,
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_schedule_outlined),
@@ -136,7 +138,7 @@ fun SetDueDateBottomSheet(
 
             if (selectedTime == 0L) {
                 Text(
-                    text = "Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.",
+                    text = stringResource(R.string.set_due_date_bottom_sheet_time_hint),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
@@ -146,7 +148,8 @@ fun SetDueDateBottomSheet(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -163,7 +166,7 @@ fun SetDueDateBottomSheet(
                     modifier = Modifier.weight(1f),
                     enabled = selectedCombinedDueDate != 0L
                 ) {
-                    Text("Fälligkeit entfernen")
+                    Text(stringResource(R.string.set_due_date_bottom_sheet_remove_due_button))
                 }
 
                 Button(

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -115,30 +116,14 @@ fun QuestItem(
                             )
 
                             Text(
-                                text = "${subTasks.count()} Unteraufgaben"
+                                text = stringResource(
+                                    R.string.quest_item_subtasks,
+                                    subTasks.count()
+                                )
                             )
                         }
                     }
                 }
-
-                questWithSubQuests.notifications.filter { !it.notified }
-                    .let { notificationEntities ->
-                        if (notificationEntities.isNotEmpty()) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_alarm_outlined),
-                                    contentDescription = null
-                                )
-
-                                Text(
-                                    text = "${notificationEntities.count()} Erinnerungen"
-                                )
-                            }
-                        }
-                    }
 
                 Badge(
                     containerColor = when (questWithSubQuests.quest.difficulty) {
@@ -154,9 +139,9 @@ fun QuestItem(
                 ) {
                     Text(
                         text = when (questWithSubQuests.quest.difficulty) {
-                            Difficulty.EASY -> "Leicht"
-                            Difficulty.MEDIUM -> "Mittel"
-                            Difficulty.HARD -> "Schwer"
+                            Difficulty.EASY -> stringResource(R.string.difficulty_easy)
+                            Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
+                            Difficulty.HARD -> stringResource(R.string.difficulty_hard)
                         },
                         modifier = Modifier.padding(4.dp)
                     )
@@ -165,7 +150,7 @@ fun QuestItem(
 
             if (!questWithSubQuests.quest.done) {
                 BasicPlainTooltip(
-                    text = "Bearbeiten",
+                    text = stringResource(R.string.quest_item_tooltip_edit),
                     position = TooltipAnchorPosition.Above
                 ) {
                     IconButton(
@@ -196,13 +181,13 @@ fun QuestItem(
                         )
 
                         Text(
-                            text = "Abgeschlossen"
+                            text = stringResource(R.string.quest_item_done)
                         )
                     }
                 }
             } else {
                 BasicPlainTooltip(
-                    text = "Fertigstellen",
+                    text = stringResource(R.string.quest_item_tooltip_done),
                     position = TooltipAnchorPosition.Above
                 ) {
                     FilledIconButton(

@@ -304,4 +304,23 @@
     <string name="tutorial_rewards_page_xp_description">Bringt dich dem nächsten Level näher</string>
     <string name="tutorial_rewards_page_rank_title">Dein Rang</string>
     <string name="tutorial_rewards_page_rank_description">Schalte exklusive Belohnungen frei</string>
+    <string name="set_due_date_bottom_sheet_remove_due_button">Fälligkeit entfernen</string>
+    <string name="quest_item_subtasks">%1$d Unteraufgaben</string>
+    <string name="quest_item_tooltip_edit">Bearbeiten</string>
+    <string name="quest_item_done">Abgeschlossen</string>
+    <string name="quest_item_tooltip_done">Fertigstellen</string>
+    <string name="create_reminder_dialog_remove_due_button">Fälligkeit entfernen</string>
+    <string name="delete_confirmation_dialog_confirm_button">Quest löschen</string>
+    <string name="delete_quest_category_dialog_confirm_button">Liste löschen</string>
+    <string name="delete_quest_category_dialog_title">%1$s löschen?</string>
+    <string name="delete_quest_category_dialog_text">Deine Quests in dieser Liste werden nicht gelöscht.</string>
+    <string name="quest_detail_screen_xp">%1$d XP</string>
+    <string name="quest_detail_screen_points">%1$d Punkte</string>
+    <string name="all_quests_page_create_button">Jetzt eine erstellen</string>
+    <string name="select_difficulty_bottom_sheet_title">Schwierigkeit auswählen</string>
+    <string name="set_due_date_bottom_sheet_title">Fälligkeit setzen</string>
+    <string name="set_due_date_bottom_sheet_date_button">"Datum auswählen "</string>
+    <string name="set_due_date_bottom_sheet_time_title">Zeit auswählen</string>
+    <string name="set_due_date_bottom_sheet_time_subtitle">Automatisch: 23:59 Uhr</string>
+    <string name="set_due_date_bottom_sheet_time_hint">Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.</string>
 </resources>
