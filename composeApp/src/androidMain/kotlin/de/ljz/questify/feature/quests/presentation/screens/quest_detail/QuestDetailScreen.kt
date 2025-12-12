@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,6 +63,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
 import de.ljz.questify.core.utils.MaxWidth
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
+import de.ljz.questify.feature.quests.presentation.components.EasyIcon
+import de.ljz.questify.feature.quests.presentation.components.HardIcon
+import de.ljz.questify.feature.quests.presentation.components.MediumIcon
 import de.ljz.questify.feature.quests.presentation.dialogs.DeleteConfirmationDialog
 import de.ljz.questify.feature.quests.presentation.dialogs.QuestDoneDialog
 import org.koin.androidx.compose.koinViewModel
@@ -223,23 +227,61 @@ fun QuestDetailScreen(
                                 Badge(
                                     containerColor = when (uiState.questState.difficulty) {
                                         Difficulty.EASY -> MaterialTheme.colorScheme.surfaceContainerLow
-                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.surfaceContainer
+                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.surfaceContainerHigh
                                         Difficulty.HARD -> MaterialTheme.colorScheme.primary
                                     },
                                     contentColor = when (uiState.questState.difficulty) {
-                                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurface
-                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurface
+                                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
                                         Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
                                     }
                                 ) {
-                                    Text(
-                                        text = when (uiState.questState.difficulty) {
-                                            Difficulty.EASY -> stringResource(R.string.difficulty_easy)
-                                            Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
-                                            Difficulty.HARD -> stringResource(R.string.difficulty_hard)
-                                        },
-                                        modifier = Modifier.padding(4.dp)
-                                    )
+                                    Row(
+                                        modifier = Modifier.padding(4.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        when (uiState.questState.difficulty) {
+                                            Difficulty.EASY -> {
+                                                EasyIcon(
+                                                    tint = when (uiState.questState.difficulty) {
+                                                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                                    },
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            }
+                                            Difficulty.MEDIUM -> {
+                                                MediumIcon(
+                                                    tint = when (uiState.questState.difficulty) {
+                                                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                                    },
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            }
+                                            Difficulty.HARD -> {
+                                                HardIcon(
+                                                    tint = when (uiState.questState.difficulty) {
+                                                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                        Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                                    },
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            }
+                                        }
+
+                                        Text(
+                                            text = when (uiState.questState.difficulty) {
+                                                Difficulty.EASY -> stringResource(R.string.difficulty_easy)
+                                                Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
+                                                Difficulty.HARD -> stringResource(R.string.difficulty_hard)
+                                            }
+                                        )
+                                    }
                                 }
                             }
 
@@ -248,7 +290,7 @@ fun QuestDetailScreen(
                                 .takeIf { it.isNotEmpty() }
                                 ?.let { description ->
                                     Text(
-                                        text = uiState.questState.description
+                                        text = description
                                     )
                                 }
                         }
@@ -451,6 +493,8 @@ fun QuestDetailScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.quest_detail_rewards_title),
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
                             )
 
                             Surface(
