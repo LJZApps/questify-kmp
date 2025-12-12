@@ -71,7 +71,12 @@ fun QuestItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(
+                    top = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = if (totalCount > 0) 8.dp else 16.dp
+                ),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
