@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -21,6 +23,7 @@ import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -52,6 +55,9 @@ fun QuestItem(
     val haptic = LocalHapticFeedback.current
     val completionDate: Instant = Clock.System.now()
     val isOverdue = questWithDetails.quest.dueDate?.let { it < completionDate } ?: false
+    val doneCount = questWithDetails.subTasks.count { it.isDone }
+    val totalCount = questWithDetails.subTasks.size
+    val progress = doneCount.toFloat() / totalCount.toFloat()
 
     OutlinedCard(
         modifier = modifier
@@ -152,12 +158,6 @@ fun QuestItem(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            /*Icon(
-                                painter = painterResource(R.drawable.ic_mode_heat_outlined),
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
-                            )*/
-
                             when (questWithDetails.quest.difficulty) {
                                 Difficulty.EASY -> {
                                     EasyIcon(
@@ -291,7 +291,8 @@ fun QuestItem(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             onCheckButtonClick()
-                        }
+                        },
+                        enabled = doneCount == totalCount
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_check_circle_outlined),
@@ -300,7 +301,17 @@ fun QuestItem(
                     }
                 }
             }
-
         }
+
+        if (totalCount > 0)
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(12.dp),
+                drawStopIndicator = {},
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Square
+            )
     }
 }
