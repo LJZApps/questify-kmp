@@ -201,7 +201,7 @@ fun QuestItem(
                         }
                     }
 
-                    if (isOverdue)
+                    if (isOverdue && !questWithDetails.quest.done)
                         Badge(
                             containerColor = MaterialTheme.colorScheme.errorContainer,
                             contentColor = MaterialTheme.colorScheme.onErrorContainer
