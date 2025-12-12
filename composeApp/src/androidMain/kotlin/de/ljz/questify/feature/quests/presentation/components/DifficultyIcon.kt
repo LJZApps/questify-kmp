@@ -2,10 +2,9 @@ package de.ljz.questify.feature.quests.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,6 +16,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,22 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.ljz.questify.R
 
-@Composable
-fun DifficultyIconContainer(content: @Composable BoxScope.() -> Unit) {
-    Box(
-        modifier = Modifier.size(24.dp),
-        contentAlignment = Alignment.Center,
-        content = content
-    )
-}
+private const val SPACING_RATIO = 0.1f
 
 @Composable
 fun EasyIcon(
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.primary
 ) {
-    DifficultyIconContainer {
-        SwordIcon(modifier, tint)
+    Canvas(modifier = modifier.size(16.dp).aspectRatio(1f)) {
+        val padding = size.width * 0.15f
+        inset(padding) {
+            rotate(45f) {
+                drawSword(tint)
+            }
+        }
     }
 }
 
@@ -48,10 +46,29 @@ fun MediumIcon(
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.primary
 ) {
-    DifficultyIconContainer {
-        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            SwordIcon(modifier, tint)
-            SwordIcon(modifier, tint)
+    Canvas(modifier = modifier.size(16.dp).aspectRatio(1f)) {
+        val gap = size.width * SPACING_RATIO
+
+        val swordSize = (size.width - gap) / 2
+
+        val verticalInset = (size.height - swordSize) / 2
+
+        inset(
+            left = 0f,
+            top = verticalInset,
+            right = size.width - swordSize,
+            bottom = verticalInset
+        ) {
+            rotate(45f) { drawSword(tint) }
+        }
+
+        inset(
+            left = size.width - swordSize,
+            top = verticalInset,
+            right = 0f,
+            bottom = verticalInset
+        ) {
+            rotate(45f) { drawSword(tint) }
         }
     }
 }
@@ -61,34 +78,49 @@ fun HardIcon(
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.primary
 ) {
-    DifficultyIconContainer {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Canvas(modifier = modifier.size(16.dp).aspectRatio(1f)) {
+        val gap = size.width * SPACING_RATIO
+
+        val swordSize = (size.width - gap) / 2
+
+        val sideInsetTop = (size.width - swordSize) / 2
+        val bottomInsetTop = size.height / 2 + gap / 2
+
+        inset(
+            left = sideInsetTop,
+            top = 0f,
+            right = sideInsetTop,
+            bottom = bottomInsetTop
         ) {
-            SwordIcon(modifier, tint)
-            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                SwordIcon(modifier, tint)
-                SwordIcon(modifier, tint)
-            }
+            rotate(45f) { drawSword(tint) }
+        }
+
+        val topInsetBottom = size.height / 2 + gap / 2
+        val rightInsetBottom = size.width / 2 + gap / 2
+
+        inset(
+            left = 0f,
+            top = topInsetBottom,
+            right = rightInsetBottom,
+            bottom = 0f
+        ) {
+            rotate(45f) { drawSword(tint) }
+        }
+
+        val leftInsetBottom = size.width / 2 + gap / 2
+
+        inset(
+            left = leftInsetBottom,
+            top = topInsetBottom,
+            right = 0f,
+            bottom = 0f
+        ) {
+            rotate(45f) { drawSword(tint) }
         }
     }
 }
 
-@Composable
-fun SwordIcon(
-    modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.primary
-) {
-    Canvas(modifier = modifier.size(8.dp)) {
-        rotate(degrees = 45f) {
-            drawSword(tint)
-        }
-    }
-}
-
-
-fun DrawScope.drawSword(color: Color) {
+private fun DrawScope.drawSword(color: Color) {
     val path = Path().apply {
         moveTo(size.width / 2f, 0f)
         lineTo(size.width * 0.65f, size.height * 0.6f)
@@ -101,7 +133,7 @@ fun DrawScope.drawSword(color: Color) {
         color = color,
         start = Offset(size.width * 0.25f, size.height * 0.6f),
         end = Offset(size.width * 0.75f, size.height * 0.6f),
-        strokeWidth = 1.5f
+        strokeWidth = size.width * 0.1f // Etwas dünnerer Strich (10% statt 15%) für eleganteren Look
     )
 
     drawRect(
@@ -112,29 +144,29 @@ fun DrawScope.drawSword(color: Color) {
 }
 
 @Composable
-fun DifficultyIconsPreview() {
+private fun DifficultyIconsPreview() {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            EasyIcon()
+            EasyIcon(Modifier.size(32.dp))
             Text(
-                stringResource(id = R.string.difficulty_easy), 
-                fontSize = 10.sp, 
+                stringResource(id = R.string.difficulty_easy),
+                fontSize = 10.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            MediumIcon()
+            MediumIcon(Modifier.size(32.dp))
             Text(
-                stringResource(id = R.string.difficulty_medium), 
-                fontSize = 10.sp, 
+                stringResource(id = R.string.difficulty_medium),
+                fontSize = 10.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            HardIcon()
+            HardIcon(Modifier.size(32.dp))
             Text(
-                stringResource(id = R.string.difficulty_hard), 
-                fontSize = 10.sp, 
+                stringResource(id = R.string.difficulty_hard),
+                fontSize = 10.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -143,7 +175,7 @@ fun DifficultyIconsPreview() {
 
 @Preview
 @Composable
-fun PreviewDifficultyIcons() {
+private fun PreviewDifficultyIcons() {
     MaterialTheme {
         DifficultyIconsPreview()
     }

@@ -325,4 +325,5 @@
     <string name="set_due_date_bottom_sheet_time_hint">If no time has been selected, this quest is due at 11:59 p.m. on the selected date.</string>
     <string name="set_due_date_bottom_sheet_remove_due_button">Remove due date</string>
     <string name="quest_item_subtasks">%1$d Subtasks</string>
+    <string name="quest_item_overdue_badge">Overdue</string>
 </resources>

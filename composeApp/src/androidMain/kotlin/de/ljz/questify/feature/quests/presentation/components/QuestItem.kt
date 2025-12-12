@@ -35,7 +35,9 @@ import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
@@ -48,6 +50,8 @@ fun QuestItem(
     showListBadge: Boolean = false
 ) {
     val haptic = LocalHapticFeedback.current
+    val completionDate: Instant = Clock.System.now()
+    val isOverdue = questWithDetails.quest.dueDate?.let { it < completionDate } ?: false
 
     OutlinedCard(
         modifier = modifier
@@ -143,37 +147,79 @@ fun QuestItem(
                             Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
                         }
                     ) {
-                        Text(
-                            text = when (questWithDetails.quest.difficulty) {
-                                Difficulty.EASY -> stringResource(R.string.difficulty_easy)
-                                Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
-                                Difficulty.HARD -> stringResource(R.string.difficulty_hard)
-                            },
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
-
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer
-                    ) {
                         Row(
                             modifier = Modifier.padding(4.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_event_busy_outlined),
+                            /*Icon(
+                                painter = painterResource(R.drawable.ic_mode_heat_outlined),
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
-                            )
+                            )*/
+
+                            when (questWithDetails.quest.difficulty) {
+                                Difficulty.EASY -> {
+                                    EasyIcon(
+                                        tint = when (questWithDetails.quest.difficulty) {
+                                            Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                        },
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                                Difficulty.MEDIUM -> {
+                                    MediumIcon(
+                                        tint = when (questWithDetails.quest.difficulty) {
+                                            Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                        },
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                                Difficulty.HARD -> {
+                                    HardIcon(
+                                        tint = when (questWithDetails.quest.difficulty) {
+                                            Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                                            Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                                        },
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
 
                             Text(
-                                text = "Überfällig",
-
-                                )
+                                text = when (questWithDetails.quest.difficulty) {
+                                    Difficulty.EASY -> stringResource(R.string.difficulty_easy)
+                                    Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
+                                    Difficulty.HARD -> stringResource(R.string.difficulty_hard)
+                                }
+                            )
                         }
                     }
+
+                    if (isOverdue)
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_event_busy_outlined),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+
+                                Text(text = stringResource(R.string.quest_item_overdue_badge))
+                            }
+                        }
 
                     if (showListBadge)
                         questWithDetails.questCategory?.let { questCategoryEntity ->

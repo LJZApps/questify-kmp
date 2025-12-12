@@ -323,4 +323,5 @@
     <string name="set_due_date_bottom_sheet_time_title">Zeit auswählen</string>
     <string name="set_due_date_bottom_sheet_time_subtitle">Automatisch: 23:59 Uhr</string>
     <string name="set_due_date_bottom_sheet_time_hint">Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.</string>
+    <string name="quest_item_overdue_badge">Überfällig</string>
 </resources>
