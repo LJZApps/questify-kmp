@@ -303,7 +303,7 @@ fun QuestItem(
             }
         }
 
-        if (totalCount > 0)
+        if (totalCount > 0 && !questWithDetails.quest.done)
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
