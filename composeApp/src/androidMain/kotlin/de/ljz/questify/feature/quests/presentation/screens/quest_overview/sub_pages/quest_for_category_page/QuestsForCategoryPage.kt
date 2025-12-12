@@ -30,7 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
 import de.ljz.questify.feature.quests.data.models.QuestEntity
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import de.ljz.questify.feature.quests.presentation.components.QuestItem
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -53,7 +53,7 @@ fun QuestsForCategoryPage(
 
     val questComparator by remember(uiState.sortingDirections) {
         derivedStateOf {
-            compareBy<QuestWithSubQuests> { it.quest.id }
+            compareBy<QuestWithDetails> { it.quest.id }
                 .let { if (uiState.sortingDirections == SortingDirections.DESCENDING) it.reversed() else it }
         }
     }
@@ -106,11 +106,11 @@ fun QuestsForCategoryPage(
                 key = { it.quest.id }
             ) { questWithSubQuests ->
                 QuestItem(
-                    questWithSubQuests = questWithSubQuests,
-                    onCheckButtonClicked = {
+                    questWithDetails = questWithSubQuests,
+                    onCheckButtonClick = {
                         onQuestChecked(questWithSubQuests.quest)
                     },
-                    onEditButtonClicked = {
+                    onEditButtonClick = {
                         onEditQuestClicked(questWithSubQuests.quest.id)
                     },
                     onClick = {

@@ -148,6 +148,11 @@ android {
     }
 
     buildTypes {
+        named("debug") {
+            isDebuggable = true
+            applicationIdSuffix = ".DEV"
+        }
+
         getByName("release") {
             isMinifyEnabled = false
         }

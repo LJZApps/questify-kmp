@@ -6,7 +6,7 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
@@ -20,19 +20,19 @@ interface QuestDao {
 
     @Transaction
     @Query("SELECT * FROM quest_entity WHERE title LIKE '%' || :query || '%' OR notes LIKE '%' || :query || '%' ORDER BY title, notes DESC")
-    suspend fun searchQuests(query: String): List<QuestWithSubQuests>
+    suspend fun searchQuests(query: String): List<QuestWithDetails>
 
     @Transaction
     @Query("SELECT * FROM quest_entity")
-    fun getAllQuests(): Flow<List<QuestWithSubQuests>>
+    fun getAllQuests(): Flow<List<QuestWithDetails>>
 
     @Transaction
     @Query("SELECT * FROM quest_entity WHERE id = :id")
-    suspend fun getQuestById(id: Int): QuestWithSubQuests
+    suspend fun getQuestById(id: Int): QuestWithDetails
 
     @Transaction
     @Query("SELECT * FROM quest_entity WHERE category_id = :categoryId")
-    fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>>
+    fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithDetails>>
 
     @Query("UPDATE quest_entity SET title = :title, notes = :description, difficulty = :difficulty, due_date = :dueDate, category_id = :categoryId WHERE id = :id")
     suspend fun updateQuestById(
@@ -46,11 +46,11 @@ interface QuestDao {
 
     @Transaction
     @Query("SELECT * FROM quest_entity WHERE id = :id")
-    suspend fun suspendGetQuestById(id: Int): QuestWithSubQuests
+    suspend fun suspendGetQuestById(id: Int): QuestWithDetails
 
     @Transaction
     @Query("SELECT * FROM quest_entity WHERE id = :id")
-    fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?>
+    fun getQuestByIdFlow(id: Int): Flow<QuestWithDetails?>
 
     @Transaction
     @Query("UPDATE quest_entity SET done = :done WHERE id = :id")

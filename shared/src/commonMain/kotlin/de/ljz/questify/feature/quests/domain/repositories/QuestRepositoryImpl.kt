@@ -3,7 +3,7 @@ package de.ljz.questify.feature.quests.domain.repositories
 import de.ljz.questify.feature.quests.data.daos.QuestDao
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
@@ -49,19 +49,19 @@ class QuestRepositoryImpl(
         )
     }
 
-    override suspend fun getQuests(): Flow<List<QuestWithSubQuests>> {
+    override suspend fun getQuests(): Flow<List<QuestWithDetails>> {
         return questDao.getAllQuests()
     }
 
-    override suspend fun getQuestById(id: Int): QuestWithSubQuests {
+    override suspend fun getQuestById(id: Int): QuestWithDetails {
         return questDao.getQuestById(id)
     }
 
-    override suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>> {
+    override suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithDetails>> {
         return questDao.getQuestsForCategoryStream(categoryId)
     }
 
-    override suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?> {
+    override suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithDetails?> {
         return questDao.getQuestByIdFlow(id)
     }
 

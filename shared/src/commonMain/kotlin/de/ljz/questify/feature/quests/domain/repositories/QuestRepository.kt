@@ -2,7 +2,7 @@ package de.ljz.questify.feature.quests.domain.repositories
 
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
@@ -29,13 +29,13 @@ interface QuestRepository {
         categoryId: Int? = null
     )
 
-    suspend fun getQuests(): Flow<List<QuestWithSubQuests>>
+    suspend fun getQuests(): Flow<List<QuestWithDetails>>
 
-    suspend fun getQuestById(id: Int): QuestWithSubQuests
+    suspend fun getQuestById(id: Int): QuestWithDetails
 
-    suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithSubQuests>>
+    suspend fun getQuestsForCategoryStream(categoryId: Int): Flow<List<QuestWithDetails>>
 
-    suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithSubQuests?>
+    suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithDetails?>
 
     suspend fun deleteQuest(id: Int)
 }

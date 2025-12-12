@@ -2,6 +2,7 @@ package de.ljz.questify.feature.quests.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,11 +40,12 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun QuestItem(
-    questWithSubQuests: QuestWithSubQuests,
-    modifier: Modifier = Modifier,
-    onEditButtonClicked: () -> Unit,
-    onCheckButtonClicked: () -> Unit,
+    questWithDetails: QuestWithDetails,
+    onEditButtonClick: () -> Unit,
+    onCheckButtonClick: () -> Unit,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    showListBadge: Boolean = false
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -67,7 +69,7 @@ fun QuestItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = questWithSubQuests.quest.title,
+                    text = questWithDetails.quest.title,
                     style = MaterialTheme.typography.titleMedium
                         .copy(
                             fontWeight = FontWeight.Bold
@@ -76,7 +78,7 @@ fun QuestItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                questWithSubQuests.quest.notes?.let {
+                questWithDetails.quest.notes?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium,
@@ -85,7 +87,7 @@ fun QuestItem(
                     )
                 }
 
-                questWithSubQuests.quest.dueDate?.let {
+                questWithDetails.quest.dueDate?.let {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -104,7 +106,7 @@ fun QuestItem(
                     }
                 }
 
-                questWithSubQuests.subTasks.let { subTasks ->
+                questWithDetails.subTasks.let { subTasks ->
                     if (subTasks.isNotEmpty()) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -125,36 +127,85 @@ fun QuestItem(
                     }
                 }
 
-                Badge(
-                    containerColor = when (questWithSubQuests.quest.difficulty) {
-                        Difficulty.EASY -> MaterialTheme.colorScheme.surfaceContainerLow
-                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.surfaceContainer
-                        Difficulty.HARD -> MaterialTheme.colorScheme.primary
-                    },
-                    contentColor = when (questWithSubQuests.quest.difficulty) {
-                        Difficulty.EASY -> MaterialTheme.colorScheme.onSurface
-                        Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurface
-                        Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
-                    }
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = when (questWithSubQuests.quest.difficulty) {
-                            Difficulty.EASY -> stringResource(R.string.difficulty_easy)
-                            Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
-                            Difficulty.HARD -> stringResource(R.string.difficulty_hard)
+                    Badge(
+                        containerColor = when (questWithDetails.quest.difficulty) {
+                            Difficulty.EASY -> MaterialTheme.colorScheme.surfaceContainerLow
+                            Difficulty.MEDIUM -> MaterialTheme.colorScheme.surfaceContainerHigh
+                            Difficulty.HARD -> MaterialTheme.colorScheme.primary
                         },
-                        modifier = Modifier.padding(4.dp)
-                    )
+                        contentColor = when (questWithDetails.quest.difficulty) {
+                            Difficulty.EASY -> MaterialTheme.colorScheme.onSurfaceVariant
+                            Difficulty.MEDIUM -> MaterialTheme.colorScheme.onSurfaceVariant
+                            Difficulty.HARD -> MaterialTheme.colorScheme.onPrimary
+                        }
+                    ) {
+                        Text(
+                            text = when (questWithDetails.quest.difficulty) {
+                                Difficulty.EASY -> stringResource(R.string.difficulty_easy)
+                                Difficulty.MEDIUM -> stringResource(R.string.difficulty_medium)
+                                Difficulty.HARD -> stringResource(R.string.difficulty_hard)
+                            },
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    }
+
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_event_busy_outlined),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+
+                            Text(
+                                text = "Überfällig",
+
+                                )
+                        }
+                    }
+
+                    if (showListBadge)
+                        questWithDetails.questCategory?.let { questCategoryEntity ->
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(4.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_label_outlined),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+
+                                    Text(text = questCategoryEntity.text)
+                                }
+                            }
+                        }
                 }
             }
 
-            if (!questWithSubQuests.quest.done) {
+            if (!questWithDetails.quest.done) {
                 BasicPlainTooltip(
                     text = stringResource(R.string.quest_item_tooltip_edit),
                     position = TooltipAnchorPosition.Above
                 ) {
                     IconButton(
-                        onClick = onEditButtonClicked
+                        onClick = onEditButtonClick
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_edit_outlined),
@@ -164,7 +215,7 @@ fun QuestItem(
                 }
             }
 
-            if (questWithSubQuests.quest.done) {
+            if (questWithDetails.quest.done) {
                 Badge(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -193,7 +244,7 @@ fun QuestItem(
                     FilledIconButton(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onCheckButtonClicked()
+                            onCheckButtonClick()
                         }
                     ) {
                         Icon(

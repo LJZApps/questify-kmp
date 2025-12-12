@@ -131,7 +131,7 @@ class EditQuestViewModel(
                         _copiedQuestEntity?.let { copiedQuestEntity ->
                             val updatedQuestEntity = copiedQuestEntity.copy(
                                 title = _uiState.value.title,
-                                notes = _uiState.value.notes,
+                                notes = _uiState.value.notes.trim().ifEmpty { null },
                                 difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
                                 dueDate = if (_uiState.value.combinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
                                     _uiState.value.combinedDueDate

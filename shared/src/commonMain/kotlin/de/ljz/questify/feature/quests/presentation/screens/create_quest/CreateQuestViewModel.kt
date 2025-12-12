@@ -89,7 +89,7 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnCreateQuest -> {
                 val quest = QuestEntity(
                     title = _uiState.value.title,
-                    notes = _uiState.value.description.ifEmpty { null },
+                    notes = _uiState.value.description.trim().ifEmpty { null },
                     difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
                     createdAt = Clock.System.now(),
                     dueDate = if (_uiState.value.selectedCombinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(

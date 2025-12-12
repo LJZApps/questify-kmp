@@ -32,10 +32,11 @@ import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
 import de.ljz.questify.feature.quests.data.models.QuestEntity
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import de.ljz.questify.feature.quests.presentation.components.QuestItem
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.AllQuestPageState
 
+@Suppress("ModifierReuse")
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalMaterial3AdaptiveApi::class
@@ -44,14 +45,14 @@ import de.ljz.questify.feature.quests.presentation.screens.quest_overview.AllQue
 fun AllQuestsPage(
     modifier: Modifier = Modifier,
     state: AllQuestPageState,
-    onEditQuestClicked: (Int) -> Unit,
-    onQuestChecked: (QuestEntity) -> Unit,
-    onQuestClicked: (Int) -> Unit,
-    onCreateNewQuestButtonClicked: () -> Unit
+    onEditQuestClick: (Int) -> Unit,
+    onQuestCheck: (QuestEntity) -> Unit,
+    onQuestClick: (Int) -> Unit,
+    onCreateNewQuestButtonClick: () -> Unit
 ) {
     val questComparator by remember(state.sortingDirections) {
         derivedStateOf {
-            compareBy<QuestWithSubQuests> { it.quest.id }
+            compareBy<QuestWithDetails> { it.quest.id }
                 .let { if (state.sortingDirections == SortingDirections.DESCENDING) it.reversed() else it }
         }
     }
@@ -76,17 +77,18 @@ fun AllQuestsPage(
                 key = { it.quest.id }
             ) { quest ->
                 QuestItem(
-                    questWithSubQuests = quest,
-                    onCheckButtonClicked = {
-                        onQuestChecked(quest.quest)
+                    questWithDetails = quest,
+                    onCheckButtonClick = {
+                        onQuestCheck(quest.quest)
                     },
-                    onEditButtonClicked = {
-                        onEditQuestClicked(quest.quest.id)
+                    onEditButtonClick = {
+                        onEditQuestClick(quest.quest.id)
                     },
                     onClick = {
-                        onQuestClicked(quest.quest.id)
+                        onQuestClick(quest.quest.id)
                     },
-                    modifier = Modifier.animateItem()
+                    modifier = Modifier.animateItem(),
+                    showListBadge = true
                 )
             }
 
@@ -116,7 +118,7 @@ fun AllQuestsPage(
             Text(stringResource(R.string.all_quests_page_empty))
 
             Button(
-                onClick = onCreateNewQuestButtonClicked
+                onClick = onCreateNewQuestButtonClick
             ) {
                 Text(stringResource(R.string.all_quests_page_create_button))
             }

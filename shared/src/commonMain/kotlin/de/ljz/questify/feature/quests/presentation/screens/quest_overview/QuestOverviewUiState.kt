@@ -2,7 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_overview
 
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
-import de.ljz.questify.feature.quests.data.relations.QuestWithSubQuests
+import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 
 data class QuestOverviewUIState(
     val dialogState: QuestOverviewDialogState,
@@ -10,7 +10,7 @@ data class QuestOverviewUIState(
 )
 
 data class AllQuestPageState(
-    val quests: List<QuestWithSubQuests>,
+    val quests: List<QuestWithDetails>,
     val sortingDirections: SortingDirections,
     val showCompleted: Boolean,
 )

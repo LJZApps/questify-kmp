@@ -434,22 +434,22 @@ private fun QuestOverviewScreen(
                     if (pageIndex == 0) {
                         AllQuestsPage(
                             state = uiState.allQuestPageState,
-                            onEditQuestClicked = {
+                            onEditQuestClick = {
                                 onUiEvent(QuestOverviewUiEvent.OnNavigateToEditQuestScreen(it))
                             },
-                            onQuestChecked = { quest ->
+                            onQuestCheck = { quest ->
                                 onUiEvent(
                                     QuestOverviewUiEvent.OnQuestChecked(
                                         questEntity = quest
                                     )
                                 )
                             },
-                            onQuestClicked = { id ->
+                            onQuestClick = { id ->
                                 onUiEvent(
                                     QuestOverviewUiEvent.OnNavigateToQuestDetailScreen(entryId = id)
                                 )
                             },
-                            onCreateNewQuestButtonClicked = {
+                            onCreateNewQuestButtonClick = {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                                 onUiEvent(
