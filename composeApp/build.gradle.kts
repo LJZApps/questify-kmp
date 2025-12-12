@@ -131,7 +131,7 @@ android {
     defaultConfig {
         val major = 0
         val minor = 12
-        val patch = 1
+        val patch = 2
 
         versionName = "$major.$minor.$patch"
         versionCode = (major * 10000) + (minor * 100) + patch
