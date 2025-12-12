@@ -27,13 +27,13 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = koinViewModel(),
     onNavigateToSettingsPermissionScreen: (Boolean) -> Unit,
     onNavigateToSettingsScreen: () -> Unit,
     onNavigateToCreateQuestScreen: (Int?) -> Unit,
     onNavigateToQuestDetailScreen: (Int) -> Unit,
     onNavigateToEditQuestScreen: (Int) -> Unit,
-    onNavigateToCreateHabitScreen: () -> Unit
+    onNavigateToCreateHabitScreen: () -> Unit,
+    viewModel: MainViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 //    val context = LocalContext.current
