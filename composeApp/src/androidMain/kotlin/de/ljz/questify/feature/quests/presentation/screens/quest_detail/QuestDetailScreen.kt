@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
+import de.ljz.questify.core.notifications.AndroidNotificationScheduler
 import de.ljz.questify.core.utils.MaxWidth
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
 import de.ljz.questify.feature.quests.presentation.components.EasyIcon
@@ -163,6 +164,15 @@ fun QuestDetailScreen(
                                     .padding(top = 8.dp),
                                 textAlign = TextAlign.Center
                             )
+                        }
+
+                        Button(
+                            onClick = {
+                                val scheduler = AndroidNotificationScheduler(context)
+                                scheduler.testLiveNotification()
+                            }
+                        ) {
+                            Text("Test Live Update")
                         }
 
                         Button(

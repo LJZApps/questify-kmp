@@ -1,9 +1,7 @@
 package de.ljz.questify.feature.quests.domain.use_cases
 
-import de.ljz.questify.core.notifications.NotificationScheduler
-
 class CancelQuestNotificationsUseCase(
-    private val notificationScheduler: NotificationScheduler, // <--- Das Interface
+//    private val notificationScheduler: NotificationScheduler,
     private val getNotificationsByQuestIdUseCase: GetNotificationsByQuestIdUseCase,
     private val removeNotificationsUseCase: RemoveNotificationsUseCase
 ) {
@@ -12,7 +10,7 @@ class CancelQuestNotificationsUseCase(
 
         notifications.forEach { notificationEntity ->
             // Die Drecksarbeit macht jetzt die Implementierung
-            notificationScheduler.cancelNotification(notificationEntity.id)
+//            notificationScheduler.cancelNotification(notificationEntity.id)
         }
 
         removeNotificationsUseCase(id = id)

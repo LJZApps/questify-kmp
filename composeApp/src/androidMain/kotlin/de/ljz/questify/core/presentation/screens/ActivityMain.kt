@@ -1,5 +1,6 @@
 package de.ljz.questify.core.presentation.screens
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -222,6 +223,18 @@ class ActivityMain : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+}
+
+internal class DeepLinkRequest(
+    val uri: Uri
+) {
+    val pathSegments: List<String> = uri.pathSegments
+
+    val queries = buildMap {
+        uri.queryParameterNames.forEach { argName ->
+            this[argName] = uri.getQueryParameter(argName)
         }
     }
 }
