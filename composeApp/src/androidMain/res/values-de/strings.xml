@@ -81,9 +81,9 @@
     <string name="user_setup_page_title">Erstelle dein Profil</string>
     <string name="text_field_display_name">Anzeigename</string>
     <string name="text_field_about_me">Über mich</string>
-    <string name="drawe_content_xp">%1$s XP</string>
-    <string name="drawe_content_level">Level %1$s</string>
-    <string name="drawe_content_points">%1$s Punkte</string>
+    <string name="drawer_content_xp">%1$s XP</string>
+    <string name="drawer_content_level">Level %1$s</string>
+    <string name="drawer_content_points">%1$s Punkte</string>
     <string name="tutorial_dashboard_title">Das Dashboard</string>
     <string name="tutorial_dashboard_text_1">Willkommen im Dashboard! Hier hast du alle deine Statistiken, Quests und Fortschritte auf einen Blick.</string>
     <string name="tutorial_dashboard_text_2">Verfolge deinen Fortschritt: Sieh dir deine abgeschlossenen Quests, täglichen Aufgaben und Routinen an.</string>
@@ -252,17 +252,17 @@
 
     <!-- Quest Strings -->
     <string name="back_tooltip">Zurück</string>
-    <string name="add_subtask_label">Unteraufgabe hinzufügen</string>
-    <string name="add_subtask_placeholder">Neue Unteraufgabe</string>
+    <string name="add_subtask_label">Nebenquest hinzufügen</string>
+    <string name="add_subtask_placeholder">Neue Nebenquest</string>
     <string name="move_subtask_content_description">Verschieben</string>
     <string name="edit_quest_delete_menu_item">Quest löschen</string>
     <string name="more_options_tooltip">Mehr</string>
-    <string name="complete_subtasks_first_hint">Erledige zuerst alle Unteraufgaben.</string>
+    <string name="complete_subtasks_first_hint">Erledige zuerst alle Nebenquests.</string>
     <string name="quest_detail_complete_quest_button">Quest abschließen</string>
     <string name="quest_progress_title">Fortschritt</string>
     <string name="quest_progress_current_label">Aktueller Fortschritt:</string>
-    <string name="quest_progress_subtasks_count">%1$d von %2$d Unteraufgaben erledigt</string>
-    <string name="quest_detail_subtasks_title">Unteraufgaben</string>
+    <string name="quest_progress_subtasks_count">%1$d von %2$d Nebenquests erledigt</string>
+    <string name="quest_detail_subtasks_title">Nebenquests</string>
     <string name="quest_due_date_format_full">dd. MMMM yyyy \'um\' HH:mm</string>
     <string name="quest_due_date_format_short">dd. MMM yyyy HH:mm</string>
     <string name="quest_overview_nav_drawer_tooltip">Navigationsleiste öffnen</string>
@@ -305,7 +305,10 @@
     <string name="tutorial_rewards_page_rank_title">Dein Rang</string>
     <string name="tutorial_rewards_page_rank_description">Schalte exklusive Belohnungen frei</string>
     <string name="set_due_date_bottom_sheet_remove_due_button">Fälligkeit entfernen</string>
-    <string name="quest_item_subtasks">%1$d Unteraufgaben</string>
+    <plurals name="quest_item_subtasks">
+        <item quantity="one">%1$d Nebenquest</item>
+        <item quantity="other">%1$d Nebenquests</item>
+    </plurals>
     <string name="quest_item_tooltip_edit">Bearbeiten</string>
     <string name="quest_item_done">Abgeschlossen</string>
     <string name="quest_item_tooltip_done">Fertigstellen</string>
