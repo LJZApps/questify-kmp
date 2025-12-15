@@ -250,59 +250,61 @@ fun QuestItem(
                 }
             }
 
-            if (!questWithDetails.quest.done) {
-                BasicPlainTooltip(
-                    text = stringResource(R.string.quest_item_tooltip_edit),
-                    position = TooltipAnchorPosition.Above
-                ) {
-                    IconButton(
-                        onClick = onEditButtonClick
+            when (questWithDetails.quest.done) {
+                false -> {
+                    BasicPlainTooltip(
+                        text = stringResource(R.string.quest_item_tooltip_edit),
+                        position = TooltipAnchorPosition.Above
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_edit_outlined),
-                            contentDescription = null
-                        )
+                        IconButton(
+                            onClick = onEditButtonClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_edit_outlined),
+                                contentDescription = null
+                            )
+                        }
+                    }
+
+                    BasicPlainTooltip(
+                        text = stringResource(R.string.quest_item_tooltip_done),
+                        position = TooltipAnchorPosition.Above
+                    ) {
+                        FilledIconButton(
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onCheckButtonClick()
+                            },
+                            enabled = doneCount == totalCount
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_check_circle_outlined),
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
-            }
 
-            if (questWithDetails.quest.done) {
-                Badge(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.padding(4.dp)
+                true -> {
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check),
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_check),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
 
-                        Text(
-                            text = stringResource(R.string.quest_item_done)
-                        )
-                    }
-                }
-            } else {
-                BasicPlainTooltip(
-                    text = stringResource(R.string.quest_item_tooltip_done),
-                    position = TooltipAnchorPosition.Above
-                ) {
-                    FilledIconButton(
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onCheckButtonClick()
-                        },
-                        enabled = doneCount == totalCount
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check_circle_outlined),
-                            contentDescription = null,
-                        )
+                            Text(
+                                text = stringResource(R.string.quest_item_done)
+                            )
+                        }
                     }
                 }
             }
