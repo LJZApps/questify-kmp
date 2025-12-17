@@ -10,15 +10,8 @@ import SharedKMP
 struct CreateQuestSheet: View {
     @Environment(\.dismiss) var dismiss
     
-    private let viewModel: CreateQuestViewModel = ProvideViewModel.shared.getCreateQuestViewModel(selectedQuestCategoryIndex: nil)
-    
-    @State private var state: CreateQuestUiState
     @State private var title: String = ""
     @State private var notes: String = ""
-    
-    init() {
-        _state = State(initialValue: ProvideViewModel.shared.getCreateQuestViewModel(selectedQuestCategoryIndex: nil).uiState.value)
-    }
     
     var body: some View {
         NavigationStack {
@@ -39,7 +32,7 @@ struct CreateQuestSheet: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        viewModel.onUiEvent(event: CreateQuestUiEventOnCreateQuest())
+                        //viewModel.onUiEvent(event: CreateQuestUiEventOnCreateQuest())
                         dismiss()
                     }) {
                         Image(systemName: "checkmark")

@@ -1,11 +1,11 @@
 import SwiftUI
-import SharedKMP
+@_exported import SharedKMP
 
 @main
 struct iOSApp: App {
     
     init() {
-
+        initKoin()
     }
     
     var body: some Scene {

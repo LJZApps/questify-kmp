@@ -5,17 +5,13 @@
 //  Created by Leon Zapke on 24.11.25.
 //
 import SwiftUI
-import SharedKMP
+@_exported import SharedKMP
 
 struct QuestOverviewScreen: View {
-    private let viewModel: QuestOverviewViewModel = ProvideViewModel.shared.getQuestOverviewViewModel()
-    private let createQuestViewModel: CreateQuestViewModel = ProvideViewModel.shared.getCreateQuestViewModel(selectedQuestCategoryIndex: nil)
-
-    @State private var state: QuestOverviewUIState
     @State private var showingCreateQuestSheet = false
     
     init() {
-        _state = State(initialValue: ProvideViewModel.shared.getQuestOverviewViewModel().uiState.value)
+        
     }
     
     var body: some View {
