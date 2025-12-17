@@ -1,31 +1,19 @@
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalSwiftExportDsl::class)
 
-import co.touchlab.skie.configuration.SealedInterop
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.swiftexport.ExperimentalSwiftExportDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
-    alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.skie)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
-}
-
-skie {
-    features {
-        group {
-            SealedInterop.Enabled(true)
-            coroutinesInterop.set(true)
-        }
-    }
 }
 
 kotlin {
@@ -38,23 +26,14 @@ kotlin {
     macosX64()
     macosArm64()
 
-    cocoapods {
-        version = "1.0"
-        summary = "Some description for a Kotlin/Native module"
-        homepage = "Link to a Kotlin/Native module homepage"
+    swiftExport {
+        moduleName = "SharedKMP"
 
-        name = "SharedKMP"
+        flattenPackage = "de.ljz.questify"
 
-        framework {
-            baseName = "SharedKMP"
-
-            isStatic = false
-
-            export(libs.androidx.lifecycle.viewmodel)
+        configure {
+            freeCompilerArgs.add("-Xexpect-actual-classes")
         }
-
-        xcodeConfigurationToNativeBuildType["CUSTOM_DEBUG"] = NativeBuildType.DEBUG
-        xcodeConfigurationToNativeBuildType["CUSTOM_RELEASE"] = NativeBuildType.RELEASE
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
