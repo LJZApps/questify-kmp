@@ -61,7 +61,6 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.koin.core)
-            implementation(libs.koin.view.model)
 
             implementation(libs.kotlinx.datetime)
 

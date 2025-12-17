@@ -1,5 +1,7 @@
 package de.ljz.questify.core.di
 
+import de.ljz.questify.core.presentation.screens.AppViewModel
+import de.ljz.questify.core.presentation.theme.ThemeViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainViewModel
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingViewModel
 import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileViewModel
@@ -16,6 +18,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    viewModelOf(::ThemeViewModel)
+    viewModelOf(::AppViewModel)
+
     viewModelOf(::MainViewModel)
 
     viewModelOf(::OnboardingViewModel)

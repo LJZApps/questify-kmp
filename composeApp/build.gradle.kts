@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.view.model)
 
             // Navigation 3
             implementation(libs.androidx.navigation3.ui)
