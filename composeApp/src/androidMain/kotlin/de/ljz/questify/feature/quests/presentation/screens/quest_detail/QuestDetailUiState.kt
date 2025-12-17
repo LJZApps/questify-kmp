@@ -21,7 +21,7 @@ data class QuestDetailUiState(
 
 data class QuestState(
     val title: String,
-    val description: String,
+    val notes: String,
     val difficulty: Difficulty,
     val notificationTriggerTimes: List<Long>,
     val selectedDueDate: Long,

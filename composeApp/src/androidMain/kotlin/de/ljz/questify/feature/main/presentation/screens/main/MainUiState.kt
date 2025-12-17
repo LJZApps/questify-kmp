@@ -1,4 +1,4 @@
-package de.ljz.questify.feature.main.presentation
+package de.ljz.questify.feature.main.presentation.screens.main
 
 data class MainUiState(
     val userPoints: Int,

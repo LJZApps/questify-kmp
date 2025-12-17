@@ -4,7 +4,7 @@ import de.ljz.questify.feature.quests.data.daos.QuestNotificationDao
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
 import kotlinx.coroutines.flow.Flow
 
-class QuestNotificationRepositoryImpl(
+internal class QuestNotificationRepositoryImpl(
     private val questNotificationDao: QuestNotificationDao
 ) : QuestNotificationRepository {
     override fun getPendingNotifications(): Flow<List<QuestNotificationEntity>> {

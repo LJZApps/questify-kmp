@@ -12,7 +12,7 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 
-fun <T> createDataStore(
+internal fun <T> createDataStore(
     producePath: () -> String,
     serializer: OkioSerializer<T>,
     defaultValue: T

@@ -13,7 +13,7 @@ import de.ljz.questify.feature.settings.data.serializer.FeatureSettingsSerialize
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val dataStoreModule = module {
+internal val dataStoreModule = module {
     single(named("sorting_preferences")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("sorting_preferences.json") },

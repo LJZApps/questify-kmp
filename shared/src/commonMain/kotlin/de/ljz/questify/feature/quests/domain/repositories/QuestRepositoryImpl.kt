@@ -7,7 +7,7 @@ import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
-class QuestRepositoryImpl(
+internal class QuestRepositoryImpl(
     private val questDao: QuestDao
 ) : QuestRepository {
     override suspend fun addMainQuest(quest: QuestEntity): Long {

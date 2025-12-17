@@ -8,14 +8,11 @@ import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepositor
 import de.ljz.questify.feature.settings.domain.repositories.AppSettingsRepositoryImpl
 import de.ljz.questify.feature.settings.domain.use_cases.GetAppSettingsUseCase
 import de.ljz.questify.feature.settings.domain.use_cases.SetDarkModeBehaviorUseCase
-import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceViewModel
-import de.ljz.questify.feature.settings.presentation.screens.main.SettingsViewModel
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val settingsModule = module {
+internal val settingsModule = module {
     single<AppSettingsRepository> {
         AppSettingsRepositoryImpl(
             appSettingsDataStore = get(named("app_settings"))
@@ -28,7 +25,4 @@ val settingsModule = module {
     factoryOf(::UpdateShowCompletedQuestsUseCase)
     factoryOf(::GetAppSettingsUseCase)
     factoryOf(::SetDarkModeBehaviorUseCase)
-
-    viewModelOf(::SettingsViewModel)
-    viewModelOf(::SettingsAppearanceViewModel)
 }

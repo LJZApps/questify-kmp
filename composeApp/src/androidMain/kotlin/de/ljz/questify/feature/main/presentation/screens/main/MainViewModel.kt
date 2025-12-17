@@ -1,4 +1,4 @@
-package de.ljz.questify.feature.main.presentation
+package de.ljz.questify.feature.main.presentation.screens.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

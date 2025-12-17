@@ -53,7 +53,7 @@ class QuestDetailViewModel(
 
             questState = QuestState(
                 title = "",
-                description = "",
+                notes = "",
                 difficulty = Difficulty.EASY,
                 notificationTriggerTimes = emptyList(),
                 selectedDueDate = 0,
@@ -99,7 +99,7 @@ class QuestDetailViewModel(
                         _uiState.value = _uiState.value.copy(
                             questState = _uiState.value.questState.copy(
                                 title = quest.quest.title,
-                                description = quest.quest.notes ?: "",
+                                notes = quest.quest.notes ?: "",
                                 difficulty = quest.quest.difficulty,
                                 notificationTriggerTimes = notifications,
                                 selectedDueDate = quest.quest.dueDate?.toEpochMilliseconds() ?: 0L,

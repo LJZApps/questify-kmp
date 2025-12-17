@@ -33,19 +33,12 @@ import de.ljz.questify.feature.quests.domain.use_cases.GetQuestCategoryByIdUseCa
 import de.ljz.questify.feature.quests.domain.use_cases.RemoveNotificationsUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.UpdateQuestCategoryUseCase
 import de.ljz.questify.feature.quests.domain.use_cases.UpsertQuestUseCase
-import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
-import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestViewModel
-import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailViewModel
-import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
-import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val questModule = module {
+internal val questModule = module {
     single<QuestCategoryDao> {
         get<AppDatabase>().questCategoryDao
     }
@@ -87,55 +80,4 @@ val questModule = module {
     factoryOf(::UpdateQuestCategoryUseCase)
     factoryOf(::UpsertQuestUseCase)
     factoryOf(::CompleteQuestUseCase)
-
-    viewModelOf(::QuestOverviewViewModel)
-
-    viewModel { (categoryId: Int) ->
-        CategoryQuestViewModel(
-            categoryId = categoryId,
-            getAllQuestsForCategoryUseCase = get(),
-            getQuestSortingPreferencesUseCase = get()
-        )
-    }
-
-    viewModel { (selectedCategoryIndex: Int?) ->
-        CreateQuestViewModel(
-            selectedCategoryIndex = selectedCategoryIndex,
-            addSubQuestsUseCase = get(),
-            addQuestCategoryUseCase = get(),
-            getAllQuestCategoriesUseCase = get(),
-            upsertQuestUseCase = get(),
-            addQuestNotificationUseCase = get()
-        )
-    }
-
-    viewModel { (questId: Int) ->
-        EditQuestViewModel(
-            id = questId,
-            upsertQuestUseCase = get(),
-            getQuestByIdUseCase = get(),
-            getQuestByIdAsFlowUseCase = get(),
-            deleteQuestUseCase = get(),
-            addQuestCategoryUseCase = get(),
-            getAllQuestCategoriesUseCase = get(),
-            addSubQuestsUseCase = get(),
-            deleteSubQuestsUseCase = get(),
-            deleteSubQuestUseCase = get(),
-            addQuestNotificationUseCase = get(),
-            cancelQuestNotificationsUseCase = get(),
-        )
-    }
-
-    viewModel { (questId: Int) ->
-        QuestDetailViewModel(
-            id = questId,
-            getQuestByIdAsFlowUseCase = get(),
-            completeQuestUseCase = get(),
-            deleteQuestUseCase = get(),
-            getAllQuestCategoriesUseCase = get(),
-            getQuestCategoryByIdUseCase = get(),
-            checkSubQuestUseCase = get(),
-            cancelQuestNotificationsUseCase = get(),
-        )
-    }
 }

@@ -373,7 +373,7 @@ private fun CreateQuestScreen(
 
                 item {
                     BasicTextField(
-                        value = uiState.description,
+                        value = uiState.notes,
                         onValueChange = { value ->
                             onUiEvent(CreateQuestUiEvent.OnDescriptionUpdated(value))
                         },
@@ -390,7 +390,7 @@ private fun CreateQuestScreen(
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
                         decorationBox = @Composable { innerTextField ->
                             TextFieldDefaults.DecorationBox(
-                                value = uiState.description,
+                                value = uiState.notes,
                                 enabled = true,
                                 innerTextField = innerTextField,
                                 singleLine = false,

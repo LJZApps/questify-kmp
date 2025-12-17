@@ -41,7 +41,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
 import de.ljz.questify.R
-import de.ljz.questify.feature.main.presentation.MainUiState
+import de.ljz.questify.feature.main.presentation.screens.main.MainUiState
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
 import kotlinx.coroutines.launch
 

@@ -5,7 +5,7 @@ import de.ljz.questify.feature.quests.data.models.descriptors.SubQuestModel
 
 data class CreateQuestUiState(
     val title: String,
-    val description: String,
+    val notes: String,
     val difficulty: Int,
     val dialogState: CreateQuestDialogState,
     val subDialogState: CreateQuestSubDialogState,

@@ -4,7 +4,7 @@ import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
-class QuestCategoryRepositoryImpl(
+internal class QuestCategoryRepositoryImpl(
     private val questCategoryDao: QuestCategoryDao
 ) : QuestCategoryRepository {
 

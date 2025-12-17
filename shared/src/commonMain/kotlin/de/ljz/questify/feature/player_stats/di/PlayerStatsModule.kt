@@ -12,7 +12,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val playerStatsModule = module {
+internal val playerStatsModule = module {
     single(named("player_stats")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("player_stats.json") },

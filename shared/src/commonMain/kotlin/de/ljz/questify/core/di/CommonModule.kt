@@ -12,7 +12,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val commonModule = module {
+internal val commonModule = module {
     factoryOf(::CancelQuestNotificationsUseCase)
 
     single<AppDatabase> { getRoomDatabase(get()) }

@@ -296,7 +296,7 @@ fun QuestDetailScreen(
                             }
 
 
-                            uiState.questState.description
+                            uiState.questState.notes
                                 .takeIf { it.isNotEmpty() }
                                 ?.let { description ->
                                     Text(

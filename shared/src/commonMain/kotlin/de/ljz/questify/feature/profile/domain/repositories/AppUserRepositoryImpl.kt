@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import de.ljz.questify.feature.profile.data.models.AppUser
 import kotlinx.coroutines.flow.Flow
 
-class AppUserRepositoryImpl(
+internal class AppUserRepositoryImpl(
     private val appUserDataStore: DataStore<AppUser>
 ) : AppUserRepository {
     override fun getAppUser(): Flow<AppUser> {

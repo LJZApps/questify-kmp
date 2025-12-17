@@ -3,7 +3,7 @@ package de.ljz.questify.feature.quests.domain.repositories
 import de.ljz.questify.feature.quests.data.daos.SubQuestDao
 import de.ljz.questify.feature.quests.data.models.SubQuestEntity
 
-class SubQuestRepositoryImpl(
+internal class SubQuestRepositoryImpl(
     private val subQuestDao: SubQuestDao
 ) : SubQuestRepository {
     override suspend fun addSubQuest(subQuest: SubQuestEntity) {

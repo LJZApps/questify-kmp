@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import de.ljz.questify.feature.player_stats.data.models.PlayerStats
 import kotlinx.coroutines.flow.Flow
 
-class PlayerStatsRepositoryImpl(
+internal class PlayerStatsRepositoryImpl(
     private val playerStatsStore: DataStore<PlayerStats>
 ) : PlayerStatsRepository {
     override fun getPlayerStats(): Flow<PlayerStats> {

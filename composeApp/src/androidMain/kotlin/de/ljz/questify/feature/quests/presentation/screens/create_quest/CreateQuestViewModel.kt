@@ -41,7 +41,7 @@ class CreateQuestViewModel(
     private val _uiState = MutableStateFlow(
         value = CreateQuestUiState(
             title = "",
-            description = "",
+            notes = "",
             difficulty = 0,
             dialogState = CreateQuestDialogState.None,
             subDialogState = CreateQuestSubDialogState.None,
@@ -89,7 +89,7 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnCreateQuest -> {
                 val quest = QuestEntity(
                     title = _uiState.value.title,
-                    notes = _uiState.value.description.trim().ifEmpty { null },
+                    notes = _uiState.value.notes.trim().ifEmpty { null },
                     difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
                     createdAt = Clock.System.now(),
                     dueDate = if (_uiState.value.selectedCombinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
@@ -131,7 +131,7 @@ class CreateQuestViewModel(
 
             is CreateQuestUiEvent.OnDescriptionUpdated -> {
                 _uiState.update {
-                    it.copy(description = event.value)
+                    it.copy(notes = event.value)
                 }
             }
 

@@ -7,7 +7,7 @@ import de.ljz.questify.core.data.models.descriptors.SortingDirections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class SortingPreferencesRepositoryImpl(
+internal class SortingPreferencesRepositoryImpl(
     private val sortingDataStore: DataStore<SortingPreferences>
 ) : SortingPreferencesRepository {
 

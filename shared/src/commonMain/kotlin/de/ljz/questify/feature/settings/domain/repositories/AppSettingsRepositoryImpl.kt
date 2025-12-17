@@ -5,7 +5,7 @@ import de.ljz.questify.feature.settings.data.models.AppSettings
 import de.ljz.questify.feature.settings.data.models.descriptors.ThemeBehavior
 import kotlinx.coroutines.flow.Flow
 
-class AppSettingsRepositoryImpl(
+internal class AppSettingsRepositoryImpl(
     private val appSettingsDataStore: DataStore<AppSettings>
 ) : AppSettingsRepository {
 
