@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -19,8 +20,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,8 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsMenuLink
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSection
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -74,86 +76,122 @@ fun SettingsMainScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ExpressiveSettingsSection(
-                title = stringResource(R.string.settings_main_screen_profile_title)
-            ) {
-                ExpressiveSettingsMenuLink(
-                    title = uiState.userName,
-                    subtitle = uiState.aboutMe,
-                    icon = {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (uiState.userProfilePicture.isNotEmpty()) {
-                                AsyncImage(
-                                    model = uiState.userProfilePicture,
-                                    contentDescription = stringResource(R.string.profile_picture_content_description),
-                                    modifier = Modifier
-                                        .size(40.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = stringResource(R.string.profile_picture_content_description),
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .padding(5.dp),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
+            SegmentedListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                onClick = {
+                    onNavigateToViewProfileScreen()
+                },
+                shapes = ListItemShapes(
+                    shape = MaterialTheme.shapes.large,
+                    selectedShape = MaterialTheme.shapes.large,
+                    pressedShape = MaterialTheme.shapes.large,
+                    focusedShape = MaterialTheme.shapes.large,
+                    hoveredShape = MaterialTheme.shapes.large,
+                    draggedShape = MaterialTheme.shapes.large
+                ),
+                supportingContent = {
+                    Text(uiState.aboutMe)
+                },
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                ),
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (uiState.userProfilePicture.isNotEmpty()) {
+                            AsyncImage(
+                                model = uiState.userProfilePicture,
+                                contentDescription = stringResource(R.string.profile_picture_content_description),
+                                modifier = Modifier
+                                    .size(40.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = stringResource(R.string.profile_picture_content_description),
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(5.dp),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         }
-                    },
-                    onClick = {
-                        onNavigateToViewProfileScreen()
                     }
-                )
+                }
+            ) {
+                Text(uiState.userName)
             }
 
-            ExpressiveSettingsSection(
-                title = stringResource(R.string.settings_main_screen_settings_title),
-//                subtitle = "Diese Funktionen sind noch in der Entwicklung. Es könnten unerwartete Fehler auftreten."
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
-                /*ExpressiveSettingsMenuLink(
-                    title =  stringResource(R.string.settings_main_screen_features_title) ,
-                    subtitle =  stringResource(R.string.settings_main_screen_features_description),
-                    icon = { Icon(Icons.Outlined.Extension, contentDescription = null) },
-                    onClick = {
-                        mainNavController.navigate(SettingsFeaturesRoute)
-                    }
-                )*/
-
-                ExpressiveSettingsMenuLink(
-                    title = stringResource(R.string.settings_main_screen_appearance_title),
-                    subtitle = stringResource(R.string.settings_main_screen_appearance_description),
-                    icon = { Icon(Icons.Outlined.ColorLens, contentDescription = null) },
+                SegmentedListItem(
                     onClick = {
                         onNavigateToSettingsAppearanceScreen()
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    shapes = ListItemDefaults.segmentedShapes(0, 2),
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_main_screen_appearance_description))
+                    },
+                    leadingContent = {
+                        Icon(Icons.Outlined.ColorLens, contentDescription = null)
                     }
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_main_screen_appearance_title),
+                    )
+                }
 
-                /*ExpressiveSettingsMenuLink(
-                    title = "Experimente",
-                    subtitle = "Teste neue Funktionen vor allen anderen",
-                    icon = { Icon(painter = painterResource(R.drawable.ic_experiment_outlined), contentDescription = null) },
-                    onClick = {
-//                        mainNavController.navigate(SettingsAppearanceRoute)
-                    }
-                )*/
-
-                ExpressiveSettingsMenuLink(
-                    title = stringResource(R.string.settings_main_screen_help_title),
-                    subtitle = stringResource(R.string.settings_main_screen_help_description),
-                    icon = { Icon(Icons.AutoMirrored.Outlined.HelpOutline, contentDescription = null) },
+                SegmentedListItem(
                     onClick = {
                         onNavigateToSettingsHelpScreen()
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    shapes = ListItemDefaults.segmentedShapes(1, 2),
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_main_screen_help_description))
+                    },
+                    leadingContent = {
+                        Icon(Icons.AutoMirrored.Outlined.HelpOutline, contentDescription = null)
                     }
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_main_screen_help_title)
+                    )
+                }
             }
+            /*ExpressiveSettingsMenuLink(
+                title =  stringResource(R.string.settings_main_screen_features_title) ,
+                subtitle =  stringResource(R.string.settings_main_screen_features_description),
+                icon = { Icon(Icons.Outlined.Extension, contentDescription = null) },
+                onClick = {
+                    mainNavController.navigate(SettingsFeaturesRoute)
+                }
+            )*/
+
+            /*ExpressiveSettingsMenuLink(
+                title = "Experimente",
+                subtitle = "Teste neue Funktionen vor allen anderen",
+                icon = { Icon(painter = painterResource(R.drawable.ic_experiment_outlined), contentDescription = null) },
+                onClick = {
+//                        mainNavController.navigate(SettingsAppearanceRoute)
+                }
+            )*/
         }
     }
 }
