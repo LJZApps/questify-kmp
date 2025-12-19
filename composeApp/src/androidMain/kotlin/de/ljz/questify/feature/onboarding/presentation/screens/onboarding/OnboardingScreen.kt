@@ -142,7 +142,8 @@ private fun OnboardingScreen(
                         )
                     )
                 ),
-            userScrollEnabled = false
+            userScrollEnabled = false,
+            key = { it }
         ) { page ->
             when (page) {
                 0 -> WelcomePage()
