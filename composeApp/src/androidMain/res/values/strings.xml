@@ -267,7 +267,7 @@
     <string name="quest_detail_subtasks_title">Subquests</string>
     <string name="quest_due_date_format_full">dd. MMMM yyyy \'at\' HH:mm</string>
     <string name="quest_due_date_format_short">dd. MMM yyyy HH:mm</string>
-    <string name="quest_overview_nav_drawer_tooltip">Open navigation drawer</string>
+    <string name="quest_overview_nav_drawer_tooltip">Open side drawer</string>
     <string name="quest_overview_more_options_tooltip">More options</string>
     <string name="quest_overview_create_quest_tooltip">Create new quest</string>
     <string name="quest_overview_create_list_tooltip">Create new list</string>

@@ -99,6 +99,13 @@ fun MainScreen(
                         HabitOverviewScreen(
                             onNavigateUp = {
                                 backStack.removeLastOrNull()
+                            },
+                            onToggleDrawer = {
+                                scope.launch {
+                                    drawerState.apply {
+                                        if (drawerState.currentValue == DrawerValue.Closed) open() else close()
+                                    }
+                                }
                             }
                         )
                     }

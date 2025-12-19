@@ -69,6 +69,8 @@ import de.ljz.questify.feature.quests.presentation.dialogs.RenameCategoryDialog
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.all_quests_page.AllQuestsPage
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.QuestsForCategoryPage
 import de.ljz.questify.feature.quests.presentation.sheets.QuestSortingBottomSheet
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -79,11 +81,11 @@ import org.koin.androidx.compose.koinViewModel
 )
 @Composable
 fun QuestOverviewScreen(
-    viewModel: QuestOverviewViewModel = koinViewModel(),
     onNavigateToQuestDetailScreen: (Int) -> Unit,
     onNavigateToCreateQuestScreen: (Int?) -> Unit,
     onNavigateToEditQuestScreen: (Int) -> Unit,
-    onToggleDrawer: () -> Unit
+    onToggleDrawer: () -> Unit,
+    viewModel: QuestOverviewViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val categories by viewModel.categories.collectAsStateWithLifecycle()
@@ -91,7 +93,7 @@ fun QuestOverviewScreen(
 
     QuestOverviewScreen(
         uiState = uiState,
-        categories = categories,
+        categories = categories.toImmutableList(),
         effectFlow = effectFlow,
         onUiEvent = { event ->
             when (event) {
@@ -123,7 +125,7 @@ fun QuestOverviewScreen(
 @Composable
 private fun QuestOverviewScreen(
     uiState: QuestOverviewUIState,
-    categories: List<QuestCategoryEntity>,
+    categories: ImmutableList<QuestCategoryEntity>,
     effectFlow: Flow<QuestOverviewUiEffect>,
     onUiEvent: (QuestOverviewUiEvent) -> Unit
 ) {

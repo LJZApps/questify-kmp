@@ -1,13 +1,33 @@
 package de.ljz.questify.feature.habis.presentation.screens.overview
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ShortNavigationBar
+import androidx.compose.material3.ShortNavigationBarItem
+import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.ljz.questify.R
+import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HabitOverviewScreen(
     onNavigateUp: () -> Unit,
+    onToggleDrawer: () -> Unit,
     viewModel: HabitOverviewViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -17,6 +37,7 @@ fun HabitOverviewScreen(
         onUiEvent = { event ->
             when (event) {
                 is HabitOverviewUiEvent.OnNavigateUp -> onNavigateUp()
+                is HabitOverviewUiEvent.OnToggleDrawer -> onToggleDrawer()
 
                 else -> viewModel.onUiEvent(event)
             }
@@ -24,10 +45,114 @@ fun HabitOverviewScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HabitOverviewScreen(
     uiState: HabitOverviewUiState,
     onUiEvent: (HabitOverviewUiEvent) -> Unit
 ) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Gewohnheiten",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    BasicPlainTooltip(
+                        text = stringResource(R.string.quest_overview_nav_drawer_tooltip)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                onUiEvent(HabitOverviewUiEvent.OnToggleDrawer)
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_menu),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    BasicPlainTooltip(
+                        text = "Archiv",
+                        position = TooltipAnchorPosition.Below
+                    ) {
+                        IconButton(
+                            onClick = {
 
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_inbox_outlined),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            ShortNavigationBar {
+                ShortNavigationBarItem(
+                    selected = true,
+                    onClick = {},
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_today_outlined),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = "Täglich"
+                        )
+                    }
+                )
+
+                ShortNavigationBarItem(
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_date_range_outlined),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = "Wöchentlich"
+                        )
+                    }
+                )
+
+                ShortNavigationBarItem(
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_calendar_month_outlined),
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = "Monatlich"
+                        )
+                    }
+                )
+            }
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier.padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+            ) {
+
+            }
+        }
+    )
 }
