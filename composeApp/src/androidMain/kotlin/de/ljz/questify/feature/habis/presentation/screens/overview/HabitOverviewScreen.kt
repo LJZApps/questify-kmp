@@ -6,8 +6,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShortNavigationBar
 import androidx.compose.material3.ShortNavigationBarItem
@@ -16,6 +18,8 @@ import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,8 @@ private fun HabitOverviewScreen(
     uiState: HabitOverviewUiState,
     onUiEvent: (HabitOverviewUiEvent) -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -99,7 +105,9 @@ private fun HabitOverviewScreen(
             ShortNavigationBar {
                 ShortNavigationBarItem(
                     selected = true,
-                    onClick = {},
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_today_outlined),
@@ -115,7 +123,9 @@ private fun HabitOverviewScreen(
 
                 ShortNavigationBarItem(
                     selected = false,
-                    onClick = {},
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_date_range_outlined),
@@ -131,7 +141,9 @@ private fun HabitOverviewScreen(
 
                 ShortNavigationBarItem(
                     selected = false,
-                    onClick = {},
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                    },
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_calendar_month_outlined),
@@ -144,6 +156,24 @@ private fun HabitOverviewScreen(
                         )
                     }
                 )
+            }
+        },
+        floatingActionButton = {
+            BasicPlainTooltip(
+                text = "Neue Gewohnheit erstellen",
+                position = TooltipAnchorPosition.Above
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add),
+                        contentDescription = null
+                    )
+                }
             }
         },
         content = { innerPadding ->
