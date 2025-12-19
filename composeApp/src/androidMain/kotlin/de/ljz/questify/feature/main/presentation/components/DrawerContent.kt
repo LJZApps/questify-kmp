@@ -41,6 +41,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
 import de.ljz.questify.R
+import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverviewRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainUiState
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
 import kotlinx.coroutines.launch
@@ -63,6 +64,11 @@ fun DrawerContent(
                     title = stringResource(R.string.drawer_content_quests_title),
                     icon = painterResource(R.drawable.ic_task_alt_outlined),
                     route = QuestsRoute
+                ),
+                NavigationItem(
+                    title = "Gewohnheiten",
+                    icon = painterResource(R.drawable.ic_eco_outlined),
+                    route = HabitOverviewRoute
                 )
             )
         )

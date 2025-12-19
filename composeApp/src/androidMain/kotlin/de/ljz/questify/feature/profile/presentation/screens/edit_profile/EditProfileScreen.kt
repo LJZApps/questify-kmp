@@ -54,8 +54,8 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EditProfileScreen(
-    viewModel: EditProfileViewModel = koinViewModel(),
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    viewModel: EditProfileViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

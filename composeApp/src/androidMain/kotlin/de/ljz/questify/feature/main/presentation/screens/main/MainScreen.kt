@@ -17,6 +17,8 @@ import androidx.navigation3.ui.NavDisplay
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
+import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverviewRoute
+import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverviewScreen
 import de.ljz.questify.feature.main.presentation.components.DrawerContent
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestsRoute
@@ -89,6 +91,14 @@ fun MainScreen(
                                         if (drawerState.currentValue == DrawerValue.Closed) open() else close()
                                     }
                                 }
+                            }
+                        )
+                    }
+
+                    entry<HabitOverviewRoute> {
+                        HabitOverviewScreen(
+                            onNavigateUp = {
+                                backStack.removeLastOrNull()
                             }
                         )
                     }
