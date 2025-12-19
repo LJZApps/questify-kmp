@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
 import de.ljz.questify.core.presentation.components.tooltips.BasicPlainTooltip
+import de.ljz.questify.feature.habits.data.models.descriptors.HabitFrequency
 import de.ljz.questify.feature.habits.data.models.descriptors.NavigationBarItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -65,15 +66,18 @@ private fun HabitOverviewScreen(
     val navigationBarItems = listOf(
         NavigationBarItem(
             label = "Täglich",
-            iconRes = R.drawable.ic_today_outlined
+            iconRes = R.drawable.ic_today_outlined,
+            frequency = HabitFrequency.DAILY
         ),
         NavigationBarItem(
             label = "Wöchentlich",
-            iconRes = R.drawable.ic_date_range_outlined
+            iconRes = R.drawable.ic_date_range_outlined,
+            frequency = HabitFrequency.WEEKLY
         ),
         NavigationBarItem(
             label = "Monatlich",
-            iconRes = R.drawable.ic_calendar_month_outlined
+            iconRes = R.drawable.ic_calendar_month_outlined,
+            frequency = HabitFrequency.MONTHLY
         )
     )
 
@@ -176,7 +180,7 @@ private fun HabitOverviewScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                key = { it }
+                key = { navigationBarItems[it].frequency }
             ) { index ->
                 when (index) {
                     0 -> Column(
