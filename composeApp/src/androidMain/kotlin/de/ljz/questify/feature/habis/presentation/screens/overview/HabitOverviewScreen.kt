@@ -1,9 +1,9 @@
 package de.ljz.questify.feature.habis.presentation.screens.overview
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -56,6 +56,7 @@ private fun HabitOverviewScreen(
     onUiEvent: (HabitOverviewUiEvent) -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
+    val pagerState = rememberPagerState { 3 }
 
     Scaffold(
         topBar = {
@@ -177,10 +178,13 @@ private fun HabitOverviewScreen(
             }
         },
         content = { innerPadding ->
-            Column(
-                modifier = Modifier.padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                key = { it }
+            ) { index ->
 
             }
         }
