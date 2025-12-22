@@ -79,6 +79,7 @@ import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.DragGestureDetector
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.text.SimpleDateFormat
@@ -239,6 +240,8 @@ private fun EditQuestScreen(
                     AppBarRow {
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                                 onUiEvent(EditQuestUiEvent.OnCreateSubQuest)
                                 indexToFocus = uiState.subQuests.size
                             },
@@ -253,6 +256,8 @@ private fun EditQuestScreen(
 
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                                 onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SelectCategorySheet))
                             },
                             icon = {
@@ -266,6 +271,8 @@ private fun EditQuestScreen(
 
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                                 onUiEvent(
                                     EditQuestUiEvent.OnShowDialog(
                                         EditQuestDialogState.SetDueDateSheet(
@@ -286,6 +293,8 @@ private fun EditQuestScreen(
 
                     TextButton(
                         onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                             onUiEvent(EditQuestUiEvent.OnSaveQuest)
                         }
                     ) {
@@ -380,7 +389,7 @@ private fun EditQuestScreen(
                                 }
                             },
                             modifier = Modifier.clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onUiEvent(EditQuestUiEvent.OnShowDialog(EditQuestDialogState.SelectDifficultySheet))
                             },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -502,6 +511,7 @@ private fun EditQuestScreen(
                                             onDragStopped = {
                                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                             },
+                                            dragGestureDetector = DragGestureDetector.LongPress
                                         )
                                     ) {
                                         Icon(

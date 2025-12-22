@@ -97,7 +97,11 @@ fun SelectCategoryBottomSheet(
                                 text = "Eingabe löschen"
                             ) {
                                 IconButton(
-                                    onClick = { searchText = "" }
+                                    onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
+                                        searchText = ""
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_close),

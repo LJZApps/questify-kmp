@@ -259,7 +259,11 @@ fun QuestItem(
                         position = TooltipAnchorPosition.Above
                     ) {
                         IconButton(
-                            onClick = onEditButtonClick
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
+                                onEditButtonClick()
+                            }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_edit_outlined),
@@ -274,7 +278,7 @@ fun QuestItem(
                     ) {
                         FilledIconButton(
                             onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onCheckButtonClick()
                             },
                             enabled = doneCount == totalCount

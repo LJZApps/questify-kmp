@@ -246,6 +246,8 @@ private fun CreateQuestScreen(
 
                     TextButton(
                         onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                             onUiEvent(CreateQuestUiEvent.OnCreateQuest)
                         }
                     ) {

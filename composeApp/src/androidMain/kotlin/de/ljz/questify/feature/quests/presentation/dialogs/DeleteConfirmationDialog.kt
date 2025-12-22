@@ -29,7 +29,7 @@ fun DeleteConfirmationDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                     onConfirm()
                 },
                 colors = ButtonDefaults.textButtonColors(
