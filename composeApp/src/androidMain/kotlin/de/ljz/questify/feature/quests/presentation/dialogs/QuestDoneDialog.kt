@@ -1,6 +1,8 @@
 package de.ljz.questify.feature.quests.presentation.dialogs
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.VibrationEffect
 import android.os.VibratorManager
 import androidx.compose.animation.AnimatedVisibility
@@ -28,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -68,6 +71,19 @@ fun QuestDoneDialog(
     val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
     val vibrator = vibratorManager.defaultVibrator
 
+    val soundPool = remember {
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(attributes)
+            .build()
+    }
+
+    val soundId = remember { soundPool.load(context, R.raw.success, 1) }
+
     val fadeIn = remember { Animatable(0f) }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.completed))
 
@@ -80,20 +96,28 @@ fun QuestDoneDialog(
     LaunchedEffect(Unit) {
         val timings = longArrayOf(
             0, 10,
-            240, 20,  // Kreis ist voll (Frame 15)
-            150, 10,  // Haken beginnt (Frame 25)
-            40, 15,   // Haken erreicht den Knick
-            40, 35    // Haken rastet final ein (Frame 35)
+            240, 20,
+            150, 10,
+            40, 15,
+            40, 35
         )
 
         val amplitudes = intArrayOf(
-            0, 60,    // Sanftes Erscheinen
-            0, 110,   // "Plopp" am Ende der Skalierung
-            0, 150,   // Erstes kurzes Kratzen des Hakens
-            0, 200,   // Mittlerer Druckpunkt
-            0, 255    // Kräftiger Abschluss-Impact
+            0, 60,
+            0, 110,
+            0, 150,
+            0, 200,
+            0, 255
         )
         vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+
+        soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundPool.release()
+        }
     }
 
     Dialog(
@@ -156,7 +180,7 @@ fun QuestDoneDialog(
 
                 Button(
                     onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                         onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),

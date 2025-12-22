@@ -177,7 +177,7 @@ fun QuestDetailScreen(
 
                         Button(
                             onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
                                 uiState.questEntity?.let { questEntity ->
                                     viewModel.completeQuest(questEntity)
@@ -404,7 +404,7 @@ fun QuestDetailScreen(
                                                     .clip(RoundedCornerShape(8.dp))
                                                     .clickable {
                                                         haptic.performHapticFeedback(
-                                                            HapticFeedbackType.LongPress
+                                                            HapticFeedbackType.KeyboardTap
                                                         )
 
                                                         viewModel.checkSubQuest(
@@ -423,7 +423,7 @@ fun QuestDetailScreen(
                                                         checked = subQuestEntity.isDone,
                                                         onCheckedChange = {
                                                             haptic.performHapticFeedback(
-                                                                HapticFeedbackType.LongPress
+                                                                HapticFeedbackType.KeyboardTap
                                                             )
 
                                                             viewModel.checkSubQuest(

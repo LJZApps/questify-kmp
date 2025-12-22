@@ -454,7 +454,7 @@ private fun QuestOverviewScreen(
                                 )
                             },
                             onCreateNewQuestButtonClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
                                 onUiEvent(
                                     QuestOverviewUiEvent.OnNavigateToCreateQuestScreen(
