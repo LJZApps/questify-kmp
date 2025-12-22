@@ -38,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -252,7 +251,7 @@ private fun LevelUpBanner(newLevel: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .scale(scaleAnim.value)
+            .graphicsLayer { scaleX = scaleAnim.value; scaleY = scaleAnim.value }
             .shadow(8.dp, shape = RoundedCornerShape(16.dp))
             .background(color = MaterialTheme.colorScheme.primaryContainer)
             .padding(24.dp),
