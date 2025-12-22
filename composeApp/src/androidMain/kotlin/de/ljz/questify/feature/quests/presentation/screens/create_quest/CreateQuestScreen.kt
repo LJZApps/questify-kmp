@@ -74,6 +74,7 @@ import de.ljz.questify.feature.quests.presentation.sheets.SetDueDateBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import sh.calvin.reorderable.DragGestureDetector
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import java.text.SimpleDateFormat
@@ -204,8 +205,8 @@ private fun CreateQuestScreen(
                     AppBarRow {
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onUiEvent(CreateQuestUiEvent.OnCreateSubQuest)
-
                                 indexToFocus = uiState.subQuests.size
                             },
                             icon = {
@@ -219,6 +220,7 @@ private fun CreateQuestScreen(
 
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectCategorySheet))
                             },
                             icon = {
@@ -232,6 +234,7 @@ private fun CreateQuestScreen(
 
                         clickableItem(
                             onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SetDueDateSheet(uiState.selectedCombinedDueDate)))
                             },
                             icon = {
@@ -349,7 +352,7 @@ private fun CreateQuestScreen(
                                 }
                             },
                             modifier = Modifier.clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
                                 onUiEvent(CreateQuestUiEvent.OnShowDialog(CreateQuestDialogState.SelectDifficultySheet))
                             },
@@ -462,6 +465,7 @@ private fun CreateQuestScreen(
                                             onDragStopped = {
                                                 haptic.performHapticFeedback(HapticFeedbackType.GestureEnd)
                                             },
+                                            dragGestureDetector = DragGestureDetector.LongPress
                                         )
                                     ) {
                                         Icon(
@@ -537,6 +541,7 @@ private fun CreateQuestScreen(
                             ) {
                                 IconButton(
                                     onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                         onUiEvent(CreateQuestUiEvent.OnRemoveSubQuest(index = index))
                                     },
                                 ) {

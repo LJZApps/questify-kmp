@@ -586,6 +586,7 @@ private fun EditQuestScreen(
                             ) {
                                 IconButton(
                                     onClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                         onUiEvent(EditQuestUiEvent.OnRemoveSubQuest(index = index))
                                     },
                                 ) {
