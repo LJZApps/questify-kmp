@@ -257,7 +257,7 @@ private fun EditQuestScreen(
                             },
                             icon = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_label_outlined),
+                                    painter = if (selectedCategory != null) painterResource(R.drawable.ic_label_filled) else painterResource(R.drawable.ic_label_outlined),
                                     contentDescription = null
                                 )
                             },
