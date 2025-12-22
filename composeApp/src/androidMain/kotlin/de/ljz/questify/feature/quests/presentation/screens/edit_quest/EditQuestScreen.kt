@@ -611,9 +611,12 @@ private fun EditQuestScreen(
             if (uiState.dialogState is EditQuestDialogState.SelectCategorySheet) {
                 SelectCategoryBottomSheet(
                     categories = categories,
+                    selectedCategory = selectedCategory,
                     onCategorySelect = { category ->
                         onUiEvent(EditQuestUiEvent.OnSelectQuestCategory(category))
-                        onUiEvent(EditQuestUiEvent.OnCloseDialog)
+                    },
+                    onCategoryUnselect = {
+                        onUiEvent(EditQuestUiEvent.OnUnselectQuestCategory)
                     },
                     onDismiss = {
                         onUiEvent(EditQuestUiEvent.OnCloseDialog)

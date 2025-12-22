@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.NewLabel
 import androidx.compose.material.icons.filled.Search
@@ -34,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -44,7 +44,9 @@ import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 @Composable
 fun SelectCategoryBottomSheet(
     categories: List<QuestCategoryEntity>,
+    selectedCategory: QuestCategoryEntity?,
     onCategorySelect: (QuestCategoryEntity) -> Unit,
+    onCategoryUnselect: () -> Unit,
     onCreateCategory: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -177,9 +179,15 @@ fun SelectCategoryBottomSheet(
                         )
                     } else {
                         filteredLists.forEach { list ->
+                            val isSelected = selectedCategory != null && list.id == selectedCategory.id
+
                             SegmentedListItem(
+                                selected = isSelected,
                                 onClick = {
-                                    onCategorySelect(list)
+                                    if (isSelected)
+                                        onCategoryUnselect()
+                                    else
+                                        onCategorySelect(list)
                                 },
                                 content = {
                                     Text(
@@ -195,7 +203,7 @@ fun SelectCategoryBottomSheet(
                                 ),
                                 leadingContent = {
                                     Icon(
-                                        imageVector = Icons.AutoMirrored.Outlined.Label,
+                                        painter = if (isSelected) painterResource(R.drawable.ic_label_filled) else painterResource(R.drawable.ic_label_outlined),
                                         contentDescription = null
                                     )
                                 }

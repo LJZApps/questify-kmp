@@ -179,6 +179,10 @@ class CreateQuestViewModel(
                 _selectedCategory.value = event.questCategoryEntity
             }
 
+            is CreateQuestUiEvent.OnUnselectQuestCategory -> {
+                _selectedCategory.value = null
+            }
+
             is CreateQuestUiEvent.OnRemoveReminder -> {
                 val updatedTimes = _uiState.value.notificationTriggerTimes.toMutableList().apply {
                     removeAt(event.index)

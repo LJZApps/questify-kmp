@@ -20,6 +20,7 @@ sealed interface CreateQuestUiEvent {
 
     data class OnCreateQuestCategory(val value: String) : CreateQuestUiEvent
     data class OnSelectQuestCategory(val questCategoryEntity: QuestCategoryEntity) : CreateQuestUiEvent
+    object OnUnselectQuestCategory : CreateQuestUiEvent
 
     data class OnRemoveReminder(val index: Int) : CreateQuestUiEvent
     data class OnCreateReminder(val timestamp: Long) : CreateQuestUiEvent
