@@ -35,11 +35,11 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsMainScreen(
-    viewModel: SettingsViewModel = koinViewModel(),
     onNavigateUp: () -> Unit,
     onNavigateToViewProfileScreen: () -> Unit,
     onNavigateToSettingsAppearanceScreen: () -> Unit,
-    onNavigateToSettingsHelpScreen: () -> Unit
+    onNavigateToSettingsHelpScreen: () -> Unit,
+    viewModel: SettingsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

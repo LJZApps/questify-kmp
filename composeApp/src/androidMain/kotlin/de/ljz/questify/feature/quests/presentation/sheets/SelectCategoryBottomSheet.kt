@@ -1,5 +1,6 @@
 package de.ljz.questify.feature.quests.presentation.sheets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +17,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,8 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.expressive.menu.ExpressiveMenuItem
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSection
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -101,34 +103,72 @@ fun SelectCategoryBottomSheet(
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState()),
             ) {
-                ExpressiveSettingsSection(
-                    modifier = Modifier.padding(vertical = 16.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
                 ) {
-                    if (
-                        searchText.trim().isNotEmpty() &&
-                        filteredLists.count { it.text.equals(searchText.trim(), ignoreCase = true) } == 0
-                    ) {
-                        ExpressiveMenuItem(
-                            title = stringResource(
-                                R.string.select_category_bottom_sheet_create_list,
-                                searchText
-                            ),
+                    val showCreateOption = searchText.trim().isNotEmpty() && filteredLists.none {
+                        it.text.equals(searchText.trim(), ignoreCase = true)
+                    }
+                    val showEmptyHint = searchText.trim().isEmpty() && filteredLists.isEmpty()
+
+                    val totalItemCount = if (showEmptyHint) 1 else (if (showCreateOption) 1 else 0) + filteredLists.size
+                    var currentItemIndex = 0
+
+                    val singleItemShapes = ListItemShapes(
+                        shape = MaterialTheme.shapes.large,
+                        selectedShape = MaterialTheme.shapes.large,
+                        pressedShape = MaterialTheme.shapes.large,
+                        focusedShape = MaterialTheme.shapes.large,
+                        hoveredShape = MaterialTheme.shapes.large,
+                        draggedShape = MaterialTheme.shapes.large
+                    )
+
+                    if (showCreateOption) {
+                        SegmentedListItem(
                             onClick = {
                                 onCreateCategory(searchText)
                             },
-                            icon = {
+                            content = {
+                                Text(
+                                    text = stringResource(
+                                        R.string.select_category_bottom_sheet_create_list,
+                                        searchText
+                                    )
+                                )
+                            },
+                            shapes = if (totalItemCount == 1) singleItemShapes else ListItemDefaults.segmentedShapes(
+                                index = currentItemIndex,
+                                count = totalItemCount
+                            ),
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            ),
+                            leadingContent = {
                                 Icon(
                                     imageVector = Icons.Filled.NewLabel,
                                     contentDescription = null
                                 )
                             }
                         )
+                        currentItemIndex++
                     }
 
-                    if (searchText.trim().isEmpty() && filteredLists.count() == 0) {
-                        ExpressiveMenuItem(
-                            title = stringResource(R.string.select_category_bottom_sheet_empty_list_hint),
-                            icon = {
+                    if (showEmptyHint) {
+                        SegmentedListItem(
+                            onClick = {},
+                            content = {
+                                Text(
+                                    text = stringResource(R.string.select_category_bottom_sheet_empty_list_hint)
+                                )
+                            },
+                            shapes = singleItemShapes,
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            ),
+                            leadingContent = {
                                 Icon(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null
@@ -136,22 +176,31 @@ fun SelectCategoryBottomSheet(
                             }
                         )
                     } else {
-                        if (filteredLists.count() > 0) {
-                            filteredLists
-                                .forEach { list ->
-                                    ExpressiveMenuItem(
-                                        title = list.text,
-                                        onClick = {
-                                            onCategorySelect(list)
-                                        },
-                                        icon = {
-                                            Icon(
-                                                imageVector = Icons.AutoMirrored.Outlined.Label,
-                                                contentDescription = null
-                                            )
-                                        }
+                        filteredLists.forEach { list ->
+                            SegmentedListItem(
+                                onClick = {
+                                    onCategorySelect(list)
+                                },
+                                content = {
+                                    Text(
+                                        text = list.text
+                                    )
+                                },
+                                shapes = if (totalItemCount == 1) singleItemShapes else ListItemDefaults.segmentedShapes(
+                                    index = currentItemIndex,
+                                    count = totalItemCount
+                                ),
+                                colors = ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                ),
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Outlined.Label,
+                                        contentDescription = null
                                     )
                                 }
+                            )
+                            currentItemIndex++
                         }
                     }
                 }

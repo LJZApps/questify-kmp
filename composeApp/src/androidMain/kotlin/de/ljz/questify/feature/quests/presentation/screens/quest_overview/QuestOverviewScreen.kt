@@ -502,10 +502,10 @@ private fun QuestOverviewScreen(
                     },
                     sortingDirection = allQuestPageState.sortingDirections,
                     showCompletedQuests = allQuestPageState.showCompleted,
-                    onSortingDirectionChanged = { sortingDirection ->
+                    onSortingDirectionChange = { sortingDirection ->
                         onUiEvent(QuestOverviewUiEvent.UpdateQuestSortingDirection(sortingDirection))
                     },
-                    onShowCompletedQuestsChanged = { showCompletedQuests ->
+                    onShowCompletedQuestsChange = { showCompletedQuests ->
                         onUiEvent(QuestOverviewUiEvent.UpdateShowCompletedQuests(value = showCompletedQuests))
                     }
                 )

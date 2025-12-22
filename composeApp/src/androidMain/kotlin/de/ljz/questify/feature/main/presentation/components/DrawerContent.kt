@@ -9,29 +9,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -90,78 +87,73 @@ fun DrawerContent(
                     .padding(NavigationDrawerItemDefaults.ItemPadding)
                     .padding(vertical = 6.dp)
             ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
+                SegmentedListItem(
                     onClick = {
                         scope.launch {
                             drawerState.close()
                         }
                         onNavigateToSettingsScreen()
                     },
-                    shape = RoundedCornerShape(size = 28.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = uiState.userName,
-                                    style = MaterialTheme.typography.titleLarge
-                                        .copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
+                    content = {
+                        Text(
+                            text = uiState.userName,
+                            style = MaterialTheme.typography.titleLarge
+                                .copy(
+                                    fontWeight = FontWeight.Bold
                                 )
-                            },
-                            overlineContent = {
-                                Text(
-                                    text = stringResource(id = R.string.drawer_content_questify_title)
+                        )
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(id = R.string.drawer_content_questify_title)
+                        )
+                    },
+                    leadingContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (uiState.userProfilePicture.isNotEmpty()) {
+                                AsyncImage(
+                                    model = uiState.userProfilePicture,
+                                    contentDescription = stringResource(id = R.string.drawer_content_profile_picture_content_description),
+                                    modifier = Modifier
+                                        .size(40.dp),
+                                    contentScale = ContentScale.Crop
                                 )
-                            },
-                            leadingContent = {
-                                Box(
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = stringResource(id = R.string.drawer_content_profile_picture_content_description),
                                     modifier = Modifier
                                         .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (uiState.userProfilePicture.isNotEmpty()) {
-                                        AsyncImage(
-                                            model = uiState.userProfilePicture,
-                                            contentDescription = stringResource(id = R.string.drawer_content_profile_picture_content_description),
-                                            modifier = Modifier
-                                                .size(40.dp),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = Icons.Default.Person,
-                                            contentDescription = stringResource(id = R.string.drawer_content_profile_picture_content_description),
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .padding(5.dp),
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                    }
-                                }
-                            },
-                            trailingContent = {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                    contentDescription = null
+                                        .padding(5.dp),
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = Color.Transparent
-                            )
+                            }
+                        }
+                    },
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                            contentDescription = null
                         )
-                    }
-                }
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    shapes = ListItemShapes(
+                        shape = MaterialTheme.shapes.large,
+                        selectedShape = MaterialTheme.shapes.large,
+                        pressedShape = MaterialTheme.shapes.large,
+                        focusedShape = MaterialTheme.shapes.large,
+                        hoveredShape = MaterialTheme.shapes.large,
+                        draggedShape = MaterialTheme.shapes.large
+                    ),
+                )
             }
 
             features.forEach { category ->

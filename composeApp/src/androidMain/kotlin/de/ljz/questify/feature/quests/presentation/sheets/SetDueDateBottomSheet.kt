@@ -10,10 +10,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,15 +32,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
-import de.ljz.questify.core.presentation.components.expressive.menu.ExpressiveMenuItem
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsMenuLink
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSection
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetDueDateBottomSheet(
     selectedCombinedDueDate: Long,
@@ -100,38 +100,61 @@ fun SetDueDateBottomSheet(
                 }
             }
 
-            ExpressiveSettingsSection {
-                ExpressiveMenuItem(
-                    title = {
-                        if (selectedDate != 0L)
-                            Text(dateFormat.format(selectedDate))
-                        else
-                            Text(dateAnnotatedString)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+            ) {
+                SegmentedListItem(
+                    onClick = {
+                        onShowDatePickerDialog()
                     },
-                    icon = {
+                    shapes = ListItemDefaults.segmentedShapes(0, 2),
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.ic_calendar_today_outlined),
                             contentDescription = null
                         )
                     },
-                    onClick = {
-                        onShowDatePickerDialog()
+                    content = {
+                        if (selectedDate != 0L)
+                            Text(dateFormat.format(selectedDate))
+                        else
+                            Text(dateAnnotatedString)
                     }
                 )
 
-                ExpressiveSettingsMenuLink(
-                    title = if (selectedTime != 0L) timeFormat.format(selectedTime) else stringResource(
-                        R.string.set_due_date_bottom_sheet_time_title
+                SegmentedListItem(
+                    onClick = {
+                        onShowTimePickerDialog()
+                    },
+                    shapes = ListItemDefaults.segmentedShapes(1, 2),
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
-                    subtitle = if (selectedTime == 0L) stringResource(R.string.set_due_date_bottom_sheet_time_subtitle) else null,
-                    icon = {
+                    leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.ic_schedule_outlined),
                             contentDescription = null
                         )
                     },
-                    onClick = {
-                        onShowTimePickerDialog()
+                    content = {
+                        Text(
+                            text = if (selectedTime != 0L)
+                                timeFormat.format(selectedTime)
+                            else
+                                stringResource(R.string.set_due_date_bottom_sheet_time_title)
+                        )
+                    },
+                    supportingContent = {
+                        if (selectedTime == 0L)
+                            Text(stringResource(R.string.set_due_date_bottom_sheet_time_subtitle))
+                        else
+                            null
                     }
                 )
             }

@@ -9,7 +9,12 @@ import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SegmentedListItem
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -22,14 +27,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import de.ljz.questify.R
 import de.ljz.questify.core.data.models.descriptors.SortingDirectionItem
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSection
-import de.ljz.questify.core.presentation.components.expressive.settings.ExpressiveSettingsSwitch
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -38,8 +42,8 @@ fun QuestSortingBottomSheet(
     onDismiss: () -> Unit,
     sortingDirection: SortingDirections,
     showCompletedQuests: Boolean,
-    onSortingDirectionChanged: (SortingDirections) -> Unit,
-    onShowCompletedQuestsChanged: (Boolean) -> Unit,
+    onSortingDirectionChange: (SortingDirections) -> Unit,
+    onShowCompletedQuestsChange: (Boolean) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -85,7 +89,7 @@ fun QuestSortingBottomSheet(
                         checked = item.sortingDirection == sortingDirection,
                         onCheckedChange = {
                             haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-                            onSortingDirectionChanged(item.sortingDirection)
+                            onSortingDirectionChange(item.sortingDirection)
                         },
                         modifier = modifiers[index].semantics {
                             role = Role.RadioButton
@@ -115,24 +119,48 @@ fun QuestSortingBottomSheet(
                 }
             }
 
-            ExpressiveSettingsSection {
-                ExpressiveSettingsSwitch(
-                    state = showCompletedQuests,
-                    onCheckedChange = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            SegmentedListItem(
+                checked = showCompletedQuests,
+                onCheckedChange = {
+                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
-                        onShowCompletedQuestsChanged(it)
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check_circle_filled),
-                            contentDescription = null
-                        )
-                    },
-                    title = stringResource(R.string.filter_show_completed_quests_title)
-                )
-            }
+                    onShowCompletedQuestsChange(it)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                shapes = ListItemShapes(
+                    shape = MaterialTheme.shapes.large,
+                    selectedShape = MaterialTheme.shapes.large,
+                    pressedShape = MaterialTheme.shapes.large,
+                    focusedShape = MaterialTheme.shapes.large,
+                    hoveredShape = MaterialTheme.shapes.large,
+                    draggedShape = MaterialTheme.shapes.large
+                ),
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                ),
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_check_circle_filled),
+                        contentDescription = null
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        modifier = Modifier.clearAndSetSemantics { },
+                        checked = showCompletedQuests,
+                        onCheckedChange = {
+                            haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
+                            onShowCompletedQuestsChange(it)
+                        }
+                    )
+                },
+                content = {
+                    Text(stringResource(R.string.filter_show_completed_quests_title))
+                }
+            )
         }
     }
 }
