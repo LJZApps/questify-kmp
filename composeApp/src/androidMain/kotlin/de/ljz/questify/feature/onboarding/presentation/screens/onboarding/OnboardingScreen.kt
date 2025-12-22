@@ -28,6 +28,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -70,6 +72,7 @@ private fun OnboardingScreen(
 ) {
     val pagerState = rememberPagerState { 4 }
     val scope = rememberCoroutineScope()
+    val haptic = LocalHapticFeedback.current
 
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -113,6 +116,8 @@ private fun OnboardingScreen(
 
                             Button(
                                 onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                                     scope.launch {
                                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                     }

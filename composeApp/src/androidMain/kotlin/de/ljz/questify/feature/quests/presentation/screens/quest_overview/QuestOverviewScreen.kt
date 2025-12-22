@@ -271,7 +271,7 @@ private fun QuestOverviewScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
                         onUiEvent(
                             QuestOverviewUiEvent.OnNavigateToCreateQuestScreen(
@@ -314,7 +314,7 @@ private fun QuestOverviewScreen(
                                 interactionSource = interactionSource,
                                 onClick = {
                                     scope.launch {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
 
                                         pagerState.animateScrollToPage(index)
                                     }
@@ -324,6 +324,8 @@ private fun QuestOverviewScreen(
                                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                                         chipDropdownExpanded = true
+                                    } else {
+                                        null
                                     }
                                 },
                                 label = {
@@ -413,7 +415,7 @@ private fun QuestOverviewScreen(
                         ListChip(
                             selected = false,
                             onClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
                                 onUiEvent(QuestOverviewUiEvent.ShowDialog(QuestOverviewDialogState.CreateCategory))
                             },
                             label = {},

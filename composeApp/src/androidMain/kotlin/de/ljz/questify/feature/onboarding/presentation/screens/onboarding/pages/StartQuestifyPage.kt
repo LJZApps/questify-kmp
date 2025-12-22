@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +31,8 @@ fun StartQuestifyPage(
     modifier: Modifier = Modifier,
     onOnboardingFinished: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -77,6 +81,8 @@ fun StartQuestifyPage(
 
         Button(
             onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
                 onOnboardingFinished()
             },
             modifier = Modifier

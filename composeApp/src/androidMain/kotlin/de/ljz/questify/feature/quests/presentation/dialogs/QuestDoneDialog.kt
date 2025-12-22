@@ -1,5 +1,8 @@
 package de.ljz.questify.feature.quests.presentation.dialogs
 
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -30,12 +33,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,6 +55,7 @@ import de.ljz.questify.R
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestDoneDialogState
 import kotlinx.coroutines.launch
 
+@Suppress("EffectKeys")
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun QuestDoneDialog(
@@ -59,6 +64,10 @@ fun QuestDoneDialog(
 ) {
     val haptic = LocalHapticFeedback.current
 
+    val context = LocalContext.current
+    val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+    val vibrator = vibratorManager.defaultVibrator
+
     val fadeIn = remember { Animatable(0f) }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.completed))
 
@@ -66,6 +75,25 @@ fun QuestDoneDialog(
         launch {
             fadeIn.animateTo(1f, animationSpec = tween(500))
         }
+    }
+
+    LaunchedEffect(Unit) {
+        val timings = longArrayOf(
+            0, 10,
+            240, 20,  // Kreis ist voll (Frame 15)
+            150, 10,  // Haken beginnt (Frame 25)
+            40, 15,   // Haken erreicht den Knick
+            40, 35    // Haken rastet final ein (Frame 35)
+        )
+
+        val amplitudes = intArrayOf(
+            0, 60,    // Sanftes Erscheinen
+            0, 110,   // "Plopp" am Ende der Skalierung
+            0, 150,   // Erstes kurzes Kratzen des Hakens
+            0, 200,   // Mittlerer Druckpunkt
+            0, 255    // Kräftiger Abschluss-Impact
+        )
+        vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
     }
 
     Dialog(
@@ -103,7 +131,7 @@ fun QuestDoneDialog(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .alpha(fadeIn.value)
+                        .graphicsLayer { alpha = fadeIn.value }
                 )
 
                 Text(
