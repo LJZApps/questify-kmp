@@ -8,10 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
-import androidx.compose.material.icons.outlined.ColorLens
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -25,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -80,16 +77,19 @@ fun SettingsMainScreen(
                     },
                     shapes = ListItemDefaults.segmentedShapes(0, 4),
                     supportingContent = {
-                        Text("Mein Profil bei Questify")
+                        Text("Bei Questify mit deiner OMRIX-ID anmelden, um alle Daten zu synchronisieren")
                     },
                     colors = ListItemDefaults.colors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
                     leadingContent = {
-                        Icon(Icons.Outlined.PersonOutline, contentDescription = null)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_login_outline),
+                            contentDescription = null
+                        )
                     }
                 ) {
-                    Text("Mein Profil")
+                    Text("Anmelden")
                 }
 
                 SegmentedListItem(
@@ -104,7 +104,10 @@ fun SettingsMainScreen(
                         Text("Benachrichtigungen für diese App")
                     },
                     leadingContent = {
-                        Icon(Icons.Outlined.Notifications, contentDescription = null)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_notifications_outlined),
+                            contentDescription = null
+                        )
                     }
                 ) {
                     Text(
@@ -124,7 +127,10 @@ fun SettingsMainScreen(
                         Text(stringResource(R.string.settings_main_screen_appearance_description))
                     },
                     leadingContent = {
-                        Icon(Icons.Outlined.ColorLens, contentDescription = null)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_palette_outlined),
+                            contentDescription = null
+                        )
                     }
                 ) {
                     Text(
@@ -144,7 +150,10 @@ fun SettingsMainScreen(
                         Text(stringResource(R.string.settings_main_screen_help_description))
                     },
                     leadingContent = {
-                        Icon(Icons.AutoMirrored.Outlined.HelpOutline, contentDescription = null)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_help_outlined),
+                            contentDescription = null
+                        )
                     }
                 ) {
                     Text(

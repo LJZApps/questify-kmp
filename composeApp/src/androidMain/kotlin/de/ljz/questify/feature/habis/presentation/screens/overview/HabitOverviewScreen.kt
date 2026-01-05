@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.ljz.questify.R
@@ -188,7 +189,7 @@ private fun HabitOverviewScreen(
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp)
                     ) {
-                        Text("1")
+                        Text(LoremIpsum(words = 100).values.first())
                     }
 
                     1 -> Column(
