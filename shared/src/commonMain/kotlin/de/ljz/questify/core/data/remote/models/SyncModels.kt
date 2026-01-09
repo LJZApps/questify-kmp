@@ -30,6 +30,13 @@ data class UserDTO(
 )
 
 @Serializable
+data class UpdateProfileRequest(
+    @SerialName("username") val username: String? = null,
+    @SerialName("real_name") val realName: String? = null,
+    @SerialName("bio") val bio: String? = null
+)
+
+@Serializable
 data class QuestCategoryDTO(
     @SerialName("id") val id: Int? = null,
     @SerialName("text") val text: String,

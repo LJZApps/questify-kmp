@@ -2,6 +2,7 @@ package de.ljz.questify.core.di
 
 import de.ljz.questify.core.data.database.AppDatabase
 import de.ljz.questify.core.data.database.getRoomDatabase
+import de.ljz.questify.core.data.sync.SyncCoordinator
 import de.ljz.questify.core.domain.repositories.app.SortingPreferencesRepository
 import de.ljz.questify.core.domain.repositories.app.SortingPreferencesRepositoryImpl
 import de.ljz.questify.feature.quests.domain.use_cases.CancelQuestNotificationsUseCase
@@ -19,4 +20,6 @@ internal val commonModule = module {
             sortingDataStore = get(named("sorting_preferences"))
         )
     }
+
+    single { SyncCoordinator(get(), get()) }
 }

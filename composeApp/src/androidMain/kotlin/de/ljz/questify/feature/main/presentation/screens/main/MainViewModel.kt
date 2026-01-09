@@ -2,8 +2,8 @@ package de.ljz.questify.feature.main.presentation.screens.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.data.sync.SyncCoordinator
 import de.ljz.questify.feature.profile.domain.repositories.AppUserRepository
-import de.ljz.questify.feature.profile.domain.use_cases.FetchRemoteProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val appUserRepository: AppUserRepository,
-    private val fetchRemoteProfileUseCase: FetchRemoteProfileUseCase
+    private val syncCoordinator: SyncCoordinator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = MainUiState(
@@ -26,10 +26,8 @@ class MainViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            // Profil im Hintergrund aktualisieren
-            fetchRemoteProfileUseCase()
-        }
+        // Starte globale Synchronisation (Profil + Quests)
+        syncCoordinator.syncAll()
 
         viewModelScope.launch {
             appUserRepository.getAppUser().collectLatest { appUser ->

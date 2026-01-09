@@ -4,6 +4,7 @@ import de.ljz.questify.core.data.remote.QuestifyRemoteDataSource
 import de.ljz.questify.core.data.remote.models.QuestCategoryDTO
 import de.ljz.questify.core.data.remote.models.QuestDTO
 import de.ljz.questify.core.data.remote.models.SubQuestDTO
+import de.ljz.questify.core.data.remote.util.NetworkResult
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
 import de.ljz.questify.feature.quests.data.daos.QuestDao
 import de.ljz.questify.feature.quests.data.daos.SubQuestDao
@@ -11,8 +12,6 @@ import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.SubQuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.first
 import kotlin.time.Instant
 
@@ -33,15 +32,9 @@ class QuestSyncManager(
         val markedForDeletion = questCategoryDao.getCategoriesMarkedForDeletion()
         markedForDeletion.forEach { local ->
             if (local.remoteId != null) {
-                try {
-                    remoteDataSource.deleteQuestCategory(local.remoteId)
+                val result = remoteDataSource.deleteQuestCategory(local.remoteId)
+                if (result is NetworkResult.Success || (result is NetworkResult.Error && result.code == 404)) {
                     questCategoryDao.deleteQuestCategory(local.id)
-                } catch (e: ClientRequestException) {
-                    if (e.response.status == HttpStatusCode.NotFound) {
-                        questCategoryDao.deleteQuestCategory(local.id)
-                    }
-                } catch (e: Exception) {
-                    println("QuestSyncManager: Error deleting category ${local.id}: ${e.message}")
                 }
             } else {
                 questCategoryDao.deleteQuestCategory(local.id)
@@ -51,23 +44,22 @@ class QuestSyncManager(
         // 2. Push updates/creates
         val unsynced = questCategoryDao.getUnsyncedCategories()
         unsynced.forEach { local ->
-            try {
-                val dto = QuestCategoryDTO(text = local.text)
-                val remote = if (local.remoteId == null) {
-                    remoteDataSource.createQuestCategory(dto)
-                } else {
-                    remoteDataSource.updateQuestCategory(local.remoteId, dto)
-                }
-                questCategoryDao.updateSyncStatus(local.id, "SYNCED", remote.id)
-            } catch (e: Exception) {
-                println("QuestSyncManager: Error syncing category local=${local.id}: ${e.message}")
-                e.printStackTrace()
+            val dto = QuestCategoryDTO(text = local.text)
+            val result = if (local.remoteId == null) {
+                remoteDataSource.createQuestCategory(dto)
+            } else {
+                remoteDataSource.updateQuestCategory(local.remoteId, dto)
+            }
+            
+            if (result is NetworkResult.Success) {
+                questCategoryDao.updateSyncStatus(local.id, "SYNCED", result.data.id)
             }
         }
 
         // 3. Pull
-        try {
-            val remoteCategories = remoteDataSource.getQuestCategories()
+        val result = remoteDataSource.getQuestCategories()
+        if (result is NetworkResult.Success) {
+            val remoteCategories = result.data
             
             // Delete locals that are gone on remote
             val remoteIds = remoteCategories.mapNotNull { it.id }.toSet()
@@ -95,9 +87,6 @@ class QuestSyncManager(
                     questCategoryDao.updateSyncStatus(local.id, "SYNCED", remote.id)
                 }
             }
-        } catch (e: Exception) {
-            println("QuestSyncManager: Error pulling categories: ${e.message}")
-            e.printStackTrace()
         }
     }
 
@@ -107,15 +96,9 @@ class QuestSyncManager(
         markedForDeletion.forEach { localWithDetails ->
             val local = localWithDetails.quest
             if (local.remoteId != null) {
-                try {
-                    remoteDataSource.deleteQuest(local.remoteId)
+                val result = remoteDataSource.deleteQuest(local.remoteId)
+                if (result is NetworkResult.Success || (result is NetworkResult.Error && result.code == 404)) {
                     questDao.deleteQuest(local.id)
-                } catch (e: ClientRequestException) {
-                    if (e.response.status == HttpStatusCode.NotFound) {
-                        questDao.deleteQuest(local.id)
-                    }
-                } catch (e: Exception) {
-                    println("QuestSyncManager: Error deleting quest ${local.id}: ${e.message}")
                 }
             } else {
                 questDao.deleteQuest(local.id)
@@ -125,40 +108,39 @@ class QuestSyncManager(
         // 2. Push updates/creates
         val unsynced = questDao.getUnsyncedQuests()
         unsynced.forEach { localWithDetails ->
-            try {
-                val local = localWithDetails.quest
-                val categoryRemoteId = local.categoryId?.let { 
-                    questCategoryDao.getQuestCategoryById(it).first()?.remoteId 
+            val local = localWithDetails.quest
+            val categoryRemoteId = local.categoryId?.let { 
+                questCategoryDao.getQuestCategoryById(it).first()?.remoteId 
+            }
+            
+            val dto = QuestDTO(
+                categoryId = categoryRemoteId,
+                title = local.title,
+                notes = local.notes,
+                difficulty = local.difficulty.name,
+                dueDate = local.dueDate?.toString(),
+                lockDeletion = local.lockDeletion,
+                done = local.done,
+                subQuests = localWithDetails.subTasks.map { 
+                    SubQuestDTO(id = it.remoteId, text = it.text, isDone = it.isDone, orderIndex = it.orderIndex) 
                 }
-                
-                val dto = QuestDTO(
-                    categoryId = categoryRemoteId,
-                    title = local.title,
-                    notes = local.notes,
-                    difficulty = local.difficulty.name,
-                    dueDate = local.dueDate?.toString(),
-                    lockDeletion = local.lockDeletion,
-                    done = local.done,
-                    subQuests = localWithDetails.subTasks.map { 
-                        SubQuestDTO(text = it.text, isDone = it.isDone, orderIndex = it.orderIndex) 
-                    }
-                )
+            )
 
-                val remote = if (local.remoteId == null) {
-                    remoteDataSource.createQuest(dto)
-                } else {
-                    remoteDataSource.updateQuest(local.remoteId, dto)
-                }
-                questDao.updateSyncStatus(local.id, "SYNCED", remote.id)
-            } catch (e: Exception) {
-                println("QuestSyncManager: Error syncing quest local=${localWithDetails.quest.id}: ${e.message}")
-                e.printStackTrace()
+            val result = if (local.remoteId == null) {
+                remoteDataSource.createQuest(dto)
+            } else {
+                remoteDataSource.updateQuest(local.remoteId, dto)
+            }
+            
+            if (result is NetworkResult.Success) {
+                questDao.updateSyncStatus(local.id, "SYNCED", result.data.id)
             }
         }
 
         // 3. Pull
-        try {
-            val remoteQuests = remoteDataSource.getQuests()
+        val result = remoteDataSource.getQuests()
+        if (result is NetworkResult.Success) {
+            val remoteQuests = result.data
             
             // Delete locals that are gone on remote
             val remoteIds = remoteQuests.mapNotNull { it.id }.toSet()
@@ -205,9 +187,6 @@ class QuestSyncManager(
                 }
                 subQuestDao.upsertSubQuests(subQuestEntities)
             }
-        } catch (e: Exception) {
-            println("QuestSyncManager: Error pulling quests: ${e.message}")
-            e.printStackTrace()
         }
     }
 }

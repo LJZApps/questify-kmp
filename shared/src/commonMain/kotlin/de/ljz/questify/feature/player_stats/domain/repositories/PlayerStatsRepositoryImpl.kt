@@ -16,19 +16,17 @@ internal class PlayerStatsRepositoryImpl(
         playerStatsStore.updateData {
             newStats
         }
-        try {
-            val dto = de.ljz.questify.core.data.remote.models.PlayerStatsDTO(
-                level = newStats.level,
-                xp = newStats.xp,
-                points = newStats.points,
-                currentHp = newStats.currentHP,
-                maxHp = newStats.maxHP,
-                status = newStats.status.name,
-                statusExpiryTimestamp = newStats.statusExpiryTimestamp
-            )
-            remoteDataSource.updatePlayerStats(dto)
-        } catch (e: Exception) {
-            // Handle error
-        }
+        
+        val dto = de.ljz.questify.core.data.remote.models.PlayerStatsDTO(
+            level = newStats.level,
+            xp = newStats.xp,
+            points = newStats.points,
+            currentHp = newStats.currentHP,
+            maxHp = newStats.maxHP,
+            status = newStats.status.name,
+            statusExpiryTimestamp = newStats.statusExpiryTimestamp
+        )
+        // Fire and forget update
+        remoteDataSource.updatePlayerStats(dto)
     }
 }
