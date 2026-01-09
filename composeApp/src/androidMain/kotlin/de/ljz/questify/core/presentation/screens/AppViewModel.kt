@@ -2,16 +2,18 @@ package de.ljz.questify.core.presentation.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.domain.repositories.auth.AuthRepository
 import de.ljz.questify.feature.settings.domain.use_cases.GetAppSettingsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AppViewModel(
-    private val getAppSettingsUseCase: GetAppSettingsUseCase
+    private val getAppSettingsUseCase: GetAppSettingsUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AppUiState())
@@ -23,15 +25,20 @@ class AppViewModel(
     init {
         viewModelScope.launch {
             launch {
-                val appSettings = getAppSettingsUseCase().firstOrNull()
-
-                _uiState.update {
-                    it.copy(
-                        isSetupDone = appSettings?.onboardingState == true
-                    )
+                getAppSettingsUseCase().collectLatest { appSettings ->
+                    _uiState.update {
+                        it.copy(isSetupDone = appSettings.onboardingState)
+                    }
                 }
-
-                _isAppReady.update { true }
+            }
+            
+            launch {
+                authRepository.authTokens.collectLatest { authTokens ->
+                    _uiState.update {
+                        it.copy(isLoggedIn = authTokens.questifyToken != null)
+                    }
+                    _isAppReady.update { true }
+                }
             }
         }
     }

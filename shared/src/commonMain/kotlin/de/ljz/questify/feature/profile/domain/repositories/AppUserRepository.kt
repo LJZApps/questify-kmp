@@ -11,4 +11,6 @@ interface AppUserRepository {
         aboutMe: String,
         imageUri: String
     )
+
+    suspend fun fetchRemoteProfile(): Result<AppUser>
 }

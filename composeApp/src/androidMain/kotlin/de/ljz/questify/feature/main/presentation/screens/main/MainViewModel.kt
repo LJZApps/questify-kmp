@@ -3,6 +3,7 @@ package de.ljz.questify.feature.main.presentation.screens.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.feature.profile.domain.repositories.AppUserRepository
+import de.ljz.questify.feature.profile.domain.use_cases.FetchRemoteProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val appUserRepository: AppUserRepository,
+    private val fetchRemoteProfileUseCase: FetchRemoteProfileUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = MainUiState(
@@ -25,11 +27,17 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
+            // Profil im Hintergrund aktualisieren
+            fetchRemoteProfileUseCase()
+        }
+
+        viewModelScope.launch {
             appUserRepository.getAppUser().collectLatest { appUser ->
                 _uiState.update {
                     it.copy(
                         userName = appUser.displayName,
-                        userProfilePicture = appUser.profilePicture
+                        userProfilePicture = appUser.profilePicture,
+                        userLevel = appUser.level
                     )
                 }
             }

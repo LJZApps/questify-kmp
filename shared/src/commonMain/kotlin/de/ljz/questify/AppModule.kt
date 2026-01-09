@@ -2,6 +2,7 @@ package de.ljz.questify
 
 import de.ljz.questify.core.di.commonModule
 import de.ljz.questify.core.di.dataStoreModule
+import de.ljz.questify.core.di.networkModule
 import de.ljz.questify.feature.habits.di.habitModule
 import de.ljz.questify.feature.player_stats.di.playerStatsModule
 import de.ljz.questify.feature.profile.di.profileModule
@@ -12,6 +13,7 @@ internal fun appModule() = listOf(
     commonModule,
     questModule,
     dataStoreModule,
+    networkModule,
     playerStatsModule,
     profileModule,
     settingsModule,

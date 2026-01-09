@@ -1,5 +1,6 @@
 package de.ljz.questify.core.presentation.screens
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -20,6 +21,10 @@ import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
+import de.ljz.questify.feature.auth.presentation.screens.login.LoginRoute
+import de.ljz.questify.feature.auth.presentation.screens.login.LoginScreen
+import de.ljz.questify.feature.auth.presentation.screens.login.LoginUiEvent
+import de.ljz.questify.feature.auth.presentation.screens.login.LoginViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
@@ -34,18 +39,25 @@ import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestR
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestScreen
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailRoute
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailScreen
+import de.ljz.questify.feature.settings.presentation.screens.account.AccountSettingsRoute
+import de.ljz.questify.feature.settings.presentation.screens.account.AccountSettingsScreen
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceRoute
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceScreen
 import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpRoute
 import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpScreen
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.compose.koinViewModel
 
 class ActivityMain : AppCompatActivity() {
 
+    private val intentFlow = MutableStateFlow<Intent?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        intentFlow.value = intent
 
         val splashScreen = installSplashScreen()
 
@@ -57,6 +69,7 @@ class ActivityMain : AppCompatActivity() {
 
             val appUiState by vm.uiState.collectAsState()
             val isSetupDone = appUiState.isSetupDone
+            val isLoggedIn = appUiState.isLoggedIn
             val isAppReadyState by vm.isAppReady.collectAsState()
 
             if (isAppReadyState) {
@@ -66,8 +79,34 @@ class ActivityMain : AppCompatActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
+                        val startKey: AppNavKey = when {
+                            !isSetupDone -> OnboardingRoute
+                            else -> MainRoute
+                        }
                         val backStack = rememberNavBackStack(startKey)
+
+                        // Reagieren auf Login-Status
+                        androidx.compose.runtime.LaunchedEffect(isLoggedIn, isSetupDone) {
+                            if (isSetupDone && !isLoggedIn) {
+                                backStack.clear()
+                                backStack.add(LoginRoute())
+                            }
+                        }
+
+                        // Handle OAuth Redirect
+                        val currentIntent by intentFlow.collectAsState()
+                        androidx.compose.runtime.LaunchedEffect(currentIntent) {
+                            currentIntent?.data?.let { uri ->
+                                if (uri.scheme == "questify" && uri.host == "auth" && uri.path == "/redirect") {
+                                    val code = uri.getQueryParameter("code")
+                                    if (code != null) {
+                                        backStack.clear()
+                                        backStack.add(LoginRoute(code = code))
+                                        intentFlow.value = null // Intent nach Verarbeitung zurücksetzen
+                                    }
+                                }
+                            }
+                        }
 
                         NavDisplay(
                             entryDecorators = listOf(
@@ -112,6 +151,32 @@ class ActivityMain : AppCompatActivity() {
                                         },
                                         onNavigateToCreateHabitScreen = {
 //                                            backStack.add(CreateHabitRoute)
+                                        }
+                                    )
+                                }
+
+                                entry<LoginRoute> { key ->
+                                    val loginVm: LoginViewModel = koinViewModel()
+                                    
+                                    androidx.compose.runtime.LaunchedEffect(key.code) {
+                                        key.code?.let { code ->
+                                            loginVm.onUiEvent(LoginUiEvent.HandleAuthCode(code))
+                                        }
+                                    }
+
+                                    LoginScreen(
+                                        viewModel = loginVm,
+                                        onNavigateToBrowser = { url ->
+                                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url))
+                                            startActivity(intent)
+                                        },
+                                        onNavigateToOnboarding = {
+                                            backStack.clear()
+                                            backStack.add(OnboardingRoute)
+                                        },
+                                        onLoginSuccess = {
+                                            backStack.clear()
+                                            backStack.add(MainRoute)
                                         }
                                     )
                                 }
@@ -163,11 +228,29 @@ class ActivityMain : AppCompatActivity() {
                                         onNavigateToViewProfileScreen = {
                                             backStack.add(ViewProfileRoute)
                                         },
+                                        onNavigateToAccountSettingsScreen = {
+                                            backStack.add(AccountSettingsRoute)
+                                        },
+                                        onNavigateToLoginScreen = {
+                                            backStack.add(LoginRoute())
+                                        },
                                         onNavigateToSettingsAppearanceScreen = {
                                             backStack.add(SettingsAppearanceRoute)
                                         },
                                         onNavigateToSettingsHelpScreen = {
                                             backStack.add(SettingsHelpRoute)
+                                        }
+                                    )
+                                }
+
+                                entry<AccountSettingsRoute> {
+                                    AccountSettingsScreen(
+                                        onNavigateUp = {
+                                            backStack.removeLastOrNull()
+                                        },
+                                        onLogoutSuccess = {
+                                            backStack.clear()
+                                            backStack.add(MainRoute)
                                         }
                                     )
                                 }
@@ -224,6 +307,12 @@ class ActivityMain : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intentFlow.value = intent
     }
 }
 

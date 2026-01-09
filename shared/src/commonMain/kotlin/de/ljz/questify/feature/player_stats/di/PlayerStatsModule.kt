@@ -23,7 +23,8 @@ internal val playerStatsModule = module {
 
     single<PlayerStatsRepository> {
         PlayerStatsRepositoryImpl(
-            playerStatsStore = get(named("player_stats"))
+            playerStatsStore = get(named("player_stats")),
+            remoteDataSource = get()
         )
     }
 

@@ -8,22 +8,31 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
 internal class QuestRepositoryImpl(
-    private val questDao: QuestDao
+    private val questDao: QuestDao,
+    private val syncManager: de.ljz.questify.core.data.sync.QuestSyncManager
 ) : QuestRepository {
     override suspend fun addMainQuest(quest: QuestEntity): Long {
-        return questDao.upsert(quest)
+        val id = questDao.upsert(quest.copy(syncStatus = "UNSYNCED"))
+        syncManager.sync()
+        return id
     }
 
     override suspend fun upsertQuest(quest: QuestEntity): Long {
-        return questDao.upsert(quest)
+        val id = questDao.upsert(quest.copy(syncStatus = "UNSYNCED"))
+        syncManager.sync()
+        return id
     }
 
     override suspend fun setQuestDone(id: Int, done: Boolean) {
         questDao.setQuestDone(id, done)
+        questDao.updateSyncStatus(id, "UNSYNCED", null) // reset remote_id if necessary or keep it
+        // Actually we should just set sync_status
+        syncManager.sync()
     }
 
     override suspend fun updateQuest(quest: QuestEntity) {
-        questDao.upsert(quest)
+        questDao.upsert(quest.copy(syncStatus = "UNSYNCED"))
+        syncManager.sync()
     }
 
     /*@Deprecated(
@@ -47,6 +56,8 @@ internal class QuestRepositoryImpl(
             dueDate = dueDate,
             categoryId = categoryId
         )
+        questDao.updateSyncStatus(id, "UNSYNCED", null)
+        syncManager.sync()
     }
 
     override suspend fun getQuests(): Flow<List<QuestWithDetails>> {
@@ -66,6 +77,12 @@ internal class QuestRepositoryImpl(
     }
 
     override suspend fun deleteQuest(id: Int) {
-        return questDao.deleteQuest(id)
+        val quest = questDao.suspendGetQuestById(id).quest
+        if (quest.remoteId != null) {
+            questDao.markQuestForDeletion(id)
+        } else {
+            questDao.deleteQuest(id)
+        }
+        syncManager.sync()
     }
 }

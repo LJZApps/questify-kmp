@@ -25,6 +25,9 @@ import kotlin.time.Instant
 data class QuestEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
+    @ColumnInfo(name = "remote_id", defaultValue = "NULL")
+    val remoteId: Int? = null,
+
     @ColumnInfo(name = "title")
     val title: String,
 
@@ -50,5 +53,8 @@ data class QuestEntity(
     val done: Boolean = false,
 
     @ColumnInfo(name = "category_id")
-    val categoryId: Int? = null
+    val categoryId: Int? = null,
+
+    @ColumnInfo(name = "sync_status", defaultValue = "SYNCED")
+    val syncStatus: String = "SYNCED"
 )

@@ -109,6 +109,19 @@
     <string name="detailed_information_page_reminders_title">Reminders</string>
     <string name="detailed_information_page_reminders_add">Add reminder</string>
     <string name="delete">Delete</string>
+
+    <!-- Login Screen -->
+    <string name="login_welcome_title">Welcome to Questify</string>
+    <string name="login_welcome_subtitle">Turn your daily tasks into an adventure.</string>
+    <string name="login_button_text">Login with OMRIX-ID</string>
+    <string name="login_error_prefix">Login failed: %s</string>
+
+    <!-- Account Settings -->
+    <string name="settings_account_title">Account</string>
+    <string name="settings_account_description">Manage your profile and synchronization</string>
+    <string name="settings_logout_button">Logout</string>
+    <string name="logout_confirmation_title">Logout</string>
+    <string name="logout_confirmation_message">Are you sure you want to logout? Your local data will be preserved, but synchronization will stop.</string>
     <string name="delete_confirmation_dialog_title">Delete quest?</string>
     <string name="delete_confirmation_dialog_description">Are you sure you want to delete this quest? This process cannot be undone.</string>
     <string name="quest_detail_screen_difficulty_title">Difficulty</string>

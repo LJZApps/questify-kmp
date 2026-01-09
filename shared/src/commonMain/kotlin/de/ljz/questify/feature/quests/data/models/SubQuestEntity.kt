@@ -24,6 +24,9 @@ import de.ljz.questify.feature.quests.data.models.descriptors.SubQuestModel
 data class SubQuestEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
+    @ColumnInfo(name = "remote_id", defaultValue = "NULL")
+    val remoteId: Int? = null,
+
     @ColumnInfo(name = "text")
     val text: String,
 
@@ -34,7 +37,10 @@ data class SubQuestEntity(
     val questId: Long,
 
     @ColumnInfo(name = "order_index")
-    val orderIndex: Int = 0
+    val orderIndex: Int = 0,
+
+    @ColumnInfo(name = "sync_status", defaultValue = "SYNCED")
+    val syncStatus: String = "SYNCED"
 )
 
 fun SubQuestEntity.toModel(

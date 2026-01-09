@@ -2,17 +2,23 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "0bfaa86da38e909cd9bd8d21ed9ae836",
+    "identityHash": "6975649536461a9bef493f6b1be4c2d3",
     "entities": [
       {
         "tableName": "quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, FOREIGN KEY(`category_id`) REFERENCES `quest_category_entity`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER DEFAULT NULL, `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, `sync_status` TEXT NOT NULL DEFAULT 'SYNCED', FOREIGN KEY(`category_id`) REFERENCES `quest_category_entity`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "defaultValue": "NULL"
           },
           {
             "fieldPath": "title",
@@ -63,6 +69,13 @@
             "fieldPath": "categoryId",
             "columnName": "category_id",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "syncStatus",
+            "columnName": "sync_status",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'SYNCED'"
           }
         ],
         "primaryKey": {
@@ -163,7 +176,7 @@
       },
       {
         "tableName": "quest_category_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER DEFAULT NULL, `text` TEXT NOT NULL, `updated_at` INTEGER, `sync_status` TEXT NOT NULL DEFAULT 'SYNCED')",
         "fields": [
           {
             "fieldPath": "id",
@@ -172,10 +185,28 @@
             "notNull": true
           },
           {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "defaultValue": "NULL"
+          },
+          {
             "fieldPath": "text",
             "columnName": "text",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "syncStatus",
+            "columnName": "sync_status",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'SYNCED'"
           }
         ],
         "primaryKey": {
@@ -187,13 +218,19 @@
       },
       {
         "tableName": "sub_quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `order_index` INTEGER NOT NULL, FOREIGN KEY(`quest_id`) REFERENCES `quest_entity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER DEFAULT NULL, `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `order_index` INTEGER NOT NULL, `sync_status` TEXT NOT NULL DEFAULT 'SYNCED', FOREIGN KEY(`quest_id`) REFERENCES `quest_entity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "defaultValue": "NULL"
           },
           {
             "fieldPath": "text",
@@ -218,6 +255,13 @@
             "columnName": "order_index",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "syncStatus",
+            "columnName": "sync_status",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'SYNCED'"
           }
         ],
         "primaryKey": {
@@ -347,7 +391,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bfaa86da38e909cd9bd8d21ed9ae836')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6975649536461a9bef493f6b1be4c2d3')"
     ]
   }
 }

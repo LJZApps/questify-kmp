@@ -34,6 +34,8 @@ import org.koin.androidx.compose.koinViewModel
 fun SettingsMainScreen(
     onNavigateUp: () -> Unit,
     onNavigateToViewProfileScreen: () -> Unit,
+    onNavigateToAccountSettingsScreen: () -> Unit,
+    onNavigateToLoginScreen: () -> Unit,
     onNavigateToSettingsAppearanceScreen: () -> Unit,
     onNavigateToSettingsHelpScreen: () -> Unit,
     viewModel: SettingsViewModel = koinViewModel()
@@ -71,25 +73,48 @@ fun SettingsMainScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
-                SegmentedListItem(
-                    onClick = {
-                        onNavigateToViewProfileScreen()
-                    },
-                    shapes = ListItemDefaults.segmentedShapes(0, 4),
-                    supportingContent = {
-                        Text("Bei Questify mit deiner OMRIX-ID anmelden, um alle Daten zu synchronisieren")
-                    },
-                    colors = ListItemDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_login_outline),
-                            contentDescription = null
-                        )
+                if (uiState.isLoggedIn) {
+                    SegmentedListItem(
+                        onClick = {
+                            onNavigateToAccountSettingsScreen()
+                        },
+                        shapes = ListItemDefaults.segmentedShapes(0, 4),
+                        supportingContent = {
+                            Text(stringResource(R.string.settings_account_description))
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        ),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_login_outline),
+                                contentDescription = null
+                            )
+                        }
+                    ) {
+                        Text(stringResource(R.string.settings_account_title))
                     }
-                ) {
-                    Text("Anmelden")
+                } else {
+                    SegmentedListItem(
+                        onClick = {
+                            onNavigateToLoginScreen()
+                        },
+                        shapes = ListItemDefaults.segmentedShapes(0, 4),
+                        supportingContent = {
+                            Text("Bei Questify mit deiner OMRIX-ID anmelden, um alle Daten zu synchronisieren")
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        ),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_login_outline),
+                                contentDescription = null
+                            )
+                        }
+                    ) {
+                        Text("Anmelden")
+                    }
                 }
 
                 SegmentedListItem(

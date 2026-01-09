@@ -70,6 +70,9 @@ kotlin {
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.auth)
+            implementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:${libs.versions.ktor.get()}")
+            implementation("io.ktor:ktor-client-logging:${libs.versions.ktor.get()}")
         }
 
         androidMain.dependencies {

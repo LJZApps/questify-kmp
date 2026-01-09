@@ -109,6 +109,19 @@
     <string name="detailed_information_page_reminders_title">Erinnerungen</string>
     <string name="detailed_information_page_reminders_add">Erinnerung hinzufügen</string>
     <string name="delete">Löschen</string>
+
+    <!-- Login Screen -->
+    <string name="login_welcome_title">Willkommen bei Questify</string>
+    <string name="login_welcome_subtitle">Verwandle deine täglichen Aufgaben in ein Abenteuer.</string>
+    <string name="login_button_text">Mit OMRIX-ID anmelden</string>
+    <string name="login_error_prefix">Anmeldung fehlgeschlagen: %s</string>
+
+    <!-- Account Settings -->
+    <string name="settings_account_title">Account</string>
+    <string name="settings_account_description">Verwalte dein Profil und die Synchronisation</string>
+    <string name="settings_logout_button">Abmelden</string>
+    <string name="logout_confirmation_title">Abmelden</string>
+    <string name="logout_confirmation_message">Bist du sicher, dass du dich abmelden möchtest? Deine lokalen Daten bleiben erhalten, aber die Synchronisation wird beendet.</string>
     <string name="delete_confirmation_dialog_title">Quest löschen?</string>
     <string name="delete_confirmation_dialog_description">Bist du sicher, dass du diese Quest löschen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden.</string>
     <string name="quest_detail_screen_difficulty_title">Schwierigkeit</string>

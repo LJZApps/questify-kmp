@@ -2,6 +2,7 @@ package de.ljz.questify.core.di
 
 import de.ljz.questify.core.presentation.screens.AppViewModel
 import de.ljz.questify.core.presentation.theme.ThemeViewModel
+import de.ljz.questify.feature.auth.presentation.screens.login.LoginViewModel
 import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverviewViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainViewModel
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingViewModel
@@ -12,6 +13,7 @@ import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestV
 import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDetailViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
+import de.ljz.questify.feature.settings.presentation.screens.account.AccountSettingsViewModel
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceViewModel
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
@@ -82,6 +84,8 @@ val viewModelModule = module {
 
     viewModelOf(::SettingsViewModel)
     viewModelOf(::SettingsAppearanceViewModel)
+    viewModelOf(::AccountSettingsViewModel)
 
     viewModelOf(::HabitOverviewViewModel)
+    viewModelOf(::LoginViewModel)
 }

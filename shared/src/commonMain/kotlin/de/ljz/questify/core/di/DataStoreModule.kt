@@ -2,7 +2,9 @@ package de.ljz.questify.core.di
 
 import de.ljz.questify.core.data.datastore.createDataStore
 import de.ljz.questify.core.data.datastore.dataStorePreferencesPath
+import de.ljz.questify.core.data.datastore.serializer.AuthTokensSerializer
 import de.ljz.questify.core.data.datastore.serializer.SortingPreferencesSerializer
+import de.ljz.questify.core.data.models.AuthTokens
 import de.ljz.questify.core.data.models.SortingPreferences
 import de.ljz.questify.feature.profile.data.models.AppUser
 import de.ljz.questify.feature.profile.data.serializer.AppUserSerializer
@@ -14,6 +16,14 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal val dataStoreModule = module {
+    single(named("auth_tokens")) {
+        createDataStore(
+            producePath = { dataStorePreferencesPath("auth_tokens.json") },
+            serializer = AuthTokensSerializer,
+            defaultValue = AuthTokens()
+        )
+    }
+
     single(named("sorting_preferences")) {
         createDataStore(
             producePath = { dataStorePreferencesPath("sorting_preferences.json") },

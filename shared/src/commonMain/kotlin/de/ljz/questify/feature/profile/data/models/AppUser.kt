@@ -8,7 +8,7 @@ data class AppUser(
     @SerialName(value = "id")
     val id: Int = -1,
 
-    @SerialName(value = "display_name")
+    @SerialName(value = "name")
     val displayName: String = "Abenteurer",
 
     @SerialName(value = "username")
@@ -20,6 +20,14 @@ data class AppUser(
     @SerialName(value = "email")
     val email: String = "",
 
-    @SerialName(value = "profile_picture")
-    val profilePicture: String = ""
+    @SerialName(value = "avatar_url")
+    val profilePicture: String = "",
+
+    @SerialName(value = "level")
+    val level: Int = 1
+)
+
+@Serializable
+data class AppUserWrapper(
+    val data: AppUser
 )

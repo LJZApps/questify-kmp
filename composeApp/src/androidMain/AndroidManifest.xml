@@ -39,11 +39,19 @@
 
         <activity
             android:exported="true"
+            android:launchMode="singleTask"
             android:name=".core.presentation.screens.ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:label="OAuth Redirect">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="questify" android:host="auth" android:path="/redirect" />
             </intent-filter>
         </activity>
     </application>

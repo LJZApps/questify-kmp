@@ -1,6 +1,7 @@
 package de.ljz.questify.feature.quests.di
 
 import de.ljz.questify.core.data.database.AppDatabase
+import de.ljz.questify.core.data.sync.QuestSyncManager
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
 import de.ljz.questify.feature.quests.data.daos.QuestDao
 import de.ljz.questify.feature.quests.data.daos.QuestNotificationDao
@@ -53,6 +54,10 @@ internal val questModule = module {
 
     single<SubQuestDao> {
         get<AppDatabase>().subQuestDao
+    }
+
+    single {
+        QuestSyncManager(get(), get(), get(), get())
     }
 
     singleOf(::QuestCategoryRepositoryImpl) { bind<QuestCategoryRepository>() }
