@@ -39,7 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
@@ -56,6 +55,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import de.ljz.questify.R
+import de.ljz.questify.core.presentation.theme.LocalExtendedColorScheme
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestDoneDialogState
 import kotlinx.coroutines.launch
 
@@ -166,12 +166,12 @@ fun QuestDoneDialog(
                 Text(
                     text = state.questName,
                     style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
-                    color = MaterialTheme.colorScheme.primary,
+                    color = LocalExtendedColorScheme.current.success.color,
                     textAlign = TextAlign.Center
                 )
 
                 if (state.xp > 0 || state.points > 0 || state.newLevel > 0) {
-                    HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, thickness = 1.dp)
                 }
 
                 RewardSection(

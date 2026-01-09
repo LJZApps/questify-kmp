@@ -7,8 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
@@ -129,6 +131,10 @@ val extendedDark = ExtendedColorScheme(
     ),
 )
 
+val LocalExtendedColorScheme = compositionLocalOf {
+    extendedLight
+}
+
 @Immutable
 data class ColorFamily(
     val color: Color,
@@ -158,6 +164,12 @@ fun QuestifyTheme(
         lightScheme
     }
 
+    val extendedColorScheme = if (useDarkTheme) {
+        extendedDark
+    } else {
+        extendedLight
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -171,8 +183,12 @@ fun QuestifyTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalExtendedColorScheme provides extendedColorScheme
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
 }
