@@ -76,6 +76,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.tink.android)
         }
 
         iosMain.dependencies {
