@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import de.ljz.questify.core.data.database.adapters.InstantAdapter
+import de.ljz.questify.core.data.database.adapters.Converters
 import de.ljz.questify.feature.habits.data.daos.HabitDao
 import de.ljz.questify.feature.habits.data.models.HabitEntity
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
@@ -41,7 +41,7 @@ import kotlinx.coroutines.IO
 )
 @TypeConverters(
     value = [
-        InstantAdapter::class
+        Converters::class
     ]
 )
 @ConstructedBy(AppDatabaseConstructor::class)

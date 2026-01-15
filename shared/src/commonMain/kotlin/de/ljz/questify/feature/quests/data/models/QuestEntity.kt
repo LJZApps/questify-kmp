@@ -25,6 +25,12 @@ import kotlin.time.Instant
 data class QuestEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
+    @ColumnInfo(name = "uuid", defaultValue = "")
+    val uuid: String,
+
+    @ColumnInfo(name = "sync_status", defaultValue = "DIRTY")
+    val syncStatus: SyncStatus = SyncStatus.DIRTY,
+
     @ColumnInfo(name = "title")
     val title: String,
 
@@ -42,6 +48,9 @@ data class QuestEntity(
 
     @ColumnInfo(name = "updated_at")
     val updatedAt: Instant? = null,
+
+    @ColumnInfo(name = "deleted_at")
+    val deletedAt: Instant? = null,
 
     @ColumnInfo(name = "lock_deletion")
     val lockDeletion: Boolean = false,

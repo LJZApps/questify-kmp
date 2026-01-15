@@ -42,8 +42,11 @@
             android:name=".core.presentation.screens.ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <data android:scheme="de.ljz.questify" android:host="auth" />
             </intent-filter>
         </activity>
     </application>

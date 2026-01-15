@@ -17,6 +17,9 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
+            // CustomTabs
+            implementation("androidx.browser:browser:1.9.0")
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)

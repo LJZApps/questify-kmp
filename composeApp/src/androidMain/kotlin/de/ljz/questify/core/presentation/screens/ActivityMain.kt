@@ -16,6 +16,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import de.ljz.questify.core.auth.AuthService
 import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
@@ -43,6 +44,7 @@ import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainSc
 import org.koin.androidx.compose.koinViewModel
 
 class ActivityMain : AppCompatActivity() {
+    private val authService = AuthService(HttpClient{  })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

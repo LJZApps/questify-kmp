@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -88,6 +89,7 @@ class CreateQuestViewModel(
         when (event) {
             is CreateQuestUiEvent.OnCreateQuest -> {
                 val quest = QuestEntity(
+                    uuid = UUID.randomUUID().toString(),
                     title = _uiState.value.title,
                     notes = _uiState.value.notes.trim().ifEmpty { null },
                     difficulty = Difficulty.fromIndex(_uiState.value.difficulty),

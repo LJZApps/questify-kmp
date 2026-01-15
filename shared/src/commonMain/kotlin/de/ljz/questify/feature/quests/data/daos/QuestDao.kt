@@ -68,4 +68,17 @@ interface QuestDao {
     @Transaction
     @Query("DELETE FROM quest_entity WHERE id = :questId")
     suspend fun deleteQuest(questId: Int)
+
+    @Query("SELECT * FROM quest_entity WHERE sync_status != 'SYNCED'")
+    suspend fun getQuestsToSync(): List<QuestEntity>
+
+    @Query("UPDATE quest_entity SET sync_status = 'DELETED_LOCALLY', deleted_at = :timestamp WHERE id = :id")
+    suspend fun markQuestAsDeleted(id: Int, timestamp: Instant)
+
+    @Transaction
+    @Query("SELECT * FROM quest_entity WHERE deleted_at IS NULL")
+    fun getAllActiveQuests(): Flow<List<QuestWithDetails>>
+
+    @Query("UPDATE quest_entity SET sync_status = 'SYNCED' WHERE uuid = :uuid")
+    suspend fun markAsSynced(uuid: String)
 }

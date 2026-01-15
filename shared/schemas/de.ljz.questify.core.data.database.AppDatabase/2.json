@@ -2,17 +2,31 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "0bfaa86da38e909cd9bd8d21ed9ae836",
+    "identityHash": "d72d0b811ec7361b5ef7992ed7805e56",
     "entities": [
       {
         "tableName": "quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, FOREIGN KEY(`category_id`) REFERENCES `quest_category_entity`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL DEFAULT '', `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, FOREIGN KEY(`category_id`) REFERENCES `quest_category_entity`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "syncStatus",
+            "columnName": "sync_status",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'DIRTY'"
           },
           {
             "fieldPath": "title",
@@ -45,6 +59,11 @@
           {
             "fieldPath": "updatedAt",
             "columnName": "updated_at",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deletedAt",
+            "columnName": "deleted_at",
             "affinity": "INTEGER"
           },
           {
@@ -347,7 +366,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bfaa86da38e909cd9bd8d21ed9ae836')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd72d0b811ec7361b5ef7992ed7805e56')"
     ]
   }
 }

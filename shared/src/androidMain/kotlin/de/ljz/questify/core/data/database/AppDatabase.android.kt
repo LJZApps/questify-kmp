@@ -11,4 +11,5 @@ fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
         context = appContext,
         name = dbFile.absolutePath
     )
+        .fallbackToDestructiveMigration(true)
 }
