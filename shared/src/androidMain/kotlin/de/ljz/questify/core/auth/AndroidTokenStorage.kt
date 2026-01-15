@@ -10,6 +10,8 @@ import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.RegistryConfiguration
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "auth_preferences")
 
@@ -45,9 +47,37 @@ class AndroidTokenStorage(private val context: Context) : TokenStorage {
         }
     }
 
+    override suspend fun getAccessToken(): String? {
+        val encrypted = context.dataStore.data.map { it[ACCESS_TOKEN_KEY] }.first()
+        return encrypted?.let { decrypt(it) }
+    }
+
+    override suspend fun getRefreshToken(): String? {
+        val encrypted = context.dataStore.data.map { it[REFRESH_TOKEN_KEY] }.first()
+        return encrypted?.let { decrypt(it) }
+    }
+
+    override suspend fun clearTokens() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(ACCESS_TOKEN_KEY)
+            prefs.remove(REFRESH_TOKEN_KEY)
+        }
+    }
+
     private fun encrypt(plainText: String): String {
         val bytes = plainText.toByteArray(Charsets.UTF_8)
         val encryptedBytes = aead.encrypt(bytes, null)
         return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
+    }
+
+    private fun decrypt(encryptedBase64: String): String? {
+        return try {
+            val bytes = Base64.decode(encryptedBase64, Base64.DEFAULT)
+            val decryptedBytes = aead.decrypt(bytes, null)
+            String(decryptedBytes, Charsets.UTF_8)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }
