@@ -26,6 +26,8 @@ import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.Onboar
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingScreen
 import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileRoute
 import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileScreen
+import de.ljz.questify.feature.profile.presentation.screens.username_setup.UsernameSetupRoute
+import de.ljz.questify.feature.profile.presentation.screens.username_setup.UsernameSetupScreen
 import de.ljz.questify.feature.profile.presentation.screens.view_profile.ViewProfileRoute
 import de.ljz.questify.feature.profile.presentation.screens.view_profile.ViewProfileScreen
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestRoute
@@ -188,8 +190,11 @@ class ActivityMain : AppCompatActivity() {
                                                 backStack.removeLastOrNull()
                                             }
                                         },
-                                        onNavigateToViewProfileScreen = {
+                                        onNavigateToLoginScreen = {
                                             backStack.add(SettingsLoginRoute)
+                                        },
+                                        onNavigateToViewProfileScreen = {
+                                            backStack.add(ViewProfileRoute)
                                         },
                                         onNavigateToSettingsAppearanceScreen = {
                                             backStack.add(SettingsAppearanceRoute)
@@ -254,7 +259,16 @@ class ActivityMain : AppCompatActivity() {
                                             }
                                         },
                                         onNavigateToUsernameSetup = {
-                                            // TODO setup screen and functionallity
+                                            backStack.add(UsernameSetupRoute)
+                                        }
+                                    )
+                                }
+
+                                entry<UsernameSetupRoute> {
+                                    UsernameSetupScreen(
+                                        onNavigateToMainScreen = {
+                                            backStack.clear()
+                                            backStack.add(MainRoute)
                                         }
                                     )
                                 }

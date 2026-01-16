@@ -6,11 +6,13 @@ class SaveProfileUseCase(
     private val appUserRepository: AppUserRepository
 ) {
     suspend operator fun invoke(
+        username: String,
         displayName: String,
         aboutMe: String,
         imageUri: String
     ) {
         appUserRepository.saveProfile(
+            username = username,
             displayName = displayName,
             aboutMe = aboutMe,
             imageUri = imageUri,

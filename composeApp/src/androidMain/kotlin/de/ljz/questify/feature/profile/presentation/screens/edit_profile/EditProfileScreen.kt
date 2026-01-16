@@ -9,8 +9,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +22,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -182,6 +186,21 @@ private fun EditProfileScreen(
                     }
                 }
 
+                // Username
+                AppOutlinedTextField(
+                    value = uiState.username,
+                    onValueChange = {
+                        onUiEvent.invoke(EditProfileUiEvent.UpdateUsername(it))
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    label = { Text(stringResource(R.string.text_field_username)) },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                    )
+                )
+
                 // Display name
                 AppOutlinedTextField(
                     value = uiState.displayName,
@@ -213,6 +232,27 @@ private fun EditProfileScreen(
                         capitalization = KeyboardCapitalization.Sentences,
                     )
                 )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Logout Button
+                Button(
+                    onClick = {
+                        onUiEvent.invoke(EditProfileUiEvent.Logout)
+                        onUiEvent.invoke(EditProfileUiEvent.NavigateUp)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                ) {
+                    Text(stringResource(R.string.logout))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     )

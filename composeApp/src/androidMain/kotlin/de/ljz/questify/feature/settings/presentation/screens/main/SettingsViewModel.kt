@@ -28,7 +28,8 @@ class SettingsViewModel(
                     it.copy(
                         userName = appUser.displayName,
                         userProfilePicture = appUser.profilePicture,
-                        aboutMe = appUser.aboutMe
+                        aboutMe = appUser.aboutMe,
+                        isLoggedIn = appUser.id != -1
                     )
                 }
             }

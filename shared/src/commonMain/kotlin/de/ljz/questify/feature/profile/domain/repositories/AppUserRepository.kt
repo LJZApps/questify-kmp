@@ -7,8 +7,13 @@ interface AppUserRepository {
     fun getAppUser(): Flow<AppUser>
 
     suspend fun saveProfile(
+        username: String,
         displayName: String,
         aboutMe: String,
         imageUri: String
     )
+
+    suspend fun syncProfile()
+
+    suspend fun checkUsername(username: String): Boolean
 }

@@ -7,6 +7,7 @@ import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverview
 import de.ljz.questify.feature.main.presentation.screens.main.MainViewModel
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingViewModel
 import de.ljz.questify.feature.profile.presentation.screens.edit_profile.EditProfileViewModel
+import de.ljz.questify.feature.profile.presentation.screens.username_setup.UsernameSetupViewModel
 import de.ljz.questify.feature.profile.presentation.screens.view_profile.ViewProfileViewModel
 import de.ljz.questify.feature.quests.presentation.screens.create_quest.CreateQuestViewModel
 import de.ljz.questify.feature.quests.presentation.screens.edit_quest.EditQuestViewModel
@@ -32,10 +33,11 @@ val viewModelModule = module {
 
     viewModelOf(::ViewProfileViewModel)
     viewModelOf(::EditProfileViewModel)
+    viewModelOf(::UsernameSetupViewModel)
 
     single { LoginViewModel(get()) }
 
-    single { SettingsLoginViewModel(get()) }
+    single { SettingsLoginViewModel(get(), get()) }
 
     viewModel { (categoryId: Int) ->
         CategoryQuestViewModel(

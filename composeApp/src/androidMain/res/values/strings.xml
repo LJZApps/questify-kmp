@@ -80,6 +80,7 @@
     <string name="introduction_page_progess_tracking_description">Keep an eye on your development and celebrate your milestones</string>
     <string name="user_setup_page_title">Create your profile</string>
     <string name="text_field_display_name">Display name</string>
+    <string name="text_field_username">Username</string>
     <string name="text_field_about_me">About me</string>
     <string name="drawer_content_xp">%1$s XP</string>
     <string name="drawer_content_level">Level %1$s</string>
@@ -101,6 +102,7 @@
     <string name="view_profile_screen_title">My profile</string>
     <string name="view_profile_screen_about_me">About me</string>
     <string name="view_profile_screen_no_information">No information</string>
+    <string name="logout">Log out</string>
     <string name="due_date_info_dialog_title">Due date is unchangeable after creation</string>
     <string name="due_date_info_dialog_description">Once the quest has been created, the due date cannot be changed. Plan your time well to secure the full reward - after it expires, you will only get half the reward. Complete the quest on time and get everything!\n\nThe due date is on the selected day, from midnight.</string>
     <string name="base_information_page_difficulty_title">Difficulty</string>
@@ -329,4 +331,11 @@
         <item quantity="other">%1$d Subquests</item>
     </plurals>
     <string name="quest_item_overdue_badge">Overdue</string>
+    <string name="username_setup_title">Choose your username</string>
+    <string name="username_setup_description">Choose a username so that others can find you.</string>
+    <string name="username_setup_available">Username is available</string>
+    <string name="username_setup_unavailable">Username is already taken</string>
+    <string name="username_setup_checking">Checking availability...</string>
+    <string name="username_setup_too_short">Username must be at least 3 characters long</string>
+    <string name="username_setup_submit">Finish</string>
 </resources>

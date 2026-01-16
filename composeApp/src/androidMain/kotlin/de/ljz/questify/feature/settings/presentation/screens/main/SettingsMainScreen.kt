@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -33,6 +34,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SettingsMainScreen(
     onNavigateUp: () -> Unit,
+    onNavigateToLoginScreen: () -> Unit,
     onNavigateToViewProfileScreen: () -> Unit,
     onNavigateToSettingsAppearanceScreen: () -> Unit,
     onNavigateToSettingsHelpScreen: () -> Unit,
@@ -71,25 +73,48 @@ fun SettingsMainScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
-                SegmentedListItem(
-                    onClick = {
-                        onNavigateToViewProfileScreen()
-                    },
-                    shapes = ListItemDefaults.segmentedShapes(0, 4),
-                    supportingContent = {
-                        Text("Melde dich an, um deinen Fortschritt zu sichern und auf anderen Geräten verfügbar zu machen.")
-                    },
-                    colors = ListItemDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_cloud_sync_outlined),
-                            contentDescription = null
-                        )
+                if (uiState.isLoggedIn) {
+                    SegmentedListItem(
+                        onClick = {
+                            onNavigateToViewProfileScreen()
+                        },
+                        shapes = ListItemDefaults.segmentedShapes(0, 4),
+                        supportingContent = {
+                            Text(uiState.userName)
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        ),
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null
+                            )
+                        }
+                    ) {
+                        Text(stringResource(R.string.settings_main_screen_profile_title))
                     }
-                ) {
-                    Text("Account-Sync einrichten")
+                } else {
+                    SegmentedListItem(
+                        onClick = {
+                            onNavigateToLoginScreen()
+                        },
+                        shapes = ListItemDefaults.segmentedShapes(0, 4),
+                        supportingContent = {
+                            Text("Melde dich an, um deinen Fortschritt zu sichern und auf anderen Geräten verfügbar zu machen.")
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        ),
+                        leadingContent = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_cloud_sync_outlined),
+                                contentDescription = null
+                            )
+                        }
+                    ) {
+                        Text("Account-Sync einrichten")
+                    }
                 }
 
                 SegmentedListItem(

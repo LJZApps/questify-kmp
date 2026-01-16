@@ -21,5 +21,11 @@ data class AppUser(
     val email: String = "",
 
     @SerialName(value = "profile_picture")
-    val profilePicture: String = ""
+    val profilePicture: String = "",
+
+    @SerialName(value = "level")
+    val level: Int = 1,
+
+    @SerialName(value = "xp")
+    val xp: Int = 0
 )

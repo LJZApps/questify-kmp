@@ -80,6 +80,7 @@
     <string name="introduction_page_progess_tracking_description">Behalte deine Entwicklung im Blick und feiere deine Meilensteine</string>
     <string name="user_setup_page_title">Erstelle dein Profil</string>
     <string name="text_field_display_name">Anzeigename</string>
+    <string name="text_field_username">Benutzername</string>
     <string name="text_field_about_me">Über mich</string>
     <string name="drawer_content_xp">%1$s XP</string>
     <string name="drawer_content_level">Level %1$s</string>
@@ -101,6 +102,7 @@
     <string name="view_profile_screen_title">Mein Profil</string>
     <string name="view_profile_screen_about_me">Über mich</string>
     <string name="view_profile_screen_no_information">Keine Informationen</string>
+    <string name="logout">Abmelden</string>
     <string name="due_date_info_dialog_title">Fälligkeit ist nach Erstellung unveränderbar</string>
     <string name="due_date_info_dialog_description">Sobald die Quest erstellt ist, bleibt die Fälligkeit unveränderbar. Plane deine Zeit gut, um die volle Belohnung zu sichern – nach Ablauf gibt’s nur die halbe Belohnung. Schließe die Quest rechtzeitig ab und hol dir alles! \n\nDie Fälligkeit ist am ausgewählten Tag, ab 0 Uhr, fällig.</string>
     <string name="base_information_page_difficulty_title">Schwierigkeit</string>
@@ -327,4 +329,11 @@
     <string name="set_due_date_bottom_sheet_time_subtitle">Automatisch: 23:59 Uhr</string>
     <string name="set_due_date_bottom_sheet_time_hint">Wenn keine Zeit ausgewählt wurde, ist diese Quest am ausgewählten Datum um 23:59 Uhr fällig.</string>
     <string name="quest_item_overdue_badge">Überfällig</string>
+    <string name="username_setup_title">Benutzernamen wählen</string>
+    <string name="username_setup_description">Wähle einen Benutzernamen, unter dem dich andere finden können.</string>
+    <string name="username_setup_available">Benutzername ist verfügbar</string>
+    <string name="username_setup_unavailable">Benutzername ist bereits vergeben</string>
+    <string name="username_setup_checking">Prüfe Verfügbarkeit...</string>
+    <string name="username_setup_too_short">Benutzername muss mindestens 3 Zeichen lang sein</string>
+    <string name="username_setup_submit">Fertig</string>
 </resources>
