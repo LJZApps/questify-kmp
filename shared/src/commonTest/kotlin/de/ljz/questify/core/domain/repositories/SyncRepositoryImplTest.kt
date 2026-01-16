@@ -79,9 +79,9 @@ class SyncRepositoryImplTest {
         override suspend fun updateQuests(quests: List<QuestEntity>) {}
         override suspend fun getQuestsToSync(): List<QuestEntity> = quests.filter { it.syncStatus != SyncStatus.SYNCED }
         override suspend fun markQuestAsDeleted(id: Int, timestamp: Instant) {}
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {
             markAsSyncedCount++
-            val quest = quests.find { it.uuid == uuid }
+            val quest = quests.find { it.uuid == uuid && it.updatedAt == lastLocalUpdate }
             if (quest != null) {
                 quests.removeAll { it.uuid == uuid }
                 quests.add(quest.copy(syncStatus = SyncStatus.SYNCED, updatedAt = updatedAt))
@@ -106,9 +106,9 @@ class SyncRepositoryImplTest {
         override suspend fun getCategoryCount(): Long = 0
         override suspend fun updateQuestCategory(questCategoryId: Int, text: String, updatedAt: Instant) {}
         override suspend fun getCategoriesToSync(): List<QuestCategoryEntity> = categories.filter { it.syncStatus != SyncStatus.SYNCED }
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {
             markAsSyncedCount++
-            val cat = categories.find { it.uuid == uuid }
+            val cat = categories.find { it.uuid == uuid && it.updatedAt == lastLocalUpdate }
             if (cat != null) {
                 categories.removeAll { it.uuid == uuid }
                 categories.add(cat.copy(syncStatus = SyncStatus.SYNCED, updatedAt = updatedAt))
@@ -131,9 +131,9 @@ class SyncRepositoryImplTest {
         override suspend fun checkSubQuest(id: Int, checked: Boolean, updatedAt: Instant) {}
         override suspend fun getSubQuestsToSync(): List<SubQuestEntity> = subQuests.filter { it.syncStatus != SyncStatus.SYNCED }
         override suspend fun getSubQuestByUuid(uuid: String): SubQuestEntity? = subQuests.find { it.uuid == uuid }
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {
             markAsSyncedCount++
-            val sub = subQuests.find { it.uuid == uuid }
+            val sub = subQuests.find { it.uuid == uuid && it.updatedAt == lastLocalUpdate }
             if (sub != null) {
                 subQuests.removeAll { it.uuid == uuid }
                 subQuests.add(sub.copy(syncStatus = SyncStatus.SYNCED, updatedAt = updatedAt))
@@ -145,8 +145,22 @@ class SyncRepositoryImplTest {
     class FakePlayerStatsRepository : PlayerStatsRepository {
         var stats = PlayerStats(isDirty = true)
         override fun getPlayerStats(): Flow<PlayerStats> = flowOf(stats)
-        override suspend fun updatePlayerStats(playerStats: PlayerStats) {
-            stats = playerStats
+        override suspend fun updatePlayerStats(newStats: PlayerStats) {
+            stats = newStats
+        }
+
+        override suspend fun markAsSynced(originalStats: PlayerStats) {
+            if (stats.updatedAt == originalStats.updatedAt) {
+                stats = stats.copy(isDirty = false)
+            }
+        }
+
+        override suspend fun updateFromSync(newStats: PlayerStats, originalStats: PlayerStats) {
+            if (stats.updatedAt == originalStats.updatedAt) {
+                stats = newStats.copy(isDirty = false)
+            } else {
+                stats = newStats.copy(isDirty = true, updatedAt = stats.updatedAt)
+            }
         }
     }
 
@@ -173,10 +187,10 @@ class SyncRepositoryImplTest {
         val appSettingsRepo = FakeAppSettingsRepository()
 
         // 1. Setup local data
-        val category = QuestCategoryEntity(uuid = "cat-1", text = "Category 1", syncStatus = SyncStatus.DIRTY)
+        val category = QuestCategoryEntity(uuid = "cat-1", text = "Category 1", syncStatus = SyncStatus.DIRTY, updatedAt = now)
         categoryDao.upsertQuestCategory(category)
 
-        val quest = QuestEntity(uuid = "quest-1", title = "Quest 1", syncStatus = SyncStatus.DIRTY, difficulty = Difficulty.EASY, createdAt = now)
+        val quest = QuestEntity(uuid = "quest-1", title = "Quest 1", syncStatus = SyncStatus.DIRTY, difficulty = Difficulty.EASY, createdAt = now, updatedAt = now)
         questDao.upsert(quest)
 
         // 2. Setup Mock Server
@@ -247,6 +261,7 @@ class SyncRepositoryImplTest {
             title = "Deleted",
             syncStatus = SyncStatus.DELETED_LOCALLY,
             deletedAt = now,
+            updatedAt = now,
             difficulty = Difficulty.HARD,
             createdAt = now
         )
@@ -293,6 +308,74 @@ class SyncRepositoryImplTest {
         val serverDeleted = questDao.quests.find { it.uuid == "server-deleted-quest" }
         assertEquals(SyncStatus.SYNCED, serverDeleted?.syncStatus)
         assertEquals(responseTimestamp, serverDeleted?.deletedAt)
+    }
+
+    @Test
+    fun testSyncRaceCondition() = runTest {
+        val t1 = Instant.fromEpochMilliseconds(1000L)
+        val t2 = Instant.fromEpochMilliseconds(1500L)
+        val responseTimestamp = Instant.fromEpochMilliseconds(2000L)
+
+        val questDao = FakeQuestDao()
+        val categoryDao = FakeQuestCategoryDao()
+        val subQuestDao = FakeSubQuestDao()
+        val playerStatsRepo = FakePlayerStatsRepository()
+        val appSettingsRepo = FakeAppSettingsRepository()
+
+        // 1. Setup local data with updatedAt = t1
+        val quest = QuestEntity(
+            uuid = "quest-race",
+            title = "Original Title",
+            syncStatus = SyncStatus.DIRTY,
+            difficulty = Difficulty.EASY,
+            createdAt = t1,
+            updatedAt = t1
+        )
+        questDao.upsert(quest)
+
+        // 2. Setup Mock Server with delay (simulated)
+        val response = SyncResponseDto(
+            categories = emptyList(),
+            quests = emptyList(),
+            subQuests = emptyList(),
+            playerStats = null,
+            newTimestamp = responseTimestamp
+        )
+        
+        // Custom HttpClient to simulate local change during upload
+        val mockEngine = MockEngine { request ->
+            // Simuliere lokale Änderung während des Uploads
+            val currentQuest = questDao.quests.find { it.uuid == "quest-race" }!!
+            questDao.upsert(currentQuest.copy(title = "Updated Title", updatedAt = t2, syncStatus = SyncStatus.DIRTY))
+            
+            respond(
+                content = Json.encodeToString(SyncResponseDto.serializer(), response),
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        val httpClient = HttpClient(mockEngine) {
+            install(ContentNegotiation) { json() }
+        }
+        val syncService = SyncService(httpClient)
+
+        val repository = SyncRepositoryImpl(
+            syncService = syncService,
+            questDao = questDao,
+            questCategoryDao = categoryDao,
+            subQuestDao = subQuestDao,
+            playerStatsRepository = playerStatsRepo,
+            appSettingsRepository = appSettingsRepo
+        )
+
+        // 3. Execute Sync
+        repository.sync()
+
+        // 4. Verify: Quest should still be DIRTY because it was updated to t2 during sync
+        val finalQuest = questDao.quests.find { it.uuid == "quest-race" }
+        assertEquals("Updated Title", finalQuest?.title)
+        assertEquals(SyncStatus.DIRTY, finalQuest?.syncStatus, "Quest should remain DIRTY due to race condition fix")
+        assertEquals(t2, finalQuest?.updatedAt)
     }
 
     @Test

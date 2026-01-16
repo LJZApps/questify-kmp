@@ -82,6 +82,6 @@ interface QuestDao {
     suspend fun markQuestAsDeleted(id: Int, timestamp: Instant)
 
 
-    @Query("UPDATE quest_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid")
-    suspend fun markAsSynced(uuid: String, updatedAt: Instant)
+    @Query("UPDATE quest_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid AND updated_at = :lastLocalUpdate")
+    suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant)
 }

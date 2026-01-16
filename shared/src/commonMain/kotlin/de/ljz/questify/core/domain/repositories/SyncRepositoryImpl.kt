@@ -107,8 +107,8 @@ internal class SyncRepositoryImpl(
             }
 
             // 4. Process PlayerStats
-            val playerStatsToUpdate = response.playerStats?.let { dto ->
-                playerStats.copy(
+            response.playerStats?.let { dto ->
+                val statsFromServer = playerStats.copy(
                     level = dto.level,
                     xp = dto.xp,
                     points = dto.points,
@@ -121,22 +121,30 @@ internal class SyncRepositoryImpl(
                     },
                     statusExpiryTimestamp = dto.statusExpiryTimestamp,
                     updatedAt = dto.updatedAt,
-                    isDirty = false
                 )
-            } ?: if (playerStats.isDirty) {
-                playerStats.copy(isDirty = false)
-            } else {
-                null
-            }
-
-            playerStatsToUpdate?.let {
-                playerStatsRepository.updatePlayerStats(it)
+                playerStatsRepository.updateFromSync(statsFromServer, playerStats)
+            } ?: run {
+                if (playerStats.isDirty) {
+                    playerStatsRepository.markAsSynced(playerStats)
+                }
             }
 
             // Mark sent items as synced
-            categoriesToSync.forEach { questCategoryDao.markAsSynced(it.uuid, response.newTimestamp) }
-            questsToSync.forEach { questDao.markAsSynced(it.uuid, response.newTimestamp) }
-            subQuestsToSync.forEach { subQuestDao.markAsSynced(it.uuid, response.newTimestamp) }
+            categoriesToSync.forEach { entity ->
+                entity.updatedAt?.let { lastUpdate ->
+                    questCategoryDao.markAsSynced(entity.uuid, response.newTimestamp, lastUpdate)
+                }
+            }
+            questsToSync.forEach { entity ->
+                entity.updatedAt?.let { lastUpdate ->
+                    questDao.markAsSynced(entity.uuid, response.newTimestamp, lastUpdate)
+                }
+            }
+            subQuestsToSync.forEach { entity ->
+                entity.updatedAt?.let { lastUpdate ->
+                    subQuestDao.markAsSynced(entity.uuid, response.newTimestamp, lastUpdate)
+                }
+            }
 
             appSettingsRepository.updateLastSyncTimestamp(response.newTimestamp)
 

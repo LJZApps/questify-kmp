@@ -33,8 +33,8 @@ interface SubQuestDao {
     @Query("SELECT * FROM sub_quest_entity WHERE uuid = :uuid")
     suspend fun getSubQuestByUuid(uuid: String): SubQuestEntity?
 
-    @Query("UPDATE sub_quest_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid")
-    suspend fun markAsSynced(uuid: String, updatedAt: Instant)
+    @Query("UPDATE sub_quest_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid AND updated_at = :lastLocalUpdate")
+    suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant)
 
     @Query("UPDATE sub_quest_entity SET sync_status = 'DELETED_LOCALLY', deleted_at = :timestamp WHERE id = :id")
     suspend fun markSubQuestAsDeleted(id: Int, timestamp: Instant)

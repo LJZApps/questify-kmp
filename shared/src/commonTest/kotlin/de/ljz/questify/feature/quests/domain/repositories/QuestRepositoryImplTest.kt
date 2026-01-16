@@ -37,7 +37,7 @@ class QuestRepositoryImplTest {
             lastMarkedDeletedId = id
             lastMarkedDeletedTimestamp = timestamp
         }
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {}
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {}
     }
 
     @Test
@@ -63,7 +63,7 @@ class QuestCategoryRepositoryImplTest {
         override suspend fun getCategoryCount(): Long = 0
         override suspend fun updateQuestCategory(questCategoryId: Int, text: String, updatedAt: Instant) {}
         override suspend fun getCategoriesToSync(): List<de.ljz.questify.feature.quests.data.models.QuestCategoryEntity> = emptyList()
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {}
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {}
         override suspend fun markCategoryAsDeleted(id: Int, timestamp: Instant) {
             lastMarkedDeletedId = id
         }
@@ -90,7 +90,7 @@ class SubQuestRepositoryImplTest {
         override suspend fun checkSubQuest(id: Int, checked: Boolean, updatedAt: Instant) {}
         override suspend fun getSubQuestsToSync(): List<de.ljz.questify.feature.quests.data.models.SubQuestEntity> = emptyList()
         override suspend fun getSubQuestByUuid(uuid: String): de.ljz.questify.feature.quests.data.models.SubQuestEntity? = null
-        override suspend fun markAsSynced(uuid: String, updatedAt: Instant) {}
+        override suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant) {}
         override suspend fun markSubQuestAsDeleted(id: Int, timestamp: Instant) {}
     }
 

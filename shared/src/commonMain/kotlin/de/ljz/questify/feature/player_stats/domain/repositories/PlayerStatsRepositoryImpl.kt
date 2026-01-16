@@ -17,4 +17,27 @@ internal class PlayerStatsRepositoryImpl(
             newStats.copy(updatedAt = TimeUtils.now(), isDirty = true)
         }
     }
+
+    override suspend fun markAsSynced(originalStats: PlayerStats) {
+        playerStatsStore.updateData { current ->
+            if (current.updatedAt == originalStats.updatedAt) {
+                current.copy(isDirty = false)
+            } else {
+                current
+            }
+        }
+    }
+
+    override suspend fun updateFromSync(newStats: PlayerStats, originalStats: PlayerStats) {
+        playerStatsStore.updateData { current ->
+            if (current.updatedAt == originalStats.updatedAt) {
+                newStats.copy(isDirty = false)
+            } else {
+                // Wenn sich lokale Daten geändert haben, behalten wir die lokalen Änderungen,
+                // aber übernehmen vielleicht die Server-Werte für XP etc?
+                // Der Einfachheit halber: Wenn ein Konflikt besteht, lassen wir es dirty.
+                newStats.copy(isDirty = true, updatedAt = current.updatedAt)
+            }
+        }
+    }
 }

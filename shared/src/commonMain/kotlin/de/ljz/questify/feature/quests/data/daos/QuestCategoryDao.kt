@@ -37,8 +37,8 @@ interface QuestCategoryDao {
     @Query("SELECT * FROM quest_category_entity WHERE sync_status != 'SYNCED'")
     suspend fun getCategoriesToSync(): List<QuestCategoryEntity>
 
-    @Query("UPDATE quest_category_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid")
-    suspend fun markAsSynced(uuid: String, updatedAt: Instant)
+    @Query("UPDATE quest_category_entity SET sync_status = 'SYNCED', updated_at = :updatedAt WHERE uuid = :uuid AND updated_at = :lastLocalUpdate")
+    suspend fun markAsSynced(uuid: String, updatedAt: Instant, lastLocalUpdate: Instant)
 
     @Query("UPDATE quest_category_entity SET sync_status = 'DELETED_LOCALLY', deleted_at = :timestamp WHERE id = :id")
     suspend fun markCategoryAsDeleted(id: Int, timestamp: Instant)

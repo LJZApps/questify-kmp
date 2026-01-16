@@ -12,7 +12,16 @@ class SyncDtoTest {
         val now = Instant.fromEpochMilliseconds(1737033120000L) // 2025-01-16T13:12:00Z
         val request = SyncRequestDto(
             categories = listOf(QuestCategoryDto("uuid1", "cat1", now)),
-            quests = listOf(QuestDto("uuid2", "uuid1", "title", "notes", Difficulty.EASY, false, now)),
+            quests = listOf(QuestDto(
+                uuid = "uuid2",
+                categoryUuid = "uuid1",
+                title = "title",
+                notes = "notes",
+                difficulty = Difficulty.EASY,
+                dueDate = null,
+                done = false,
+                updatedAt = now
+            )),
             subQuests = listOf(SubQuestDto("uuid3", "uuid2", "sub", false, 0, now)),
             playerStats = null,
             lastSyncTimestamp = now
