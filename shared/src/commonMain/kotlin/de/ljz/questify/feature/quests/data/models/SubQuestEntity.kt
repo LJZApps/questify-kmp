@@ -56,14 +56,13 @@ data class SubQuestEntity(
     val deletedAt: Instant? = null
 )
 
-fun SubQuestEntity.toModel(
-    id: Int,
-    text: String,
-    orderIndex: Int
-): SubQuestModel {
+fun SubQuestEntity.toModel(): SubQuestModel {
     return SubQuestModel(
         id = id,
+        uuid = uuid,
+        questUuid = questUuid,
         text = text,
+        isDone = isDone,
         orderIndex = orderIndex
     )
 }

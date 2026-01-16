@@ -14,7 +14,7 @@ data class QuestWithDetails(
         parentColumn = "id",
         entityColumn = "quest_id"
     )
-    val subTasks: List<SubQuestEntity>,
+    val allSubTasks: List<SubQuestEntity>,
 
     @Relation(
         parentColumn = "id",
@@ -27,4 +27,6 @@ data class QuestWithDetails(
         entityColumn = "id"
     )
     val questCategory: QuestCategoryEntity?
-)
+) {
+    val subTasks: List<SubQuestEntity> get() = allSubTasks.filter { it.deletedAt == null }
+}

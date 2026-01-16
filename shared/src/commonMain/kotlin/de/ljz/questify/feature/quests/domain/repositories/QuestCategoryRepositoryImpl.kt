@@ -3,6 +3,7 @@ package de.ljz.questify.feature.quests.domain.repositories
 import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
+import de.ljz.questify.feature.quests.data.models.SyncStatus
 import kotlinx.coroutines.flow.Flow
 
 internal class QuestCategoryRepositoryImpl(
@@ -11,7 +12,7 @@ internal class QuestCategoryRepositoryImpl(
 
     override suspend fun addQuestCategory(questCategoryEntity: QuestCategoryEntity) {
         questCategoryDao.upsertQuestCategory(
-            questCategory = questCategoryEntity
+            questCategory = questCategoryEntity.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY)
         )
     }
 

@@ -41,6 +41,7 @@ data class QuestDto(
     @SerialName("title") val title: String,
     @SerialName("notes") val notes: String?,
     @SerialName("difficulty") val difficulty: Difficulty,
+    @SerialName("due_date") val dueDate: Instant? = null,
     @SerialName("done") val done: Boolean,
     @SerialName("updated_at") val updatedAt: Instant?,
     @SerialName("deleted_at") val deletedAt: Instant? = null

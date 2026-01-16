@@ -1,6 +1,7 @@
 package de.ljz.questify.feature.player_stats.domain.repositories
 
 import androidx.datastore.core.DataStore
+import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.player_stats.data.models.PlayerStats
 import kotlinx.coroutines.flow.Flow
 
@@ -13,7 +14,7 @@ internal class PlayerStatsRepositoryImpl(
 
     override suspend fun updatePlayerStats(newStats: PlayerStats) {
         playerStatsStore.updateData {
-            newStats
+            newStats.copy(updatedAt = TimeUtils.now(), isDirty = true)
         }
     }
 }

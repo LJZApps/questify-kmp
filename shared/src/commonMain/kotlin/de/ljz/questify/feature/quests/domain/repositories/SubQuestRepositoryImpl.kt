@@ -3,19 +3,20 @@ package de.ljz.questify.feature.quests.domain.repositories
 import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.quests.data.daos.SubQuestDao
 import de.ljz.questify.feature.quests.data.models.SubQuestEntity
+import de.ljz.questify.feature.quests.data.models.SyncStatus
 
 internal class SubQuestRepositoryImpl(
     private val subQuestDao: SubQuestDao
 ) : SubQuestRepository {
     override suspend fun addSubQuest(subQuest: SubQuestEntity) {
         subQuestDao.upsertSubQuest(
-            subQuest = subQuest
+            subQuest = subQuest.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY)
         )
     }
 
     override suspend fun addSubQuests(subQuests: List<SubQuestEntity>) {
         subQuestDao.upsertSubQuests(
-            subQuests = subQuests
+            subQuests = subQuests.map { it.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY) }
         )
     }
 

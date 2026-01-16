@@ -120,6 +120,7 @@ class CreateQuestViewModel(
                             uuid = subTask.uuid.ifEmpty { UUID.randomUUID().toString() },
                             questUuid = quest.uuid,
                             text = subTask.text,
+                            isDone = subTask.isDone,
                             questId = questId.toInt(),
                             orderIndex = index
                         )

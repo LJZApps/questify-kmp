@@ -78,6 +78,7 @@ internal class SyncRepositoryImpl(
                     difficulty = dto.difficulty,
                     done = dto.done,
                     syncStatus = SyncStatus.SYNCED,
+                    dueDate = dto.dueDate,
                     updatedAt = dto.updatedAt,
                     deletedAt = dto.deletedAt,
                     categoryId = categoryId,
@@ -158,6 +159,7 @@ internal class SyncRepositoryImpl(
         title = title,
         notes = notes,
         difficulty = difficulty,
+        dueDate = dueDate,
         done = done,
         updatedAt = updatedAt,
         deletedAt = deletedAt

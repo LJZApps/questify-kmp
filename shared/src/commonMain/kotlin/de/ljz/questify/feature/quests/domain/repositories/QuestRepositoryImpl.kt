@@ -3,6 +3,7 @@ package de.ljz.questify.feature.quests.domain.repositories
 import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.quests.data.daos.QuestDao
 import de.ljz.questify.feature.quests.data.models.QuestEntity
+import de.ljz.questify.feature.quests.data.models.SyncStatus
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
 import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +13,11 @@ internal class QuestRepositoryImpl(
     private val questDao: QuestDao
 ) : QuestRepository {
     override suspend fun addMainQuest(quest: QuestEntity): Long {
-        return questDao.upsert(quest)
+        return questDao.upsert(quest.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY))
     }
 
     override suspend fun upsertQuest(quest: QuestEntity): Long {
-        return questDao.upsert(quest)
+        return questDao.upsert(quest.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY))
     }
 
     override suspend fun setQuestDone(id: Int, done: Boolean): QuestRepository.QuestCompletionResult {
@@ -35,7 +36,7 @@ internal class QuestRepositoryImpl(
     }
 
     override suspend fun updateQuest(quest: QuestEntity) {
-        questDao.upsert(quest)
+        questDao.upsert(quest.copy(updatedAt = TimeUtils.now(), syncStatus = SyncStatus.DIRTY))
     }
 
     override suspend fun updateQuest(
