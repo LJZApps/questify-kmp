@@ -4,7 +4,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
-import io.ktor.http.URLBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,21 +23,6 @@ class AuthService(
     private val discoveryUrl = "https://id.omrix.net"
 
     private var currentVerifier: String? = null
-
-    fun getAuthorizationUrl(): String {
-        val verifier = pkceGenerator.generateVerifier()
-        val challenge = pkceGenerator.generateChallenge(verifier)
-        currentVerifier = verifier
-
-        return URLBuilder("https://id.omrix.net/oauth/authorize").apply {
-            parameters.append("client_id", clientId)
-            parameters.append("response_type", "code")
-            parameters.append("scope", "user-profile")
-            parameters.append("redirect_uri", redirectUri)
-            parameters.append("code_challenge", challenge)
-            parameters.append("code_challenge_method", "S256")
-        }.buildString()
-    }
 
     suspend fun exchangeCodeForToken(authCode: String): OmrixTokenResponse {
         val verifier = currentVerifier ?: throw IllegalStateException("Verifier verloren gegangen!")

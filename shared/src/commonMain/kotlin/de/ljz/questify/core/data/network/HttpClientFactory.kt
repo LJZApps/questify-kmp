@@ -9,6 +9,9 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
@@ -17,12 +20,22 @@ import kotlinx.serialization.json.Json
 object HttpClientFactory {
     // OMRIX client
     fun createAuthHttpClient(): HttpClient {
+        println("HttpClientFactory: Erstelle Auth HttpClient")
         return HttpClient {
             install(ContentNegotiation) {
                 json(Json {
                     ignoreUnknownKeys = true
                     isLenient = true
                 })
+            }
+
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("QuestifyHttpAuth: $message")
+                    }
+                }
+                level = LogLevel.ALL
             }
         }
     }
@@ -31,9 +44,19 @@ object HttpClientFactory {
         tokenStorage: TokenStorage,
         authRepository: AuthRepository
     ): HttpClient {
+        println("HttpClientFactory: Erstelle App HttpClient")
         return HttpClient {
             install(ContentNegotiation) {
                 json(Json { ignoreUnknownKeys = true; prettyPrint = true })
+            }
+
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("QuestifyHttpApp: $message")
+                    }
+                }
+                level = LogLevel.ALL
             }
 
             defaultRequest {
@@ -44,25 +67,28 @@ object HttpClientFactory {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        val access = tokenStorage.getAccessToken()
+                        println("HttpClientAuth: loadTokens aufgerufen")
+                        val token = tokenStorage.getAccessToken()
                         val refresh = tokenStorage.getRefreshToken()
-                        if (access != null && refresh != null) BearerTokens(access, refresh) else null
-                    }
-
-                    refreshTokens {
-                        val refreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
-                        val newTokens = authRepository.refreshToken(refreshToken)
-
-                        if (newTokens != null) {
-                            tokenStorage.saveTokens(newTokens.accessToken, newTokens.refreshToken)
-                            BearerTokens(newTokens.accessToken, newTokens.refreshToken)
+                        println("HttpClientAuth: Token geladen. Access: ${token != null}, Refresh: ${refresh != null}")
+                        if (token != null) {
+                            BearerTokens(token, refresh ?: "")
                         } else {
                             null
                         }
                     }
 
+                    refreshTokens {
+                        println("HttpClientAuth: 401 erhalten. refreshTokens aufgerufen.")
+                        // TODO: Implement actual refresh logic if available
+                        println("HttpClientAuth: Kein Refresh möglich, Logout.")
+                        null
+                    }
+
                     sendWithoutRequest { request ->
-                        request.url.host == Constants.QUESTIFY_HOST
+                        val shouldSend = request.url.host == Constants.QUESTIFY_HOST
+                        println("HttpClientAuth: sendWithoutRequest für ${request.url.host}: $shouldSend")
+                        shouldSend
                     }
                 }
             }

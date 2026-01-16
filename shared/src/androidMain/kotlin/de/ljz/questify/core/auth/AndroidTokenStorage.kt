@@ -38,6 +38,7 @@ class AndroidTokenStorage(private val context: Context) : TokenStorage {
     }
 
     override suspend fun saveTokens(accessToken: String, refreshToken: String) {
+        println("AndroidTokenStorage: saveTokens aufgerufen. AccessToken: ${accessToken.take(10)}..., RefreshToken: ${refreshToken.take(10)}...")
         val encryptedAccess = encrypt(accessToken)
         val encryptedRefresh = encrypt(refreshToken)
 
@@ -45,19 +46,27 @@ class AndroidTokenStorage(private val context: Context) : TokenStorage {
             prefs[ACCESS_TOKEN_KEY] = encryptedAccess
             prefs[REFRESH_TOKEN_KEY] = encryptedRefresh
         }
+        println("AndroidTokenStorage: Tokens verschlüsselt und in DataStore gespeichert.")
     }
 
     override suspend fun getAccessToken(): String? {
+        println("AndroidTokenStorage: getAccessToken aufgerufen")
         val encrypted = context.dataStore.data.map { it[ACCESS_TOKEN_KEY] }.first()
-        return encrypted?.let { decrypt(it) }
+        val token = encrypted?.let { decrypt(it) }
+        println("AndroidTokenStorage: AccessToken gefunden: ${token != null}")
+        return token
     }
 
     override suspend fun getRefreshToken(): String? {
+        println("AndroidTokenStorage: getRefreshToken aufgerufen")
         val encrypted = context.dataStore.data.map { it[REFRESH_TOKEN_KEY] }.first()
-        return encrypted?.let { decrypt(it) }
+        val token = encrypted?.let { decrypt(it) }
+        println("AndroidTokenStorage: RefreshToken gefunden: ${token != null}")
+        return token
     }
 
     override suspend fun clearTokens() {
+        println("AndroidTokenStorage: clearTokens aufgerufen. Lösche Tokens aus DataStore.")
         context.dataStore.edit { prefs ->
             prefs.remove(ACCESS_TOKEN_KEY)
             prefs.remove(REFRESH_TOKEN_KEY)
@@ -76,6 +85,7 @@ class AndroidTokenStorage(private val context: Context) : TokenStorage {
             val decryptedBytes = aead.decrypt(bytes, null)
             String(decryptedBytes, Charsets.UTF_8)
         } catch (e: Exception) {
+            println("AndroidTokenStorage: ERROR bei Decrypt: ${e.message}")
             e.printStackTrace()
             null
         }

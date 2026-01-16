@@ -1,9 +1,8 @@
 package de.ljz.questify.core.domain.repositories
 
-import de.ljz.questify.core.data.models.auth.TokenResponse
+import de.ljz.questify.core.data.models.auth.PlayerProfileDto
 
 interface AuthRepository {
-    suspend fun performLogin(authCode: String, codeVerifier: String): Result<Unit>
-    suspend fun refreshToken(refreshToken: String): TokenResponse?
+    suspend fun performLogin(authCode: String, codeVerifier: String): Result<PlayerProfileDto>
     suspend fun logout()
 }

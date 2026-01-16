@@ -1,5 +1,6 @@
 package de.ljz.questify.core.presentation.screens
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -16,11 +17,13 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import de.ljz.questify.core.auth.AuthService
 import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
+import de.ljz.questify.feature.auth.LoginRoute
+import de.ljz.questify.feature.auth.LoginScreen
+import de.ljz.questify.feature.auth.LoginViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
@@ -42,12 +45,25 @@ import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpSc
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMain : AppCompatActivity() {
-    private val authService = AuthService(HttpClient{  })
+
+    private val loginViewModel: LoginViewModel by viewModel()
+
+    override fun onStart() {
+        super.onStart()
+        println("ActivityMain: onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("ActivityMain: onResume. Intent Data: ${intent?.data}")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("ActivityMain: onCreate aufgerufen. Intent: $intent, Data: ${intent?.data}")
 
         val splashScreen = installSplashScreen()
 
@@ -68,7 +84,8 @@ class ActivityMain : AppCompatActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
+//                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
+                        val startKey: AppNavKey = LoginRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -211,6 +228,18 @@ class ActivityMain : AppCompatActivity() {
                                         }
                                     )
                                 }
+
+                                entry<LoginRoute> {
+                                    LoginScreen(
+                                        onNavigateHome = {
+                                            backStack.removeAll(backStack)
+                                            backStack.add(MainRoute)
+                                        },
+                                        onNavigateOnboarding = {
+                                            backStack.add(OnboardingRoute)
+                                        }
+                                    )
+                                }
                             },
                             transitionSpec = {
                                 scaleContentTransform(ScaleTransitionDirection.INWARDS)
@@ -225,6 +254,36 @@ class ActivityMain : AppCompatActivity() {
                     }
                 }
             }
+        }
+        
+        checkIntentForCode(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        println("ActivityMain: onNewIntent erhalten. Data: ${intent.data}")
+        setIntent(intent)
+        checkIntentForCode(intent)
+    }
+
+    private fun checkIntentForCode(intent: Intent?) {
+        val data = intent?.data
+        println("ActivityMain: checkIntentForCode. Data: $data, Action: ${intent?.action}")
+        
+        if (data == null) return
+
+        if (data.scheme == "de.ljz.questify" && data.host == "callback") {
+            val code = data.getQueryParameter("code")
+            println("ActivityMain: Deep Link Code erkannt: $code")
+
+            if (code != null) {
+                loginViewModel.handleAuthCode(code)
+            } else {
+                val error = data.getQueryParameter("error")
+                println("ActivityMain: Auth Error vom Browser: $error")
+            }
+        } else {
+            println("ActivityMain: Unbekannter Deep Link: ${data.scheme}://${data.host}")
         }
     }
 }
