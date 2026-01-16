@@ -77,19 +77,19 @@ fun SettingsMainScreen(
                     },
                     shapes = ListItemDefaults.segmentedShapes(0, 4),
                     supportingContent = {
-                        Text("Bei Questify mit deiner OMRIX-ID anmelden, um alle Daten zu synchronisieren")
+                        Text("Melde dich an, um deinen Fortschritt zu sichern und auf anderen Geräten verfügbar zu machen.")
                     },
                     colors = ListItemDefaults.colors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     ),
                     leadingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.ic_login_outline),
+                            painter = painterResource(R.drawable.ic_cloud_sync_outlined),
                             contentDescription = null
                         )
                     }
                 ) {
-                    Text("Anmelden")
+                    Text("Account-Sync einrichten")
                 }
 
                 SegmentedListItem(

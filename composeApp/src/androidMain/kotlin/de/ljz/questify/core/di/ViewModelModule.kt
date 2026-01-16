@@ -14,6 +14,7 @@ import de.ljz.questify.feature.quests.presentation.screens.quest_detail.QuestDet
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.QuestOverviewViewModel
 import de.ljz.questify.feature.quests.presentation.screens.quest_overview.sub_pages.quest_for_category_page.CategoryQuestViewModel
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceViewModel
+import de.ljz.questify.feature.settings.presentation.screens.login.SettingsLoginViewModel
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -33,6 +34,8 @@ val viewModelModule = module {
     viewModelOf(::EditProfileViewModel)
 
     single { LoginViewModel(get()) }
+
+    single { SettingsLoginViewModel(get()) }
 
     viewModel { (categoryId: Int) ->
         CategoryQuestViewModel(

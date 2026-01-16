@@ -106,6 +106,9 @@ kotlin {
             implementation(libs.androidx.material.icons.extended)
             implementation(libs.androidx.ui.tooling)
             implementation(libs.androidx.ui)
+
+            // Custom Tabs
+            implementation(libs.androidx.browser)
         }
         
         commonMain.dependencies {

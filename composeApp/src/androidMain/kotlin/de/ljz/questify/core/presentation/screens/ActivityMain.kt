@@ -1,7 +1,6 @@
 package de.ljz.questify.core.presentation.screens
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,9 +20,6 @@ import de.ljz.questify.core.presentation.navigation.AppNavKey
 import de.ljz.questify.core.presentation.navigation.ScaleTransitionDirection
 import de.ljz.questify.core.presentation.navigation.scaleContentTransform
 import de.ljz.questify.core.presentation.theme.QuestifyTheme
-import de.ljz.questify.feature.auth.LoginRoute
-import de.ljz.questify.feature.auth.LoginScreen
-import de.ljz.questify.feature.auth.LoginViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainRoute
 import de.ljz.questify.feature.main.presentation.screens.main.MainScreen
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingRoute
@@ -42,6 +38,10 @@ import de.ljz.questify.feature.settings.presentation.screens.appearance.Settings
 import de.ljz.questify.feature.settings.presentation.screens.appearance.SettingsAppearanceScreen
 import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpRoute
 import de.ljz.questify.feature.settings.presentation.screens.help.SettingsHelpScreen
+import de.ljz.questify.feature.settings.presentation.screens.login.SettingsLoginRoute
+import de.ljz.questify.feature.settings.presentation.screens.login.SettingsLoginScreen
+import de.ljz.questify.feature.settings.presentation.screens.login.SettingsLoginUiEvent
+import de.ljz.questify.feature.settings.presentation.screens.login.SettingsLoginViewModel
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainRoute
 import de.ljz.questify.feature.settings.presentation.screens.main.SettingsMainScreen
 import org.koin.androidx.compose.koinViewModel
@@ -49,7 +49,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ActivityMain : AppCompatActivity() {
 
-    private val loginViewModel: LoginViewModel by viewModel()
+    private val loginViewModel: SettingsLoginViewModel by viewModel()
 
     override fun onStart() {
         super.onStart()
@@ -84,8 +84,7 @@ class ActivityMain : AppCompatActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize()
                     ) {
-//                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
-                        val startKey: AppNavKey = LoginRoute
+                        val startKey: AppNavKey = if (isSetupDone) MainRoute else OnboardingRoute
                         val backStack = rememberNavBackStack(startKey)
 
                         NavDisplay(
@@ -180,7 +179,7 @@ class ActivityMain : AppCompatActivity() {
                                             backStack.removeLastOrNull()
                                         },
                                         onNavigateToViewProfileScreen = {
-                                            backStack.add(ViewProfileRoute)
+                                            backStack.add(SettingsLoginRoute)
                                         },
                                         onNavigateToSettingsAppearanceScreen = {
                                             backStack.add(SettingsAppearanceRoute)
@@ -229,14 +228,13 @@ class ActivityMain : AppCompatActivity() {
                                     )
                                 }
 
-                                entry<LoginRoute> {
-                                    LoginScreen(
-                                        onNavigateHome = {
-                                            backStack.removeAll(backStack)
-                                            backStack.add(MainRoute)
+                                entry<SettingsLoginRoute> {
+                                    SettingsLoginScreen(
+                                        onNavigateUp = {
+                                            backStack.removeLastOrNull()
                                         },
-                                        onNavigateOnboarding = {
-                                            backStack.add(OnboardingRoute)
+                                        onNavigateToUsernameSetup = {
+                                            // TODO setup screen and functionallity
                                         }
                                     )
                                 }
@@ -277,25 +275,13 @@ class ActivityMain : AppCompatActivity() {
             println("ActivityMain: Deep Link Code erkannt: $code")
 
             if (code != null) {
-                loginViewModel.handleAuthCode(code)
+                loginViewModel.onUiEvent(SettingsLoginUiEvent.HandleAuthCode(code = code))
             } else {
                 val error = data.getQueryParameter("error")
                 println("ActivityMain: Auth Error vom Browser: $error")
             }
         } else {
             println("ActivityMain: Unbekannter Deep Link: ${data.scheme}://${data.host}")
-        }
-    }
-}
-
-internal class DeepLinkRequest(
-    val uri: Uri
-) {
-    val pathSegments: List<String> = uri.pathSegments
-
-    val queries = buildMap {
-        uri.queryParameterNames.forEach { argName ->
-            this[argName] = uri.getQueryParameter(argName)
         }
     }
 }

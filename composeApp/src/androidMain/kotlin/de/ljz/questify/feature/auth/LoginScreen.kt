@@ -99,9 +99,9 @@ fun LoginScreen(
                         )
                         Button(onClick = {
                             println("LoginScreen: 'Erneut versuchen' geklickt")
-                            val url = viewModel.getLoginUrl()
-                            println("LoginScreen: Öffne URL: $url")
-                            uriHandler.openUri(url)
+//                            val url = viewModel.getLoginUrl()
+//                            println("LoginScreen: Öffne URL: $url")
+//                            uriHandler.openUri(url)
                         }) {
                             Text("Erneut versuchen")
                         }
@@ -113,9 +113,9 @@ fun LoginScreen(
                             onClick = {
                                 println("LoginScreen: 'Anmelden mit Omrix ID' geklickt")
                                 // Browser öffnen
-                                val url = viewModel.getLoginUrl()
-                                println("LoginScreen: Öffne URL: $url")
-                                uriHandler.openUri(url)
+//                                val url = viewModel.getLoginUrl()
+//                                println("LoginScreen: Öffne URL: $url")
+//                                uriHandler.openUri(url)
                             }
                         ) {
                             Text("Anmelden mit Omrix ID")
