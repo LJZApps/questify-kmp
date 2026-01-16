@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.core.auth.PkceGenerator
 import de.ljz.questify.core.domain.repositories.AuthRepository
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.core.utils.Constants
 import de.ljz.questify.feature.profile.domain.use_cases.SyncProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 
 class SettingsLoginViewModel(
     private val authRepository: AuthRepository,
-    private val syncProfileUseCase: SyncProfileUseCase
+    private val syncProfileUseCase: SyncProfileUseCase,
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = SettingsLoginUiState()
@@ -74,6 +76,7 @@ class SettingsLoginViewModel(
                     result.onSuccess { profileDto ->
                         _uiState.update { it.copy(isLoading = true) }
                         syncProfileUseCase()
+                        syncUseCase()
 
                         _uiState.update {
                             it.copy(

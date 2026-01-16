@@ -15,6 +15,8 @@ sealed interface QuestOverviewUiEvent {
     object CloseDialog : QuestOverviewUiEvent
     object CloseQuestDoneDialog : QuestOverviewUiEvent
 
+    object Refresh : QuestOverviewUiEvent
+
     data class ShowUpdateCategoryDialog(val questCategoryEntity: QuestCategoryEntity) : QuestOverviewUiEvent
 
     data class OnNavigateToQuestDetailScreen(val entryId: Int) : QuestOverviewUiEvent

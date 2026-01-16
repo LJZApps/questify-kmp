@@ -5,6 +5,7 @@ import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.relations.QuestWithDetails
 
 data class QuestOverviewUIState(
+    val isRefreshing: Boolean,
     val dialogState: QuestOverviewDialogState,
     val allQuestPageState: AllQuestPageState,
 )

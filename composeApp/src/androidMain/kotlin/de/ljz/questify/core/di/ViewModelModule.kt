@@ -2,7 +2,6 @@ package de.ljz.questify.core.di
 
 import de.ljz.questify.core.presentation.screens.AppViewModel
 import de.ljz.questify.core.presentation.theme.ThemeViewModel
-import de.ljz.questify.feature.auth.LoginViewModel
 import de.ljz.questify.feature.habis.presentation.screens.overview.HabitOverviewViewModel
 import de.ljz.questify.feature.main.presentation.screens.main.MainViewModel
 import de.ljz.questify.feature.onboarding.presentation.screens.onboarding.OnboardingViewModel
@@ -35,9 +34,7 @@ val viewModelModule = module {
     viewModelOf(::EditProfileViewModel)
     viewModelOf(::UsernameSetupViewModel)
 
-    single { LoginViewModel(get()) }
-
-    single { SettingsLoginViewModel(get(), get()) }
+    single { SettingsLoginViewModel(get(), get(), get()) }
 
     viewModel { (categoryId: Int) ->
         CategoryQuestViewModel(
@@ -55,7 +52,7 @@ val viewModelModule = module {
             getAllQuestCategoriesUseCase = get(),
             upsertQuestUseCase = get(),
             addQuestNotificationUseCase = get(),
-            syncRepository = get()
+            syncUseCase = get()
         )
     }
 
@@ -73,6 +70,7 @@ val viewModelModule = module {
             deleteSubQuestUseCase = get(),
             addQuestNotificationUseCase = get(),
             cancelQuestNotificationsUseCase = get(),
+            syncUseCase = get()
         )
     }
 
@@ -86,7 +84,7 @@ val viewModelModule = module {
             getQuestCategoryByIdUseCase = get(),
             checkSubQuestUseCase = get(),
             cancelQuestNotificationsUseCase = get(),
-            syncRepository = get()
+            syncUseCase = get()
         )
     }
 

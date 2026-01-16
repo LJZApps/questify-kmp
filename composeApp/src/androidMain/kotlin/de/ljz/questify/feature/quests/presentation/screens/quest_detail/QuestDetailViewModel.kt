@@ -2,7 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.ljz.questify.core.domain.repositories.SyncRepository
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.AddingDateTimeState
@@ -38,7 +38,7 @@ class QuestDetailViewModel(
     private val checkSubQuestUseCase: CheckSubQuestUseCase,
 
     private val cancelQuestNotificationsUseCase: CancelQuestNotificationsUseCase,
-    private val syncRepository: SyncRepository
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -144,7 +144,7 @@ class QuestDetailViewModel(
                         )
                     )
                 }
-                syncRepository.sync()
+                syncUseCase()
             }
 
             launch {
@@ -159,7 +159,7 @@ class QuestDetailViewModel(
                 id = id,
                 checked = checked
             )
-            syncRepository.sync()
+            syncUseCase()
         }
     }
 
@@ -168,7 +168,7 @@ class QuestDetailViewModel(
             cancelQuestNotificationsUseCase.invoke(id = questId)
 
             deleteQuestUseCase.invoke(questId = questId)
-            syncRepository.sync()
+            syncUseCase()
         }
     }
 

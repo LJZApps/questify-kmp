@@ -2,6 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.edit_quest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
@@ -52,6 +53,7 @@ class EditQuestViewModel(
 
     private val addQuestNotificationUseCase: AddQuestNotificationUseCase,
     private val cancelQuestNotificationsUseCase: CancelQuestNotificationsUseCase,
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -173,6 +175,8 @@ class EditQuestViewModel(
                                 addQuestNotificationUseCase.invoke(questNotification)
                             }
 
+                            syncUseCase()
+
                             isNavigatingUp = true
                             _uiEffects.send(EditQuestUiEffect.OnNavigateUp)
                         }
@@ -186,6 +190,8 @@ class EditQuestViewModel(
                     cancelQuestNotificationsUseCase.invoke(id = id)
 
                     deleteQuestUseCase.invoke(questId = id)
+
+                    syncUseCase()
 
                     isNavigatingUp = true
                     _uiEffects.send(EditQuestUiEffect.OnNavigateUp)
@@ -242,6 +248,7 @@ class EditQuestViewModel(
                             text = event.value
                         )
                     )
+                    syncUseCase()
                 }
             }
 

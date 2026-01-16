@@ -2,7 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.create_quest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.ljz.questify.core.domain.repositories.SyncRepository
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
@@ -37,7 +37,7 @@ class CreateQuestViewModel(
     private val getAllQuestCategoriesUseCase: GetAllQuestCategoriesUseCase,
 
     private val addSubQuestsUseCase: AddSubQuestsUseCase,
-    private val syncRepository: SyncRepository
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -126,7 +126,7 @@ class CreateQuestViewModel(
                     }
 
                     addSubQuestsUseCase.invoke(subQuestEntities = subQuestEntities)
-                    syncRepository.sync()
+                    syncUseCase()
                     _uiEffects.send(CreateQuestUiEffect.OnNavigateUp)
                 }
             }
@@ -181,7 +181,7 @@ class CreateQuestViewModel(
                             text = event.value
                         )
                     )
-                    syncRepository.sync()
+                    syncUseCase()
                 }
             }
 

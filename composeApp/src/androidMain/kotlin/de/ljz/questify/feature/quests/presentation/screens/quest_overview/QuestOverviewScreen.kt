@@ -34,6 +34,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -149,6 +152,7 @@ private fun QuestOverviewScreen(
 
     val scrollState = rememberScrollState()
     val initialPage = desiredPageIndex.coerceIn(0, (allTabs.size - 1).coerceAtLeast(0))
+    val refreshState = rememberPullToRefreshState()
 
     val pagerState = rememberPagerState(
         initialPage = initialPage,
@@ -430,59 +434,75 @@ private fun QuestOverviewScreen(
                     }
                 }
 
-                HorizontalPager(
-                    state = pagerState,
-                    key = { pageIndex ->
-                        allTabs.getOrNull(pageIndex)?.uuid ?: "temp_page_$pageIndex"
-                    }
-                ) { pageIndex ->
-                    if (pageIndex == 0) {
-                        AllQuestsPage(
-                            state = uiState.allQuestPageState,
-                            onEditQuestClick = {
-                                onUiEvent(QuestOverviewUiEvent.OnNavigateToEditQuestScreen(it))
-                            },
-                            onQuestCheck = { quest ->
-                                onUiEvent(
-                                    QuestOverviewUiEvent.OnQuestChecked(
-                                        questEntity = quest
-                                    )
-                                )
-                            },
-                            onQuestClick = { id ->
-                                onUiEvent(
-                                    QuestOverviewUiEvent.OnNavigateToQuestDetailScreen(entryId = id)
-                                )
-                            },
-                            onCreateNewQuestButtonClick = {
-                                haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
-
-                                onUiEvent(
-                                    QuestOverviewUiEvent.OnNavigateToCreateQuestScreen(
-                                        categoryId = if ((desiredPageIndex - 1) < 0) null else (desiredPageIndex - 1)
-                                    )
-                                )
-                            },
-                            modifier = Modifier.fillMaxSize()
+                PullToRefreshBox(
+                    state = refreshState,
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = {
+                        onUiEvent(QuestOverviewUiEvent.Refresh)
+                    },
+                    indicator = {
+                        PullToRefreshDefaults.LoadingIndicator(
+                            isRefreshing = uiState.isRefreshing,
+                            state = refreshState,
+                            modifier = Modifier.align(Alignment.TopCenter),
                         )
-                    } else {
-                        val categoryIndex = pageIndex - 1
-                        if (categoryIndex < categories.size) {
-                            val category = categories[categoryIndex]
-
-                            QuestsForCategoryPage(
-                                categoryId = category.id,
-                                onQuestClicked = {
-                                    onUiEvent(QuestOverviewUiEvent.OnNavigateToQuestDetailScreen(it))
-                                },
-                                onQuestChecked = {
-                                    onUiEvent(QuestOverviewUiEvent.OnQuestChecked(it))
-                                },
-                                onEditQuestClicked = {
+                    },
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    HorizontalPager(
+                        state = pagerState,
+                        key = { pageIndex ->
+                            allTabs.getOrNull(pageIndex)?.uuid ?: "temp_page_$pageIndex"
+                        }
+                    ) { pageIndex ->
+                        if (pageIndex == 0) {
+                            AllQuestsPage(
+                                state = uiState.allQuestPageState,
+                                onEditQuestClick = {
                                     onUiEvent(QuestOverviewUiEvent.OnNavigateToEditQuestScreen(it))
+                                },
+                                onQuestCheck = { quest ->
+                                    onUiEvent(
+                                        QuestOverviewUiEvent.OnQuestChecked(
+                                            questEntity = quest
+                                        )
+                                    )
+                                },
+                                onQuestClick = { id ->
+                                    onUiEvent(
+                                        QuestOverviewUiEvent.OnNavigateToQuestDetailScreen(entryId = id)
+                                    )
+                                },
+                                onCreateNewQuestButtonClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.KeyboardTap)
+
+                                    onUiEvent(
+                                        QuestOverviewUiEvent.OnNavigateToCreateQuestScreen(
+                                            categoryId = if ((desiredPageIndex - 1) < 0) null else (desiredPageIndex - 1)
+                                        )
+                                    )
                                 },
                                 modifier = Modifier.fillMaxSize()
                             )
+                        } else {
+                            val categoryIndex = pageIndex - 1
+                            if (categoryIndex < categories.size) {
+                                val category = categories[categoryIndex]
+
+                                QuestsForCategoryPage(
+                                    categoryId = category.id,
+                                    onQuestClicked = {
+                                        onUiEvent(QuestOverviewUiEvent.OnNavigateToQuestDetailScreen(it))
+                                    },
+                                    onQuestChecked = {
+                                        onUiEvent(QuestOverviewUiEvent.OnQuestChecked(it))
+                                    },
+                                    onEditQuestClicked = {
+                                        onUiEvent(QuestOverviewUiEvent.OnNavigateToEditQuestScreen(it))
+                                    },
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                         }
                     }
                 }

@@ -2,6 +2,7 @@ package de.ljz.questify.feature.profile.presentation.screens.username_setup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.feature.profile.domain.use_cases.CheckUsernameUseCase
 import de.ljz.questify.feature.profile.domain.use_cases.GetAppUserUseCase
 import de.ljz.questify.feature.profile.domain.use_cases.SaveProfileUseCase
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 class UsernameSetupViewModel(
     private val checkUsernameUseCase: CheckUsernameUseCase,
     private val saveProfileUseCase: SaveProfileUseCase,
-    private val getAppUserUseCase: GetAppUserUseCase
+    private val getAppUserUseCase: GetAppUserUseCase,
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UsernameSetupUiState())
     val uiState = _uiState.asStateFlow()
@@ -65,6 +67,7 @@ class UsernameSetupViewModel(
                     aboutMe = appUser.aboutMe,
                     imageUri = appUser.profilePicture
                 )
+                syncUseCase()
                 _uiState.update { it.copy(isLoading = false, isSuccess = true) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.message) }

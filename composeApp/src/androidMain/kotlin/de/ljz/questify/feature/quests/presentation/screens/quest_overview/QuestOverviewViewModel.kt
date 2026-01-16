@@ -3,9 +3,9 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
-import de.ljz.questify.core.domain.repositories.SyncRepository
 import de.ljz.questify.core.domain.use_cases.GetSortingPreferencesUseCase
 import de.ljz.questify.core.domain.use_cases.SaveQuestSortingDirectionUseCase
+import de.ljz.questify.core.domain.use_cases.SyncUseCase
 import de.ljz.questify.core.domain.use_cases.UpdateShowCompletedQuestsUseCase
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.domain.use_cases.AddQuestCategoryUseCase
@@ -41,11 +41,11 @@ class QuestOverviewViewModel(
     private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
     private val saveQuestSortingDirectionUseCase: SaveQuestSortingDirectionUseCase,
     private val updateShowCompletedQuestsUseCase: UpdateShowCompletedQuestsUseCase,
-
-    private val syncRepository: SyncRepository
+    private val syncUseCase: SyncUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = QuestOverviewUIState(
+            isRefreshing = false,
             dialogState = QuestOverviewDialogState.None,
             allQuestPageState = AllQuestPageState(
                 quests = emptyList(),
@@ -92,7 +92,7 @@ class QuestOverviewViewModel(
 
             // Initial sync
             launch {
-                syncRepository.sync()
+                syncUseCase()
             }
         }
     }
@@ -102,7 +102,25 @@ class QuestOverviewViewModel(
             is QuestOverviewUiEvent.OnQuestDelete -> {
                 viewModelScope.launch {
                     deleteQuestUseCase.invoke(event.id)
-                    syncRepository.sync()
+                    syncUseCase()
+                }
+            }
+
+            is QuestOverviewUiEvent.Refresh -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(isRefreshing = true)
+                    }
+
+                    syncUseCase().onSuccess {
+                        _uiState.update {
+                            it.copy(isRefreshing = false)
+                        }
+                    }.onFailure {
+                        _uiState.update {
+                            it.copy(isRefreshing = false)
+                        }
+                    }
                 }
             }
 
@@ -123,7 +141,7 @@ class QuestOverviewViewModel(
                                 )
                             )
                         }
-                        syncRepository.sync()
+                        syncUseCase()
                     }
 
                     launch {
@@ -169,7 +187,7 @@ class QuestOverviewViewModel(
                         text = event.value.trim()
                     )
                     addQuestCategoryUseCase.invoke(questCategory)
-                    syncRepository.sync()
+                    syncUseCase()
                 }
             }
 
@@ -182,7 +200,7 @@ class QuestOverviewViewModel(
                             text = event.questCategoryEntity.text,
                         )
                     )
-                    syncRepository.sync()
+                    syncUseCase()
                 }
             }
 
@@ -192,7 +210,7 @@ class QuestOverviewViewModel(
                         id = event.questCategoryEntity.id,
                         value = event.value.trim()
                     )
-                    syncRepository.sync()
+                    syncUseCase()
                 }
             }
 
