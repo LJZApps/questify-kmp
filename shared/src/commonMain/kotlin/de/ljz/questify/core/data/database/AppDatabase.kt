@@ -1,6 +1,5 @@
 package de.ljz.questify.core.data.database
 
-import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -34,10 +33,8 @@ import kotlinx.coroutines.IO
         // Habits
         HabitEntity::class
     ],
-    version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ]
+    version = 12,
+    autoMigrations = []
 )
 @TypeConverters(
     value = [
@@ -65,5 +62,6 @@ fun getRoomDatabase(
     return builder
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(true)
         .build()
 }

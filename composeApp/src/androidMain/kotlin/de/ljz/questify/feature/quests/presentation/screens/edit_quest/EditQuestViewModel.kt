@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import kotlin.time.Instant
 
 class EditQuestViewModel(
@@ -85,6 +86,7 @@ class EditQuestViewModel(
     val selectedCategory: StateFlow<QuestCategoryEntity?> = _selectedCategory.asStateFlow()
 
     private val _subQuestsToDelete = mutableListOf<Int>()
+    private var isNavigatingUp = false
 
     init {
         viewModelScope.launch {
@@ -126,6 +128,7 @@ class EditQuestViewModel(
     fun onUiEvent(event: EditQuestUiEvent) {
         when (event) {
             is EditQuestUiEvent.OnSaveQuest -> {
+                if (isNavigatingUp) return
                 viewModelScope.launch {
                     launch {
                         _copiedQuestEntity?.let { copiedQuestEntity ->
@@ -136,7 +139,8 @@ class EditQuestViewModel(
                                 dueDate = if (_uiState.value.combinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
                                     _uiState.value.combinedDueDate
                                 ),
-                                categoryId = _selectedCategory.value?.id
+                                categoryId = _selectedCategory.value?.id,
+                                categoryUuid = _selectedCategory.value?.uuid
                             )
 
                             upsertQuestUseCase.invoke(updatedQuestEntity)
@@ -145,9 +149,11 @@ class EditQuestViewModel(
                                 subQuestEntities =
                                     _uiState.value.subQuests.mapIndexed { index, model ->
                                         model.toEntity(
+                                            uuid = model.uuid.ifEmpty { UUID.randomUUID().toString() },
+                                            questUuid = copiedQuestEntity.uuid,
                                             id = model.id,
                                             text = model.text,
-                                            questId = copiedQuestEntity.id.toLong(),
+                                            questId = copiedQuestEntity.id,
                                             orderIndex = index
                                         )
                                     }
@@ -160,12 +166,14 @@ class EditQuestViewModel(
                             _uiState.value.notificationTriggerTimes.forEach { notificationTriggerTime ->
                                 val questNotification = QuestNotificationEntity(
                                     questId = id,
+                                    questUuid = copiedQuestEntity.uuid,
                                     notifyAt = Instant.fromEpochMilliseconds(notificationTriggerTime)
                                 )
 
                                 addQuestNotificationUseCase.invoke(questNotification)
                             }
 
+                            isNavigatingUp = true
                             _uiEffects.send(EditQuestUiEffect.OnNavigateUp)
                         }
                     }
@@ -173,11 +181,13 @@ class EditQuestViewModel(
             }
 
             is EditQuestUiEvent.OnDeleteQuest -> {
+                if (isNavigatingUp) return
                 viewModelScope.launch {
                     cancelQuestNotificationsUseCase.invoke(id = id)
 
                     deleteQuestUseCase.invoke(questId = id)
 
+                    isNavigatingUp = true
                     _uiEffects.send(EditQuestUiEffect.OnNavigateUp)
                 }
             }
@@ -228,6 +238,7 @@ class EditQuestViewModel(
                 viewModelScope.launch {
                     addQuestCategoryUseCase.invoke(
                         questCategoryEntity = QuestCategoryEntity(
+                            uuid = UUID.randomUUID().toString(),
                             text = event.value
                         )
                     )
@@ -266,6 +277,7 @@ class EditQuestViewModel(
                 _uiState.update {
                     it.copy(
                         subQuests = _uiState.value.subQuests + SubQuestModel(
+                            uuid = UUID.randomUUID().toString(),
                             text = ""
                         )
                     )

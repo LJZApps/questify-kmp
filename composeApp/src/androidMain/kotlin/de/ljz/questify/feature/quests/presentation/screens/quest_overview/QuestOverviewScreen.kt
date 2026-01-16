@@ -136,6 +136,7 @@ private fun QuestOverviewScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val staticAllTab = QuestCategoryEntity(
+        uuid = "static_all_tab",
         id = -1,
         text = stringResource(R.string.quest_overview_screen_tab_default_text)
     )
@@ -432,7 +433,7 @@ private fun QuestOverviewScreen(
                 HorizontalPager(
                     state = pagerState,
                     key = { pageIndex ->
-                        allTabs.getOrNull(pageIndex)?.id ?: "temp_page_$pageIndex"
+                        allTabs.getOrNull(pageIndex)?.uuid ?: "temp_page_$pageIndex"
                     }
                 ) { pageIndex ->
                     if (pageIndex == 0) {

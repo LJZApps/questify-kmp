@@ -3,6 +3,7 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.ljz.questify.core.data.models.descriptors.SortingDirections
+import de.ljz.questify.core.domain.repositories.SyncRepository
 import de.ljz.questify.core.domain.use_cases.GetSortingPreferencesUseCase
 import de.ljz.questify.core.domain.use_cases.SaveQuestSortingDirectionUseCase
 import de.ljz.questify.core.domain.use_cases.UpdateShowCompletedQuestsUseCase
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class QuestOverviewViewModel(
     private val getAllQuestsUseCase: GetAllQuestsUseCase,
@@ -39,6 +41,8 @@ class QuestOverviewViewModel(
     private val getQuestSortingPreferencesUseCase: GetSortingPreferencesUseCase,
     private val saveQuestSortingDirectionUseCase: SaveQuestSortingDirectionUseCase,
     private val updateShowCompletedQuestsUseCase: UpdateShowCompletedQuestsUseCase,
+
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         value = QuestOverviewUIState(
@@ -85,6 +89,11 @@ class QuestOverviewViewModel(
                     _categories.value = questCategoryEntities
                 }
             }
+
+            // Initial sync
+            launch {
+                syncRepository.sync()
+            }
         }
     }
 
@@ -93,13 +102,14 @@ class QuestOverviewViewModel(
             is QuestOverviewUiEvent.OnQuestDelete -> {
                 viewModelScope.launch {
                     deleteQuestUseCase.invoke(event.id)
+                    syncRepository.sync()
                 }
             }
 
             is QuestOverviewUiEvent.OnQuestChecked -> {
                 viewModelScope.launch {
                     launch {
-                        val result = completeQuestUseCase.invoke(event.questEntity)
+                        val result = completeQuestUseCase.invoke(event.questEntity.id, event.questEntity.done.not())
 
                         _uiState.update {
                             it.copy(
@@ -113,6 +123,7 @@ class QuestOverviewViewModel(
                                 )
                             )
                         }
+                        syncRepository.sync()
                     }
 
                     launch {
@@ -153,8 +164,12 @@ class QuestOverviewViewModel(
 
             is QuestOverviewUiEvent.AddQuestCategory -> {
                 viewModelScope.launch {
-                    val questCategory = QuestCategoryEntity(text = event.value.trim())
+                    val questCategory = QuestCategoryEntity(
+                        uuid = UUID.randomUUID().toString(),
+                        text = event.value.trim()
+                    )
                     addQuestCategoryUseCase.invoke(questCategory)
+                    syncRepository.sync()
                 }
             }
 
@@ -167,6 +182,7 @@ class QuestOverviewViewModel(
                             text = event.questCategoryEntity.text,
                         )
                     )
+                    syncRepository.sync()
                 }
             }
 
@@ -176,6 +192,7 @@ class QuestOverviewViewModel(
                         id = event.questCategoryEntity.id,
                         value = event.value.trim()
                     )
+                    syncRepository.sync()
                 }
             }
 

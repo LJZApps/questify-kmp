@@ -1,5 +1,6 @@
 package de.ljz.questify.feature.quests.domain.repositories
 
+import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.quests.data.daos.QuestCategoryDao
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import kotlinx.coroutines.flow.Flow
@@ -15,15 +16,17 @@ internal class QuestCategoryRepositoryImpl(
     }
 
     override suspend fun deleteQuestCategory(id: Int) {
-        questCategoryDao.deleteQuestCategory(
-            questCategoryId = id
+        questCategoryDao.markCategoryAsDeleted(
+            id = id,
+            timestamp = TimeUtils.now()
         )
     }
 
     override suspend fun updateQuestCategory(id: Int, value: String) {
         questCategoryDao.updateQuestCategory(
             questCategoryId = id,
-            text =  value
+            text = value,
+            updatedAt = TimeUtils.now()
         )
     }
 

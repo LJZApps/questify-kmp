@@ -1,26 +1,25 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "62d95a2806a6306c04b57769c98c66ad",
+    "version": 12,
+    "identityHash": "3cd5a93af9938f6e3206dd558fc1cc62",
     "entities": [
       {
         "tableName": "quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL DEFAULT '', `id` INTEGER NOT NULL DEFAULT 0, `category_uuid` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, PRIMARY KEY(`uuid`), FOREIGN KEY(`category_uuid`) REFERENCES `quest_category_entity`(`uuid`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL DEFAULT '', `category_uuid` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `title` TEXT NOT NULL, `notes` TEXT, `difficulty` TEXT NOT NULL, `due_date` INTEGER, `created_at` INTEGER NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, `lock_deletion` INTEGER NOT NULL, `done` INTEGER NOT NULL, `category_id` INTEGER, FOREIGN KEY(`category_uuid`) REFERENCES `quest_category_entity`(`uuid`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "uuid",
             "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": true,
             "defaultValue": "''"
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
           },
           {
             "fieldPath": "categoryUuid",
@@ -91,20 +90,20 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
-            "uuid"
+            "id"
           ]
         },
         "indices": [
           {
-            "name": "index_quest_entity_id",
+            "name": "index_quest_entity_uuid",
             "unique": true,
             "columnNames": [
-              "id"
+              "uuid"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_quest_entity_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_quest_entity_uuid` ON `${TABLE_NAME}` (`uuid`)"
           },
           {
             "name": "index_quest_entity_category_id",
@@ -222,21 +221,20 @@
       },
       {
         "tableName": "quest_category_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL DEFAULT '', `id` INTEGER NOT NULL DEFAULT 0, `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `text` TEXT NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, PRIMARY KEY(`uuid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL DEFAULT '', `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `text` TEXT NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "uuid",
             "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": true,
             "defaultValue": "''"
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
           },
           {
             "fieldPath": "syncStatus",
@@ -263,29 +261,39 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
-            "uuid"
+            "id"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_quest_category_entity_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_quest_category_entity_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          }
+        ]
       },
       {
         "tableName": "sub_quest_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL DEFAULT '', `id` INTEGER NOT NULL DEFAULT 0, `quest_uuid` TEXT NOT NULL DEFAULT '', `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `order_index` INTEGER NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, PRIMARY KEY(`uuid`), FOREIGN KEY(`quest_uuid`) REFERENCES `quest_entity`(`uuid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL DEFAULT '', `quest_uuid` TEXT NOT NULL DEFAULT '', `sync_status` TEXT NOT NULL DEFAULT 'DIRTY', `text` TEXT NOT NULL, `is_done` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `order_index` INTEGER NOT NULL, `updated_at` INTEGER, `deleted_at` INTEGER, FOREIGN KEY(`quest_uuid`) REFERENCES `quest_entity`(`uuid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "uuid",
             "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": true,
             "defaultValue": "''"
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
           },
           {
             "fieldPath": "questUuid",
@@ -337,9 +345,9 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
-            "uuid"
+            "id"
           ]
         },
         "indices": [
@@ -360,6 +368,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_sub_quest_entity_quest_uuid` ON `${TABLE_NAME}` (`quest_uuid`)"
+          },
+          {
+            "name": "index_sub_quest_entity_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sub_quest_entity_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": [
@@ -472,7 +489,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '62d95a2806a6306c04b57769c98c66ad')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cd5a93af9938f6e3206dd558fc1cc62')"
     ]
   }
 }

@@ -52,7 +52,8 @@ val viewModelModule = module {
             addQuestCategoryUseCase = get(),
             getAllQuestCategoriesUseCase = get(),
             upsertQuestUseCase = get(),
-            addQuestNotificationUseCase = get()
+            addQuestNotificationUseCase = get(),
+            syncRepository = get()
         )
     }
 
@@ -83,6 +84,7 @@ val viewModelModule = module {
             getQuestCategoryByIdUseCase = get(),
             checkSubQuestUseCase = get(),
             cancelQuestNotificationsUseCase = get(),
+            syncRepository = get()
         )
     }
 

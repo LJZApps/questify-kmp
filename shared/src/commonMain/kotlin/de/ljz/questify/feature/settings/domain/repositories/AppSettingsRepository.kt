@@ -3,6 +3,7 @@ package de.ljz.questify.feature.settings.domain.repositories
 import de.ljz.questify.feature.settings.data.models.AppSettings
 import de.ljz.questify.feature.settings.data.models.descriptors.ThemeBehavior
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Instant
 
 interface AppSettingsRepository {
     fun getAppSettings(): Flow<AppSettings>
@@ -12,4 +13,6 @@ interface AppSettingsRepository {
     suspend fun resetOnboarding()
 
     suspend fun setDarkModeBehavior(value: ThemeBehavior)
+
+    suspend fun updateLastSyncTimestamp(timestamp: Instant)
 }

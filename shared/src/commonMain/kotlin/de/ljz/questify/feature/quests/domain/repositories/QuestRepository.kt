@@ -11,15 +11,10 @@ interface QuestRepository {
 
     suspend fun upsertQuest(quest: QuestEntity): Long
 
-    suspend fun setQuestDone(id: Int, done: Boolean)
+    suspend fun setQuestDone(id: Int, done: Boolean): QuestCompletionResult
 
     suspend fun updateQuest(quest: QuestEntity)
 
-    /*@Deprecated(
-        message = "Please use updateQuest(quest: QuestEntity)",
-        replaceWith = ReplaceWith("updateQuest(quest: QuestEntity)"),
-        level = DeprecationLevel.ERROR
-    )*/
     suspend fun updateQuest(
         id: Int,
         title: String,
@@ -38,4 +33,11 @@ interface QuestRepository {
     suspend fun getQuestByIdFlow(id: Int): Flow<QuestWithDetails?>
 
     suspend fun deleteQuest(id: Int)
+
+    data class QuestCompletionResult(
+        val earnedXp: Int,
+        val earnedPoints: Int,
+        val didLevelUp: Boolean,
+        val newLevel: Int
+    )
 }

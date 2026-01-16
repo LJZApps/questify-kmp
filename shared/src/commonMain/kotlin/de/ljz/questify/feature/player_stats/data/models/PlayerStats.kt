@@ -1,8 +1,12 @@
+@file:UseSerializers(InstantSerializer::class)
 package de.ljz.questify.feature.player_stats.data.models
 
+import de.ljz.questify.core.utils.InstantSerializer
 import de.ljz.questify.feature.player_stats.data.models.descriptors.PlayerStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import kotlin.time.Instant
 
 @Serializable
 data class PlayerStats(
@@ -28,5 +32,11 @@ data class PlayerStats(
     val status: PlayerStatus = PlayerStatus.NORMAL,
 
     @SerialName("status_expiry_timestamp")
-    val statusExpiryTimestamp: Long? = null
+    val statusExpiryTimestamp: Long? = null,
+
+    @SerialName("updated_at")
+    val updatedAt: Instant? = null,
+
+    @SerialName("is_dirty")
+    val isDirty: Boolean = false
 )

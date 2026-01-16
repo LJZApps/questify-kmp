@@ -98,7 +98,9 @@ fun MainScreen(
                     entry<HabitOverviewRoute> {
                         HabitOverviewScreen(
                             onNavigateUp = {
-                                backStack.removeLastOrNull()
+                                if (backStack.size > 1) {
+                                    backStack.removeLastOrNull()
+                                }
                             },
                             onToggleDrawer = {
                                 scope.launch {

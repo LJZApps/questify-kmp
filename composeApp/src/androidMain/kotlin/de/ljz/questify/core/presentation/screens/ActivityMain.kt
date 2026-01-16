@@ -137,7 +137,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<OnboardingRoute> {
                                     OnboardingScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         },
                                         onNavigateToMainScreen = {
                                             backStack.clear()
@@ -150,7 +152,9 @@ class ActivityMain : AppCompatActivity() {
                                     CreateQuestScreen(
                                         selectedCategoryIndex = key.selectedCategoryIndex,
                                         onNavigateBack = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         }
                                     )
                                 }
@@ -159,7 +163,9 @@ class ActivityMain : AppCompatActivity() {
                                     EditQuestScreen(
                                         id = key.id,
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         }
                                     )
                                 }
@@ -168,7 +174,9 @@ class ActivityMain : AppCompatActivity() {
                                     QuestDetailScreen(
                                         questId = key.id,
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         }
                                     )
                                 }
@@ -176,7 +184,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<SettingsMainRoute> {
                                     SettingsMainScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         },
                                         onNavigateToViewProfileScreen = {
                                             backStack.add(SettingsLoginRoute)
@@ -193,7 +203,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<SettingsAppearanceRoute> {
                                     SettingsAppearanceScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         }
                                     )
                                 }
@@ -201,7 +213,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<SettingsHelpRoute> {
                                     SettingsHelpScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         },
                                         onNavigateToOnboardingScreen = {
                                             backStack.add(OnboardingRoute)
@@ -212,7 +226,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<ViewProfileRoute> {
                                     ViewProfileScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         },
                                         onNavigateToEditProfileScreen = {
                                             backStack.add(EditProfileRoute)
@@ -223,7 +239,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<EditProfileRoute> {
                                     EditProfileScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         }
                                     )
                                 }
@@ -231,7 +249,9 @@ class ActivityMain : AppCompatActivity() {
                                 entry<SettingsLoginRoute> {
                                     SettingsLoginScreen(
                                         onNavigateUp = {
-                                            backStack.removeLastOrNull()
+                                            if (backStack.size > 1) {
+                                                backStack.removeLastOrNull()
+                                            }
                                         },
                                         onNavigateToUsernameSetup = {
                                             // TODO setup screen and functionallity

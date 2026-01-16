@@ -1,5 +1,6 @@
 package de.ljz.questify.feature.quests.domain.repositories
 
+import de.ljz.questify.core.utils.TimeUtils
 import de.ljz.questify.feature.quests.data.daos.QuestDao
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.Difficulty
@@ -18,19 +19,25 @@ internal class QuestRepositoryImpl(
         return questDao.upsert(quest)
     }
 
-    override suspend fun setQuestDone(id: Int, done: Boolean) {
-        questDao.setQuestDone(id, done)
+    override suspend fun setQuestDone(id: Int, done: Boolean): QuestRepository.QuestCompletionResult {
+        questDao.setQuestDone(
+            id = id,
+            done = done,
+            updatedAt = TimeUtils.now()
+        )
+        // TODO: Implement actual XP/Points logic. Returning dummy for now to fix build.
+        return QuestRepository.QuestCompletionResult(
+            earnedXp = 10,
+            earnedPoints = 5,
+            didLevelUp = false,
+            newLevel = 0
+        )
     }
 
     override suspend fun updateQuest(quest: QuestEntity) {
         questDao.upsert(quest)
     }
 
-    /*@Deprecated(
-        "Please use updateQuest(quest: QuestEntity)",
-        replaceWith = ReplaceWith("updateQuest(quest: QuestEntity)"),
-        level = DeprecationLevel.ERROR
-    )*/
     override suspend fun updateQuest(
         id: Int,
         title: String,
@@ -45,7 +52,8 @@ internal class QuestRepositoryImpl(
             description = description,
             difficulty = difficulty,
             dueDate = dueDate,
-            categoryId = categoryId
+            categoryId = categoryId,
+            updatedAt = TimeUtils.now()
         )
     }
 
@@ -66,6 +74,9 @@ internal class QuestRepositoryImpl(
     }
 
     override suspend fun deleteQuest(id: Int) {
-        return questDao.deleteQuest(id)
+        questDao.markQuestAsDeleted(
+            id = id,
+            timestamp = TimeUtils.now()
+        )
     }
 }

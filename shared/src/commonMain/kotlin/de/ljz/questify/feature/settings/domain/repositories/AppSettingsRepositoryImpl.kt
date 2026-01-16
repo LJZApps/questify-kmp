@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import de.ljz.questify.feature.settings.data.models.AppSettings
 import de.ljz.questify.feature.settings.data.models.descriptors.ThemeBehavior
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Instant
 
 internal class AppSettingsRepositoryImpl(
     private val appSettingsDataStore: DataStore<AppSettings>
@@ -33,6 +34,14 @@ internal class AppSettingsRepositoryImpl(
         appSettingsDataStore.updateData {
             it.copy(
                 themeBehavior = value
+            )
+        }
+    }
+
+    override suspend fun updateLastSyncTimestamp(timestamp: Instant) {
+        appSettingsDataStore.updateData {
+            it.copy(
+                lastSyncTimestamp = timestamp
             )
         }
     }

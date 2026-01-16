@@ -2,6 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.quest_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.domain.repositories.SyncRepository
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.descriptors.AddingDateTimeState
@@ -37,6 +38,7 @@ class QuestDetailViewModel(
     private val checkSubQuestUseCase: CheckSubQuestUseCase,
 
     private val cancelQuestNotificationsUseCase: CancelQuestNotificationsUseCase,
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -77,6 +79,7 @@ class QuestDetailViewModel(
     val categories: StateFlow<List<QuestCategoryEntity>> = _categories.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow<QuestCategoryEntity?>(null)
+    private var isNavigatingUp = false
 
     init {
         viewModelScope.launch {
@@ -85,7 +88,10 @@ class QuestDetailViewModel(
 
                 questFlow.collectLatest { quest ->
                     if (quest == null) {
-                        _uiEffects.send(QuestDetailUiEffect.OnNavigateUp)
+                        if (!isNavigatingUp) {
+                            isNavigatingUp = true
+                            _uiEffects.send(QuestDetailUiEffect.OnNavigateUp)
+                        }
                     } else {
                         val notifications = quest.notifications
                             .filter { !it.notified }
@@ -125,7 +131,7 @@ class QuestDetailViewModel(
     fun completeQuest(questEntity: QuestEntity) {
         viewModelScope.launch {
             launch {
-                val result = completeQuestUseCase.invoke(questEntity)
+                val result = completeQuestUseCase.invoke(questEntity.id, !questEntity.done)
 
                 _uiState.update {
                     it.copy(
@@ -138,6 +144,7 @@ class QuestDetailViewModel(
                         )
                     )
                 }
+                syncRepository.sync()
             }
 
             launch {
@@ -152,6 +159,7 @@ class QuestDetailViewModel(
                 id = id,
                 checked = checked
             )
+            syncRepository.sync()
         }
     }
 
@@ -160,6 +168,7 @@ class QuestDetailViewModel(
             cancelQuestNotificationsUseCase.invoke(id = questId)
 
             deleteQuestUseCase.invoke(questId = questId)
+            syncRepository.sync()
         }
     }
 

@@ -13,20 +13,26 @@ import kotlin.time.Instant
     foreignKeys = [
         ForeignKey(
             entity = QuestCategoryEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["category_id"],
+            parentColumns = ["uuid"],
+            childColumns = ["category_uuid"],
             onDelete = ForeignKey.Companion.SET_NULL
         )
     ],
     indices = [
-        Index(value = ["category_id"])
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["category_id"]),
+        Index(value = ["category_uuid"])
     ]
 )
 data class QuestEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val id: Int = 0,
 
-    @ColumnInfo(name = "uuid", defaultValue = "")
-    val uuid: String,
+    @ColumnInfo(name = "uuid", defaultValue = "") val uuid: String,
+
+    @ColumnInfo(name = "category_uuid")
+    val categoryUuid: String? = null,
 
     @ColumnInfo(name = "sync_status", defaultValue = "DIRTY")
     val syncStatus: SyncStatus = SyncStatus.DIRTY,

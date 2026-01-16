@@ -2,6 +2,7 @@ package de.ljz.questify.feature.quests.presentation.screens.create_quest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.ljz.questify.core.domain.repositories.SyncRepository
 import de.ljz.questify.feature.quests.data.models.QuestCategoryEntity
 import de.ljz.questify.feature.quests.data.models.QuestEntity
 import de.ljz.questify.feature.quests.data.models.QuestNotificationEntity
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.time.Clock
 import kotlin.time.Instant
 
 class CreateQuestViewModel(
@@ -36,7 +36,8 @@ class CreateQuestViewModel(
     private val addQuestCategoryUseCase: AddQuestCategoryUseCase,
     private val getAllQuestCategoriesUseCase: GetAllQuestCategoriesUseCase,
 
-    private val addSubQuestsUseCase: AddSubQuestsUseCase
+    private val addSubQuestsUseCase: AddSubQuestsUseCase,
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -93,11 +94,12 @@ class CreateQuestViewModel(
                     title = _uiState.value.title,
                     notes = _uiState.value.notes.trim().ifEmpty { null },
                     difficulty = Difficulty.fromIndex(_uiState.value.difficulty),
-                    createdAt = Clock.System.now(),
+                    createdAt = Instant.fromEpochMilliseconds(System.currentTimeMillis()),
                     dueDate = if (_uiState.value.selectedCombinedDueDate.toInt() == 0) null else Instant.fromEpochMilliseconds(
                         _uiState.value.selectedCombinedDueDate
                     ),
-                    categoryId = _selectedCategory.value?.id
+                    categoryId = _selectedCategory.value?.id,
+                    categoryUuid = _selectedCategory.value?.uuid
                 )
 
                 viewModelScope.launch {
@@ -106,6 +108,7 @@ class CreateQuestViewModel(
                     _uiState.value.notificationTriggerTimes.forEach { notificationTriggerTime ->
                         val questNotification = QuestNotificationEntity(
                             questId = questId.toInt(),
+                            questUuid = quest.uuid,
                             notifyAt = Instant.fromEpochMilliseconds(notificationTriggerTime)
                         )
 
@@ -114,13 +117,16 @@ class CreateQuestViewModel(
 
                     val subQuestEntities = _uiState.value.subQuests.mapIndexed { index, subTask ->
                         SubQuestEntity(
+                            uuid = subTask.uuid.ifEmpty { UUID.randomUUID().toString() },
+                            questUuid = quest.uuid,
                             text = subTask.text,
-                            questId = questId,
+                            questId = questId.toInt(),
                             orderIndex = index
                         )
                     }
 
                     addSubQuestsUseCase.invoke(subQuestEntities = subQuestEntities)
+                    syncRepository.sync()
                     _uiEffects.send(CreateQuestUiEffect.OnNavigateUp)
                 }
             }
@@ -171,9 +177,11 @@ class CreateQuestViewModel(
                 viewModelScope.launch {
                     addQuestCategoryUseCase.invoke(
                         questCategoryEntity = QuestCategoryEntity(
+                            uuid = UUID.randomUUID().toString(),
                             text = event.value
                         )
                     )
+                    syncRepository.sync()
                 }
             }
 
@@ -208,7 +216,10 @@ class CreateQuestViewModel(
             is CreateQuestUiEvent.OnCreateSubQuest -> {
                 _uiState.update {
                     it.copy(
-                        subQuests = _uiState.value.subQuests + SubQuestModel(text = "")
+                        subQuests = _uiState.value.subQuests + SubQuestModel(
+                            uuid = UUID.randomUUID().toString(),
+                            text = ""
+                        )
                     )
                 }
             }

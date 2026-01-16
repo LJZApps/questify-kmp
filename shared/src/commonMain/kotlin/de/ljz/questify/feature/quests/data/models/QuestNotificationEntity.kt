@@ -12,13 +12,14 @@ import kotlin.time.Instant
     foreignKeys = [
         ForeignKey(
             entity = QuestEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["quest_id"],
+            parentColumns = ["uuid"],
+            childColumns = ["quest_uuid"],
             onDelete = ForeignKey.Companion.CASCADE
         )
     ],
     indices = [
-        Index(value = ["quest_id"])
+        Index(value = ["quest_id"]),
+        Index(value = ["quest_uuid"])
     ]
 )
 data class QuestNotificationEntity(
@@ -27,6 +28,9 @@ data class QuestNotificationEntity(
 
     @ColumnInfo(name = "quest_id")
     val questId: Int,
+
+    @ColumnInfo(name = "quest_uuid", defaultValue = "")
+    val questUuid: String,
 
     @ColumnInfo(name = "notified")
     val notified: Boolean = false,
